@@ -1,3 +1,8 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import * as Popover from 'react-popover-typescript';
+import Popover from 'react-popover-typescript';
+
+const Demo = () => (
+    <Popover title={'hey from popover'} />
+);
+
+export { Demo };

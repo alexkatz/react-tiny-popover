@@ -1,15 +1,24 @@
 import * as React from 'react';
 
-export interface PopoverState {
+interface PopoverState {
 
 }
 
-export interface PopoverProps {
-
+interface PopoverProps {
+    title: string;
 }
 
 class Popover extends React.Component<PopoverProps, PopoverState> {
+    constructor(props: PopoverProps) {
+        super(props);
+    }
 
+    public render() {
+        const { title } = this.props;
+        return (
+            <div>{title}</div>
+        );
+    }
 }
 
 // tslint:disable-next-line:no-default-export

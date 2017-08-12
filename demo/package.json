@@ -7,9 +7,14 @@
     "@types/react": "^16.0.2",
     "@types/react-dom": "^15.5.2",
     "awesome-typescript-loader": "^3.2.2",
+    "source-map-loader": "^0.2.1",
     "tslint": "^5.6.0",
     "typescript": "^2.4.2",
-    "webpack": "^3.5.3"
+    "webpack": "^3.5.3",
+    "webpack-dev-server": "^2.7.1"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --inline --hot"
   },
   "dependencies": {
     "react": "^15.6.1",
