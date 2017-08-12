@@ -2,6 +2,7 @@
   "name": "react-popover-typescript",
   "version": "0.1",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "author": "Alex Katz",
   "description": "A simple and highly customizable popover react HOC with no other dependencies! Typescript friendly. (inspired by react-popover)",
@@ -11,6 +12,7 @@
   },
   "devDependencies": {
     "@types/react": "^16.0.2",
+    "@types/react-dom": "^15.5.2",
     "awesome-typescript-loader": "^3.2.2",
     "source-map-loader": "^0.2.1",
     "tslint": "^5.6.0",
@@ -19,6 +21,7 @@
     "webpack": "^3.5.3"
   },
   "dependencies": {
-    "react": "^15.6.1"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   }
 }

@@ -6,6 +6,7 @@
   "devDependencies": {
     "@types/react": "^16.0.2",
     "@types/react-dom": "^15.5.2",
+    "@types/react-virtualized": "^9.7.3",
     "awesome-typescript-loader": "^3.2.2",
     "source-map-loader": "^0.2.1",
     "tslint": "^5.6.0",
@@ -19,6 +20,7 @@
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-popover-typescript": "file:./../"
+    "react-popover-typescript": "file:./../",
+    "react-virtualized": "^9.9.0"
   }
 }
