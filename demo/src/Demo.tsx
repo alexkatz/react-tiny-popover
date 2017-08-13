@@ -61,7 +61,7 @@ class Demo extends React.Component<{}, DemoState> {
 
     public render() {
         const { targetX, targetY, isTargetActive, isPopoverOpen, positionIndex, isToggleActive } = this.state;
-        const positions: Position[] = ['top', 'right', 'bottom', 'left'];
+        const positions: Position[] = ['bottom', 'right', 'top', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
         return (
             <AutoSizer>

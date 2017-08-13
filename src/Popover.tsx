@@ -14,11 +14,13 @@ const DEFAULT_PADDING = 10;
 
 interface PopoverProps {
     children: JSX.Element;
-    isOpen: boolean;
     content: JSX.Element;
+    isOpen: boolean;
     padding?: number;
-    position?: Position;
+    position?: Position | Position[];
     arrow?: boolean;
+
+    hover?: boolean; // interesting feature...
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -26,24 +28,26 @@ class Popover extends React.Component<PopoverProps, {}> {
     private currentTargetBoundingRect: ClientRect = null;
     private targetPositionIntervalHandler: number = null;
     private container: HTMLDivElement = null;
-    private position: Position = null;
+    private positionPriorityOrder: Position[] = null;
 
     public static defaultProps: Partial<PopoverProps> = {
         padding: DEFAULT_PADDING,
-        position: Position.Top,
+        position: [Position.Top, Position.Right, Position.Left, Position.Bottom],
         arrow: true,
     };
 
     public componentDidMount() {
         if (window) {
             this.target = findDOMNode(this);
+            this.positionPriorityOrder = this.getPositionPriorityOrder(this.props.position);
         }
     }
 
     public componentDidUpdate(prevProps: PopoverProps) {
-        const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
-        const { isOpen, content, position } = this.props;
         if (window) {
+            const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
+            const { isOpen, content, position } = this.props;
+            this.positionPriorityOrder = this.getPositionPriorityOrder(this.props.position);
             if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
                 if (isOpen) {
                     this.showPopover();
@@ -75,16 +79,31 @@ class Popover extends React.Component<PopoverProps, {}> {
         });
     }
 
-    private onResize = (e: any) => {
-        this.updateContainerPosition(this.currentTargetBoundingRect);
-    }
-
     private hidePopover() {
         if (this.container) {
             this.container.remove();
             this.container = null;
             this.stopPollingForTargetPositionChange();
             window.removeEventListener('resize', this.onResize);
+        }
+    }
+
+    private onResize = (e: any) => {
+        this.updateContainerPosition(this.currentTargetBoundingRect);
+    }
+
+    private getPositionPriorityOrder(position: Position | Position[]): Position[] {
+        const defaultPositions = [Position.Top, Position.Right, Position.Left, Position.Bottom];
+        if (position && typeof position !== 'string') {
+            if (defaultPositions.every(defaultPosition => position.find(p => p === defaultPosition) !== undefined)) {
+                return Array.from(new Set(position));
+            } else {
+                const remainingPositions = defaultPositions.filter(defaultPosition => position.find(p => p === defaultPosition) === undefined);
+                return Array.from(new Set([...position, ...remainingPositions]));
+            }
+        } else if (position && typeof position === 'string') {
+            const remainingPositions = defaultPositions.filter(defaultPosition => defaultPosition !== position);
+            return Array.from(new Set([position, ...remainingPositions]));
         }
     }
 
@@ -126,46 +145,65 @@ class Popover extends React.Component<PopoverProps, {}> {
     private updateContainerPosition(newTargetBoundingRect: ClientRect) {
         const { position } = this.props;
         const containerBoundingRect = this.container.getBoundingClientRect();
-        let { top, left } = this.getTopLeftForPosition(position, newTargetBoundingRect, containerBoundingRect);
+        let { top, left } = this.getTopLeftForPosition(this.positionPriorityOrder[0], newTargetBoundingRect, containerBoundingRect);
         ({ top, left } = this.handleBoundaryConditions(top, left, newTargetBoundingRect, containerBoundingRect));
         this.setContainerPosition(top, left);
     }
 
     private handleBoundaryConditions(top: number, left: number, newTargetBoundingRect: ClientRect, containerBoundingRect: ClientRect): { top: number, left: number } {
-        const { position, padding } = this.props;
-        if (top < padding) { // top violation
-            if (position === Position.Top) { // need to change position
-                ({ top, left } = this.getTopLeftForPosition(Position.Left, newTargetBoundingRect, containerBoundingRect));
-                if (left < padding) { // left violation, need to change position again
-                    ({ top, left } = this.getTopLeftForPosition(Position.Right, newTargetBoundingRect, containerBoundingRect));
-                    if (top < padding) {
-                        top = padding;
-                    }
-                } else if (top < padding) {
-                    top = padding;
+        const { padding } = this.props;
+        let { position: currentPosition } = this.props;
+        const availablePositions = {
+            [Position.Top]: true,
+            [Position.Bottom]: true,
+            [Position.Left]: true,
+            [Position.Right]: true,
+        };
+
+        const getNewPosition: (position: Position) => { top: number, left: number, currentPosition: Position } = currentPosition =>
+            ({ ...this.getTopLeftForPosition(currentPosition, newTargetBoundingRect, containerBoundingRect), currentPosition });
+
+        const reposition = () => {
+            const [newPosition] = this.positionPriorityOrder.filter(p => availablePositions[p]);
+            ({ top, left, currentPosition } = getNewPosition(newPosition));
+        };
+
+        ({ top, left } = getNewPosition(this.positionPriorityOrder[0]));
+        let resolved = false;
+        while (!resolved) {
+            if (top < padding) { // top violation
+                if (currentPosition === Position.Top) {
+                    delete availablePositions[Position.Top];
+                    reposition();
+                    continue;
                 }
-            } else if (position === Position.Right) { // only need readjustment unless there's a right violation
                 top = padding;
-                const { left: potentialLeft } = this.getTopLeftForPosition(Position.Right, newTargetBoundingRect, containerBoundingRect);
-                if (potentialLeft + containerBoundingRect.width > window.innerWidth - padding) {
-                    ({ left } = this.getTopLeftForPosition(Position.Left, newTargetBoundingRect, containerBoundingRect));
-                }
             }
-        } else if (left + containerBoundingRect.width > window.innerWidth - padding) { // right violation
-            if (position === Position.Right) { // need to change position
-                ({ top, left } = this.getTopLeftForPosition(Position.Top, newTargetBoundingRect, containerBoundingRect));
-                if (top < padding) { // top violation, need to change position again
-                    ({ top, left } = this.getTopLeftForPosition(Position.Left, newTargetBoundingRect, containerBoundingRect));
-                    if (top < padding) {
-                        top = padding;
-                    }
-                } else if (left + containerBoundingRect.width > window.innerWidth - padding) { // simple readjust
-                    left = window.innerWidth - padding - containerBoundingRect.width;
-                } else {
+            if (left < padding) { // left violation
+                if (currentPosition === Position.Left) {
+                    delete availablePositions[Position.Left];
+                    reposition();
+                    continue;
                 }
-            } else {
+                left = padding;
+            }
+            if (left + containerBoundingRect.width > window.innerWidth - padding) { // right violation
+                if (currentPosition === Position.Right) {
+                    delete availablePositions[Position.Right];
+                    reposition();
+                    continue;
+                }
                 left = window.innerWidth - padding - containerBoundingRect.width;
             }
+            if (top + containerBoundingRect.height > window.innerHeight - padding) { // bottom violation
+                if (currentPosition === Position.Bottom) {
+                    delete availablePositions[Position.Bottom];
+                    reposition();
+                    continue;
+                }
+                top = window.innerHeight - padding - containerBoundingRect.height;
+            }
+            resolved = true;
         }
 
         return {
