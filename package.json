@@ -1,5 +1,5 @@
 {
-  "name": "react-popover-typescript",
+  "name": "another-react-popover",
   "version": "0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
