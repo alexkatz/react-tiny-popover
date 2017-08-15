@@ -33,16 +33,6 @@ interface DemoState {
     positionIndex: number;
 }
 
-const SomeFunctionalComponent = () => (
-    <div
-        style={{
-            backgroundColor: 'orange',
-        }}
-    >
-        hey lololol
-    </div>
-);
-
 class Demo extends React.Component<{}, DemoState> {
     constructor() {
         super();
