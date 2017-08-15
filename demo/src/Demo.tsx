@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Popover, { Position } from 'react-popover-typescript';
+import Popover, { Position, ArrowContainer } from 'react-popover-typescript';
 import { AutoSizer } from 'react-virtualized';
 
 const TARGET_COLOR = 'rgba(20, 40, 80, 0.3)';
@@ -61,7 +61,7 @@ class Demo extends React.Component<{}, DemoState> {
 
     public render() {
         const { targetX, targetY, isTargetActive, isPopoverOpen, positionIndex, isToggleActive } = this.state;
-        const positions: Position[] = ['bottom', 'right', 'top', 'left'];
+        const positions: Position[] = ['top', 'right', 'bottom', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
         return (
             <AutoSizer>
@@ -73,23 +73,38 @@ class Demo extends React.Component<{}, DemoState> {
                             height,
                         }}
                         onMouseMove={this.onMouseMove}
-                    // onClick={() => this.setState({ position: position === 'bottom' ? 'top' : 'bottom' })}
                     >
                         <Popover
                             isOpen={isPopoverOpen}
-                            content={(
-                                <div
+                            content={({ position }) => (
+                                <ArrowContainer
                                     style={{
-                                        padding: 15,
-                                        backgroundColor: TARGET_OPEN_COLOR,
-                                        opacity: 0.7,
-                                        height: 200,
-                                        ...FONT,
-                                        ...NO_SELECT,
+                                        filter: 'drop-shadow(0 4px 10px rgba(0,0,0,.3))',
                                     }}
+                                    position={position}
+                                    arrowColor={TARGET_OPEN_COLOR}
+                                    arrowStyle={{ opacity: 0.7 }}
                                 >
-                                    DUDE I'M A POPOVER
-                                </div>
+                                    <div
+                                        style={{
+                                            paddingLeft: 80,
+                                            paddingRight: 80,
+                                            paddingTop: 30,
+                                            paddingBottom: 30,
+                                            backgroundColor: TARGET_OPEN_COLOR,
+                                            opacity: 0.7,
+                                            // width: 150,
+                                            // height: 100,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            ...FONT,
+                                            ...NO_SELECT,
+                                        }}
+                                    >
+                                        Position: {position}
+                                    </div>
+                                </ArrowContainer>
                             )}
                             position={currentPosition}
                         >

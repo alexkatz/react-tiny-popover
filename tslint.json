@@ -17,7 +17,6 @@
       "max-line-length": [false],
       "no-console": [false],
       "jsx-no-multiline-js": false,
-      "no-default-export": true,
       "no-trailing-whitespace": false,
       "interface-name": [false, "never-prefix"],
       "object-literal-key-quotes": [false],

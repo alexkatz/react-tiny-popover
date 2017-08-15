@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "license": "MIT",
   "author": "Alex Katz",
-  "description": "A simple and highly customizable popover react HOC with no other dependencies! Typescript friendly. (inspired by react-popover)",
+  "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",
   "scripts": {
     "watch": "webpack --watch",
     "start-demo": "cd demo && yarn start"
