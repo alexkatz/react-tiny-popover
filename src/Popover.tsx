@@ -9,9 +9,6 @@ interface PopoverProps {
     isOpen: boolean;
     padding?: number;
     position?: Position | Position[];
-    arrow?: boolean;
-
-    hover?: boolean; // interesting feature...
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -24,7 +21,6 @@ class Popover extends React.Component<PopoverProps, {}> {
     public static defaultProps: Partial<PopoverProps> = {
         padding: Constants.DEFAULT_PADDING,
         position: [Position.Top, Position.Right, Position.Left, Position.Bottom],
-        arrow: true,
     };
 
     public componentDidMount() {
