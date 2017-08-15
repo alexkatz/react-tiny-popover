@@ -69,7 +69,7 @@ class Demo extends React.Component<{}, DemoState> {
                             content={({ position }) => (
                                 <ArrowContainer
                                     style={{
-                                        filter: 'drop-shadow(0 4px 10px rgba(0,0,0,.3))',
+                                        // filter: 'drop-shadow(0 4px 10px rgba(0,0,0,.3))',
                                     }}
                                     position={position}
                                     arrowColor={TARGET_OPEN_COLOR}
