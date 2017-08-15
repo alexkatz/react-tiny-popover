@@ -1,4 +1,5 @@
 demo/
+docs/
 node_modules/
 src/
 .gitignore
