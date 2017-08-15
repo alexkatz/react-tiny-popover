@@ -1,5 +1,5 @@
 # react-tiny-popover
-A lightweight, non-intrusive, and highly customizable popover react higher order component with no other dependencies! Typescript friendly.
+A lightweight, non-intrusive, and highly customizable popover react HOC with no other dependencies! Typescript friendly.
 
 ## [Demo](https://alexkatz.github.io/react-popover/)
 :+1:
@@ -67,11 +67,19 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 ```
 ## API
 ### Popover
-| <b>prop<b> | type | required |                               
-|------------|------|----------|
-| children | ```JSX.Element``` | ✔️ |
-| isOpen | ```boolean``` | ✔️ |
-| content | ```JSX.Element``` or ```Function``` | ✔️ |
-| padding | ```number``` | |
-| position | ```string``` or ```string[]``` | |
-| 
+|<b>Property<b>|Type|Required|Description|                              
+|----------|----|--------|-----------|
+|children|```JSX.Element```|✔️||
+| isOpen |```boolean```|✔️||
+| content |```JSX.Element``` or ```Function``` |✔️||
+| padding|```number``` |||
+| position|```string``` or ```string[]``` |||
+### ArrowContainer
+| <b>prop<b>|type|required|Description|                               
+|-----------|----|--------|-----------|
+|position|```string```|✔️||
+|children|```JSX.Element```|✔️||
+|arrowSize|```number```|||
+|arrowColor|```string```|||
+|arrowStyle|```object```|||
+|style|```object```|||
