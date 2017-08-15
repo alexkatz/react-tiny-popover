@@ -7,7 +7,7 @@ The component itself provides no style, and does not wrap your child component w
 
 Optionally, you can provide a renderer function for your popover content that injects the popover's current position, in case your content needs to know where it sits in relation to its target.
 
-## [Demo](https://alexkatz.github.io/react-popover/)
+## [Demo](https://alexkatz.github.io/react-tiny-popover/)
 :+1:
 ## Examples
 
