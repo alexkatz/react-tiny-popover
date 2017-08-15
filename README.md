@@ -9,6 +9,18 @@ Optionally, you can provide a renderer function for your popover content that in
 
 Since ```react-tiny-popover``` tries to be as non-invasive as possible, it will simply render the content you provide with the position and padding from the target that you provide. If you'd like an arrow pointing to the target to appear along with your content and don't feel like building it yourself, you may be interested in wrapping your content with the customizable ```ArrowContainer``` component, also provided!
 
+## Install
+
+```shell
+yarn add react-tiny-popover
+``` 
+
+or
+
+```shell
+npm install react-tiny-popover --save
+```
+
 ## [Demo](https://alexkatz.github.io/react-tiny-popover/)
 :+1:
 ## Examples
