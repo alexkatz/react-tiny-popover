@@ -39213,7 +39213,7 @@ var Demo = (function (_super) {
                     height: height,
                     backgroundColor: BACKGROUND_COLOR,
                 }, onMouseMove: _this.onMouseMove },
-                React.createElement(react_popover_typescript_1.default, { isOpen: isPopoverOpen, content: function (_a) {
+                React.createElement(react_popover_typescript_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, content: function (_a) {
                         var position = _a.position;
                         return (React.createElement(react_popover_typescript_1.ArrowContainer, { style: {}, position: position, arrowColor: TARGET_OPEN_COLOR, arrowStyle: { opacity: 0.7 } },
                             React.createElement("div", { style: __assign({ paddingLeft: 130, paddingRight: 130, paddingTop: 50, paddingBottom: 50, backgroundColor: TARGET_OPEN_COLOR, opacity: 0.7, 
@@ -39327,6 +39327,7 @@ var Position;
 exports.Constants = {
     POPOVER_CLASS_NAME: 'another-react-popover-container',
     DEFAULT_PADDING: 6,
+    FADE_TRANSITION_MS: 300,
 };
 
 
@@ -39371,6 +39372,12 @@ var Popover = (function (_super) {
         _this.onResize = function (e) {
             _this.renderPopover();
         };
+        _this.onClick = function (e) {
+            var _a = _this.props, onClickOutside = _a.onClickOutside, isOpen = _a.isOpen;
+            if (!_this.popoverDiv.contains(e.target) && !_this.target.contains(e.target) && onClickOutside && isOpen) {
+                onClickOutside(e);
+            }
+        };
         return _this;
     }
     Popover.prototype.componentDidMount = function () {
@@ -39386,15 +39393,18 @@ var Popover = (function (_super) {
             this.positionOrder = this.getPositionPriorityOrder(this.props.position);
             if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
                 if (isOpen) {
-                    if (!this.popoverDiv) {
-                        window.addEventListener('resize', this.onResize);
-                        this.popoverDiv = this.createNonVisibleContainer();
+                    if (!this.popoverDiv || !this.popoverDiv.parentNode) {
+                        this.popoverDiv = this.createContainer();
+                        this.popoverDiv.style.opacity = '0';
+                        this.popoverDiv.style.transition = "opacity " + util_1.Constants.FADE_TRANSITION_MS / 1000 + "s";
                         window.document.body.appendChild(this.popoverDiv);
+                        window.addEventListener('resize', this.onResize);
+                        window.addEventListener('click', this.onClick);
                     }
                     this.renderPopover();
                 }
                 else {
-                    this.hidePopover();
+                    this.removePopover();
                 }
             }
         }
@@ -39406,7 +39416,7 @@ var Popover = (function (_super) {
         var _this = this;
         if (positionIndex === void 0) { positionIndex = 0; }
         if (positionIndex >= this.positionOrder.length) {
-            this.hidePopover();
+            this.removePopover();
             return;
         }
         this.renderWithPosition(this.positionOrder[positionIndex], function (violation, rect) {
@@ -39417,7 +39427,9 @@ var Popover = (function (_super) {
                 var _a = _this.getNudgedPopoverPosition(rect), top_1 = _a.top, left = _a.left;
                 _this.popoverDiv.style.left = left.toFixed() + "px";
                 _this.popoverDiv.style.top = top_1.toFixed() + "px";
-                _this.popoverDiv.style.visibility = 'visible';
+                if (_this.popoverDiv.style.opacity !== '1') {
+                    _this.popoverDiv.style.opacity = '1';
+                }
                 _this.startTargetPositionListener(10);
             }
         });
@@ -39462,13 +39474,19 @@ var Popover = (function (_super) {
         left = left + width > window.innerWidth - padding ? window.innerWidth - padding - width : left;
         return { top: top, left: left };
     };
-    Popover.prototype.hidePopover = function () {
+    Popover.prototype.removePopover = function () {
+        var _this = this;
         if (this.popoverDiv) {
-            window.clearInterval(this.targetPositionIntervalHandler);
-            window.removeEventListener('resize', this.onResize);
-            this.targetPositionIntervalHandler = null;
-            this.popoverDiv.remove();
-            this.popoverDiv = null;
+            this.popoverDiv.style.opacity = '0';
+            window.setTimeout(function () {
+                if (!_this.props.isOpen || !_this.popoverDiv.parentNode) {
+                    window.clearInterval(_this.targetPositionIntervalHandler);
+                    window.removeEventListener('resize', _this.onResize);
+                    window.removeEventListener('click', _this.onClick);
+                    _this.targetPositionIntervalHandler = null;
+                    _this.popoverDiv.remove();
+                }
+            }, util_1.Constants.FADE_TRANSITION_MS);
         }
     };
     Popover.prototype.getPositionPriorityOrder = function (position) {
@@ -39487,13 +39505,12 @@ var Popover = (function (_super) {
             return Array.from(new Set([position].concat(remainingPositions)));
         }
     };
-    Popover.prototype.createNonVisibleContainer = function () {
+    Popover.prototype.createContainer = function () {
         var container = window.document.createElement('div');
         container.className = util_1.Constants.POPOVER_CLASS_NAME;
         container.style.position = 'absolute';
         container.style.top = '0';
         container.style.left = '0';
-        container.style.visibility = 'hidden';
         return container;
     };
     Popover.prototype.getLocationForPosition = function (position, newTargetRect, popoverRect) {
