@@ -9,7 +9,7 @@ interface PopoverProps {
     isOpen: boolean;
     padding?: number;
     position?: Position | Position[];
-    onClickOutside?: () => void;
+    onClickOutside?: (e: MouseEvent) => void;
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -144,7 +144,7 @@ class Popover extends React.Component<PopoverProps, {}> {
     private onClick = (e: MouseEvent) => {
         const { onClickOutside, isOpen } = this.props;
         if (!this.popoverDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
-            onClickOutside();
+            onClickOutside(e);
         }
     }
 
