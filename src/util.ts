@@ -19,4 +19,5 @@ export type ContentRenderer = (args: ContentRendererArgs) => JSX.Element;
 export const Constants = {
     POPOVER_CLASS_NAME: 'another-react-popover-container',
     DEFAULT_PADDING: 6,
+    FADE_TRANSITION_MS: 300,
 };

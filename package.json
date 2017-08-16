@@ -1,6 +1,10 @@
 {
   "name": "react-tiny-popover",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexkatz/react-tiny-popover.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",

@@ -9,6 +9,7 @@ interface PopoverProps {
     isOpen: boolean;
     padding?: number;
     position?: Position | Position[];
+    // TODO: onClickOutside callback
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -37,9 +38,11 @@ class Popover extends React.Component<PopoverProps, {}> {
             this.positionOrder = this.getPositionPriorityOrder(this.props.position);
             if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
                 if (isOpen) {
-                    if (!this.popoverDiv) {
+                    if (!this.popoverDiv || !this.popoverDiv.parentNode) {
                         window.addEventListener('resize', this.onResize);
-                        this.popoverDiv = this.createNonVisibleContainer();
+                        this.popoverDiv = this.createContainer();
+                        this.popoverDiv.style.opacity = '0';
+                        this.popoverDiv.style.transition = `opacity ${Constants.FADE_TRANSITION_MS / 1000}s`;
                         window.document.body.appendChild(this.popoverDiv);
                     }
                     this.renderPopover();
@@ -67,7 +70,9 @@ class Popover extends React.Component<PopoverProps, {}> {
                 const { top, left } = this.getNudgedPopoverPosition(rect);
                 this.popoverDiv.style.left = `${left.toFixed()}px`;
                 this.popoverDiv.style.top = `${top.toFixed()}px`;
-                this.popoverDiv.style.visibility = 'visible';
+                if (this.popoverDiv.style.opacity !== '1') {
+                    this.popoverDiv.style.opacity = '1';
+                }
                 this.startTargetPositionListener(10);
             }
         });
@@ -92,7 +97,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 ? content({ position })
                 : content;
 
-        render(getContent({ position }), this.popoverDiv, () => {
+        render(getContent({ position }), this.popoverDiv, () => { // TODO: pass nudge top left offset so we can keep the arrow centered on the target, potentially
             const targetRect = this.target.getBoundingClientRect();
             const popoverRect = this.popoverDiv.getBoundingClientRect();
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
@@ -117,11 +122,16 @@ class Popover extends React.Component<PopoverProps, {}> {
 
     private hidePopover() {
         if (this.popoverDiv) {
-            window.clearInterval(this.targetPositionIntervalHandler);
-            window.removeEventListener('resize', this.onResize);
-            this.targetPositionIntervalHandler = null;
-            this.popoverDiv.remove();
-            this.popoverDiv = null;
+            this.popoverDiv.style.opacity = '0';
+            window.setTimeout(() => {
+                if (!this.props.isOpen || !this.popoverDiv.parentNode) {
+                    window.clearInterval(this.targetPositionIntervalHandler);
+                    window.removeEventListener('resize', this.onResize);
+                    this.targetPositionIntervalHandler = null;
+                    this.popoverDiv.remove();
+                }
+            }, Constants.FADE_TRANSITION_MS);
+
         }
     }
 
@@ -144,14 +154,13 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
     }
 
-    private createNonVisibleContainer(): HTMLDivElement {
+    private createContainer(): HTMLDivElement {
         const container = window.document.createElement('div');
 
         container.className = Constants.POPOVER_CLASS_NAME;
         container.style.position = 'absolute';
         container.style.top = '0';
         container.style.left = '0';
-        container.style.visibility = 'hidden';
 
         return container;
     }
