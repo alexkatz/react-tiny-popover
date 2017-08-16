@@ -32,13 +32,14 @@ import Popover from 'react-tiny-popover'
     isOpen={isPopoverOpen}
     position={'top'} // preferred position
     padding={10} // padding between target div and appearing popover div
+    onClickOutside={() => this.setState({ isPopoverOpen: false })} // handle click events outside of the popover/target here!
     content={(
         <div>
             Hi! I'm popover content.
         </div>
     )}
 >
-    <div>
+    <div onClick={() => this.setState({ isPopoverOpen: !isPopoverOpen })}>
         Click me!
     </div>
 </Popover>
@@ -49,6 +50,8 @@ import Popover from 'react-tiny-popover'
 <Popover
     isOpen={isPopoverOpen}
     position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
+    padding={10}
+    onClickOutside={() => this.setState({ isPopoverOpen: false })}
     // you can also provide a render function that injects the current popover position
     content={({ position }) => ( // position: 'left' | 'right' | 'top' | 'bottom'
         <div>
@@ -56,7 +59,7 @@ import Popover from 'react-tiny-popover'
         </div>
     )}
 >
-    <div>
+    <div onClick={() => this.setState({ isPopoverOpen: !isPopoverOpen })}>
         Click me!
     </div>
 </Popover>
@@ -67,6 +70,8 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 <Popover
     isOpen={isPopoverOpen}
     position={['top', 'right', 'left', 'bottom']}
+    padding={10}
+    onClickOutside={() => this.setState({ isPopoverOpen: false })}
     content={({ position }) => (
         <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
             arrowColor={'blue'}
@@ -74,7 +79,10 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
             position={position}
             arrowStyle={{ ... }}
         >
-            <div style={{ backgroundColor: 'blue' }}>
+            <div 
+                style={{ backgroundColor: 'blue' }}
+                onClick={() => this.setState({ isPopoverOpen: !isPopoverOpen })}
+            >
                 Hi! I'm popover content. Here's my position: {position}.
             </div>
         </ArrowContainer>
@@ -94,6 +102,8 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 | content |```JSX.Element``` or ```Function``` |✔️|Here, you'll provide the content that will appear as the popover. Rather than a JSX element like a ```<div>```, you may supply a function that returns a JSX.Element, which will look something like this: ```({ position }) => JSX.Element```. Here, ```position``` is of type ```'top' \| 'bottom' \| 'left' \| 'right'```. You may want to use this value to adjust your content depending on its location in relation to its target. Sweet.|
 | padding|```number``` ||This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.|
 | position|```string``` or ```string[]``` ||You may provide a preferred position for your popover content in relation to its target. Valid values are ```'top' \| 'bottom' \| 'left' \| 'right'```. The default is ```'top'```. If you'd like, you can supply an array of preferred positions ranked in priority order. If the popover reaches the edge of the window, it will attempt to render in the order you specify. The default order is ```['top', 'right', 'left', 'bottom']```. If you'd like, you can provide a shorter array like ```['top', 'left']```. The remaining two positions will be automatically filled in. If you provide any other values in the array, they will be ignored. Ch'yeah.|
+|onClickOutside|```Function```||If ```react-tiny-popover``` detects a click event outside of the target and outside of the popover, you may handle this event here, in the form of ```(e: MouseEvent) => void```.
+
 ### ArrowContainer
 |<b>Property<b>|Type|Required|Description|                                  
 |-----------|----|--------|-----------|
