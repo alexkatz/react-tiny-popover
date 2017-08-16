@@ -17,9 +17,10 @@ const NO_SELECT = {
     WebkitUserSelect: 'none',
     WebkitTouchCallout: 'none',
 };
-const FONT = {
+const FONT: React.CSSProperties = {
     color: 'white',
     fontFamily: 'sans-serif',
+    fontWeight: 100,
 };
 
 interface DemoState {
@@ -104,19 +105,26 @@ class Demo extends React.Component<{}, DemoState> {
                                 style={{
                                     width: TARGET_SIZE,
                                     height: TARGET_SIZE,
+                                    display: 'flex',
+                                    ...NO_SELECT,
+                                    ...FONT,
+                                    paddingTop: 10,
+                                    cursor: 'default',
+                                    alignContent: 'center',
+                                    justifyContent: 'center',
                                     boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
                                     opacity: isTargetActive ? 0.9 : 0.7,
                                     backgroundColor: isPopoverOpen
                                         ? TARGET_OPEN_COLOR
                                         : TARGET_COLOR,
                                     position: 'absolute',
-                                    cursor: 'move',
                                     left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2),
                                     top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2),
                                 }}
                                 onMouseDown={this.onTargetMouseDown}
                                 onMouseUp={this.onTargetMouseUp}
                             >
+                                move me!
                                 <div
                                     style={{
                                         position: 'absolute',
@@ -126,8 +134,6 @@ class Demo extends React.Component<{}, DemoState> {
                                         right: 0,
                                         opacity: isToggleActive ? 1 : 0.8,
                                         pointerEvents: 'none',
-                                        color: 'white',
-                                        fontFamily: 'sans-serif',
                                         backgroundColor: TOGGLE_BUTTON_COLOR,
                                         display: 'flex',
                                         alignItems: 'center',

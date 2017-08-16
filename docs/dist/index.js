@@ -39137,6 +39137,7 @@ var NO_SELECT = {
 var FONT = {
     color: 'white',
     fontFamily: 'sans-serif',
+    fontWeight: 100,
 };
 var Demo = (function (_super) {
     __extends(Demo, _super);
@@ -39222,20 +39223,11 @@ var Demo = (function (_super) {
                                 "Position: ",
                                 position)));
                     }, position: currentPosition },
-                    React.createElement("div", { style: {
-                            width: TARGET_SIZE,
-                            height: TARGET_SIZE,
-                            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
-                            opacity: isTargetActive ? 0.9 : 0.7,
-                            backgroundColor: isPopoverOpen
+                    React.createElement("div", { style: __assign({ width: TARGET_SIZE, height: TARGET_SIZE, display: 'flex' }, NO_SELECT, FONT, { paddingTop: 10, cursor: 'default', alignContent: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px', opacity: isTargetActive ? 0.9 : 0.7, backgroundColor: isPopoverOpen
                                 ? TARGET_OPEN_COLOR
-                                : TARGET_COLOR,
-                            position: 'absolute',
-                            cursor: 'move',
-                            left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2),
-                            top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2),
-                        }, onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
-                        React.createElement("div", { style: __assign({ position: 'absolute', width: TOGGLE_BUTTON_WIDTH, height: TOGGLE_BUTTON_WIDTH, bottom: 0, right: 0, opacity: isToggleActive ? 1 : 0.8, pointerEvents: 'none', color: 'white', fontFamily: 'sans-serif', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, FONT, NO_SELECT) }, currentPosition)))));
+                                : TARGET_COLOR, position: 'absolute', left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2), top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2) }), onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
+                        "move me!",
+                        React.createElement("div", { style: __assign({ position: 'absolute', width: TOGGLE_BUTTON_WIDTH, height: TOGGLE_BUTTON_WIDTH, bottom: 0, right: 0, opacity: isToggleActive ? 1 : 0.8, pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, FONT, NO_SELECT) }, currentPosition)))));
         }));
     };
     return Demo;
