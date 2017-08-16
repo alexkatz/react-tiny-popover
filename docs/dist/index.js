@@ -39120,8 +39120,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(10);
 var react_popover_typescript_1 = __webpack_require__(350);
 var react_virtualized_1 = __webpack_require__(453);
-var TARGET_COLOR = 'rgba(20, 40, 80, 0.3)';
-var TARGET_OPEN_COLOR = 'rgba(20, 40, 80, 0.6)';
+var BACKGROUND_COLOR = 'rgba(40, 200, 80, 0.4)';
+var TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
+var TARGET_OPEN_COLOR = 'rgba(30, 90, 250, 0.6)';
 var TOGGLE_BUTTON_COLOR = 'rgba(30, 50, 90, 0.3)';
 var TARGET_SIZE = 150;
 var TOGGLE_BUTTON_WIDTH = 60;
@@ -39209,13 +39210,12 @@ var Demo = (function (_super) {
                     position: 'relative',
                     width: width,
                     height: height,
+                    backgroundColor: BACKGROUND_COLOR,
                 }, onMouseMove: _this.onMouseMove },
                 React.createElement(react_popover_typescript_1.default, { isOpen: isPopoverOpen, content: function (_a) {
                         var position = _a.position;
-                        return (React.createElement(react_popover_typescript_1.ArrowContainer, { style: {
-                                filter: 'drop-shadow(0 4px 10px rgba(0,0,0,.3))',
-                            }, position: position, arrowColor: TARGET_OPEN_COLOR, arrowStyle: { opacity: 0.7 } },
-                            React.createElement("div", { style: __assign({ paddingLeft: 80, paddingRight: 80, paddingTop: 30, paddingBottom: 30, backgroundColor: TARGET_OPEN_COLOR, opacity: 0.7, 
+                        return (React.createElement(react_popover_typescript_1.ArrowContainer, { style: {}, position: position, arrowColor: TARGET_OPEN_COLOR, arrowStyle: { opacity: 0.7 } },
+                            React.createElement("div", { style: __assign({ paddingLeft: 130, paddingRight: 130, paddingTop: 50, paddingBottom: 50, backgroundColor: TARGET_OPEN_COLOR, opacity: 0.7, 
                                     // width: 150,
                                     // height: 100,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center' }, FONT, NO_SELECT) },
@@ -39539,7 +39539,6 @@ var Popover = (function (_super) {
     Popover.defaultProps = {
         padding: util_1.Constants.DEFAULT_PADDING,
         position: [util_1.Position.Top, util_1.Position.Right, util_1.Position.Left, util_1.Position.Bottom],
-        arrow: true,
     };
     return Popover;
 }(React.Component));
