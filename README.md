@@ -95,7 +95,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 | padding|```number``` ||This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.|
 | position|```string``` or ```string[]``` ||You may provide a preferred position for your popover content in relation to its target. Valid values are ```'top' \| 'bottom' \| 'left' \| 'right'```. The default is ```'top'```. If you'd like, you can supply an array of preferred positions ranked in priority order. If the popover reaches the edge of the window, it will attempt to render in the order you specify. The default order is ```['top', 'right', 'left', 'bottom']```. If you'd like, you can provide a shorter array like ```['top', 'left']```. The remaining two positions will be automatically filled in. If you provide any other values in the array, they will be ignored. Ch'yeah.|
 ### ArrowContainer
-| <b>prop<b>|type|required|Description|                               
+|<b>Property<b>|Type|Required|Description|                                  
 |-----------|----|--------|-----------|
 |position|```string```|✔️|The ```ArrowContainer``` needs to know its own position in relation to the target, so it can point in the correct direction!|
 |children|```JSX.Element```|✔️|You'll provide the ```ArrowContainer``` with a JSX.Element child to render as your popover content.|
