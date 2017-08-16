@@ -69,6 +69,7 @@ class Demo extends React.Component<{}, DemoState> {
                     >
                         <Popover
                             isOpen={isPopoverOpen}
+                            onClickOutside={() => this.setState({ isPopoverOpen: false })}
                             content={({ position }) => (
                                 <ArrowContainer
                                     style={{

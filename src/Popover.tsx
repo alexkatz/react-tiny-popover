@@ -9,7 +9,7 @@ interface PopoverProps {
     isOpen: boolean;
     padding?: number;
     position?: Position | Position[];
-    // TODO: onClickOutside callback
+    onClickOutside?: () => void;
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -39,15 +39,16 @@ class Popover extends React.Component<PopoverProps, {}> {
             if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
                 if (isOpen) {
                     if (!this.popoverDiv || !this.popoverDiv.parentNode) {
-                        window.addEventListener('resize', this.onResize);
                         this.popoverDiv = this.createContainer();
                         this.popoverDiv.style.opacity = '0';
                         this.popoverDiv.style.transition = `opacity ${Constants.FADE_TRANSITION_MS / 1000}s`;
                         window.document.body.appendChild(this.popoverDiv);
+                        window.addEventListener('resize', this.onResize);
+                        window.addEventListener('click', this.onClick);
                     }
                     this.renderPopover();
                 } else {
-                    this.hidePopover();
+                    this.removePopover();
                 }
             }
         }
@@ -59,7 +60,7 @@ class Popover extends React.Component<PopoverProps, {}> {
 
     private renderPopover(positionIndex: number = 0) {
         if (positionIndex >= this.positionOrder.length) {
-            this.hidePopover();
+            this.removePopover();
             return;
         }
 
@@ -120,13 +121,14 @@ class Popover extends React.Component<PopoverProps, {}> {
         return { top, left };
     }
 
-    private hidePopover() {
+    private removePopover() {
         if (this.popoverDiv) {
             this.popoverDiv.style.opacity = '0';
             window.setTimeout(() => {
                 if (!this.props.isOpen || !this.popoverDiv.parentNode) {
                     window.clearInterval(this.targetPositionIntervalHandler);
                     window.removeEventListener('resize', this.onResize);
+                    window.removeEventListener('click', this.onClick);
                     this.targetPositionIntervalHandler = null;
                     this.popoverDiv.remove();
                 }
@@ -137,6 +139,13 @@ class Popover extends React.Component<PopoverProps, {}> {
 
     private onResize = (e: any) => {
         this.renderPopover();
+    }
+
+    private onClick = (e: MouseEvent) => {
+        const { onClickOutside, isOpen } = this.props;
+        if (!this.popoverDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
+            onClickOutside();
+        }
     }
 
     private getPositionPriorityOrder(position: Position | Position[]): Position[] {
