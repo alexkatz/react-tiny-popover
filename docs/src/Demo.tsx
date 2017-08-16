@@ -2,8 +2,9 @@ import * as React from 'react';
 import Popover, { Position, ArrowContainer } from 'react-popover-typescript';
 import { AutoSizer } from 'react-virtualized';
 
-const TARGET_COLOR = 'rgba(20, 40, 80, 0.3)';
-const TARGET_OPEN_COLOR = 'rgba(20, 40, 80, 0.6)';
+const BACKGROUND_COLOR = 'rgba(40, 200, 80, 0.4)';
+const TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
+const TARGET_OPEN_COLOR = 'rgba(30, 90, 250, 0.6)';
 const TOGGLE_BUTTON_COLOR = 'rgba(30, 50, 90, 0.3)';
 
 const TARGET_SIZE = 150;
@@ -61,6 +62,7 @@ class Demo extends React.Component<{}, DemoState> {
                             position: 'relative',
                             width,
                             height,
+                            backgroundColor: BACKGROUND_COLOR,
                         }}
                         onMouseMove={this.onMouseMove}
                     >
@@ -77,10 +79,10 @@ class Demo extends React.Component<{}, DemoState> {
                                 >
                                     <div
                                         style={{
-                                            paddingLeft: 80,
-                                            paddingRight: 80,
-                                            paddingTop: 30,
-                                            paddingBottom: 30,
+                                            paddingLeft: 130,
+                                            paddingRight: 130,
+                                            paddingTop: 50,
+                                            paddingBottom: 50,
                                             backgroundColor: TARGET_OPEN_COLOR,
                                             opacity: 0.7,
                                             // width: 150,
