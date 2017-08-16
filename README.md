@@ -48,9 +48,9 @@ import Popover from 'react-tiny-popover'
 
 <Popover
     isOpen={isPopoverOpen}
-    position={['top', 'right', 'left', 'bottom']} // you can also supply an array of positions ordered by priority
+    position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
     // you can also provide a render function that injects the current popover position
-    content={({ position }) => ( // 'left', 'right', 'top', 'bottom'
+    content={({ position }) => ( // position: 'left' | 'right' | 'top' | 'bottom'
         <div>
             Hi! I'm popover content. Here's my position: {position}. 
         </div>
@@ -74,7 +74,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
             position={position}
             arrowStyle={{ ... }}
         >
-            <div>
+            <div style={{ backgroundColor: 'blue' }}>
                 Hi! I'm popover content. Here's my position: {position}.
             </div>
         </ArrowContainer>
@@ -89,17 +89,17 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 ### Popover
 |<b>Property<b>|Type|Required|Description|                              
 |----------|----|--------|-----------|
-|children|```JSX.Element```|✔️||
-| isOpen |```boolean```|✔️||
-| content |```JSX.Element``` or ```Function``` |✔️||
-| padding|```number``` |||
-| position|```string``` or ```string[]``` |||
+|children|```JSX.Element```|✔️|This is the JSX.Element target that you'd like the popover content to track. Sweet. |
+| isOpen |```boolean```|✔️|When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.|
+| content |```JSX.Element``` or ```Function``` |✔️|Here, you'll provide the content that will appear as the popover. Rather than a JSX element like a ```<div>```, you may supply a function that returns a JSX.Element, which will look something like this: ```({ position }) => JSX.Element```. Here, ```position``` is of type ```'top' \| 'bottom' \| 'left' \| 'right'```. You may want to use this value to adjust your content depending on its location in relation to its target. Sweet.|
+| padding|```number``` ||This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.|
+| position|```string``` or ```string[]``` ||You may provide a preferred position for your popover content in relation to its target. Valid values are ```'top' \| 'bottom' \| 'left' \| 'right'```. The default is ```'top'```. If you'd like, you can supply an array of preferred positions ranked in priority order. If the popover reaches the edge of the window, it will attempt to render in the order you specify. The default order is ```['top', 'right', 'left', 'bottom']```. If you'd like, you can provide a shorter array like ```['top', 'left']```. The remaining two positions will be automatically filled in. If you provide any other values in the array, they will be ignored. Ch'yeah.|
 ### ArrowContainer
 | <b>prop<b>|type|required|Description|                               
 |-----------|----|--------|-----------|
-|position|```string```|✔️||
-|children|```JSX.Element```|✔️||
-|arrowSize|```number```|||
-|arrowColor|```string```|||
-|arrowStyle|```object```|||
-|style|```object```|||
+|position|```string```|✔️|The ```ArrowContainer``` needs to know its own position in relation to the target, so it can point in the correct direction!|
+|children|```JSX.Element```|✔️|You'll provide the ```ArrowContainer``` with a JSX.Element child to render as your popover content.|
+|arrowSize|```number```||The size of the triangle arrow. Defaults to 10 or something like that.|
+|arrowColor|```string```||The color of the arrow! Exciting. |
+|arrowStyle|```object```||You may append to the arrow's style here.|
+|style|```object```||If you'd like to append to the style of the ```ArrowContainer``` itself, do so here. Rad.|
