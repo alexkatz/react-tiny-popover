@@ -110,6 +110,7 @@ class Demo extends React.Component<{}, DemoState> {
                                         ? TARGET_OPEN_COLOR
                                         : TARGET_COLOR,
                                     position: 'absolute',
+                                    cursor: 'move',
                                     left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2),
                                     top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2),
                                 }}

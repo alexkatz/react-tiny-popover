@@ -39231,6 +39231,7 @@ var Demo = (function (_super) {
                                 ? TARGET_OPEN_COLOR
                                 : TARGET_COLOR,
                             position: 'absolute',
+                            cursor: 'move',
                             left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2),
                             top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2),
                         }, onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
