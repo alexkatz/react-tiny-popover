@@ -2559,10 +2559,12 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-"react-popover-typescript@file:./../":
-  version "0.1"
+react-tiny-popover@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-1.0.2.tgz#7c0a90e932a93f67e12a28f0a34d60f9ad9e84b7"
   dependencies:
     react "^15.6.1"
+    react-dom "^15.6.1"
 
 react-virtualized@^9.9.0:
   version "9.9.0"

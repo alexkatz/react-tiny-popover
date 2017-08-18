@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Popover, { Position, ArrowContainer } from 'react-popover-typescript';
+import Popover, { Position, ArrowContainer } from 'react-tiny-popover';
 import { AutoSizer } from 'react-virtualized';
 
 const BACKGROUND_COLOR = 'rgba(40, 200, 80, 0.4)';
@@ -71,34 +71,25 @@ class Demo extends React.Component<{}, DemoState> {
                             isOpen={isPopoverOpen}
                             onClickOutside={() => this.setState({ isPopoverOpen: false })}
                             content={({ position }) => (
-                                <ArrowContainer
+                                <div
                                     style={{
-                                        // filter: 'drop-shadow(0 4px 10px rgba(0,0,0,.3))',
+                                        paddingLeft: 130,
+                                        paddingRight: 130,
+                                        paddingTop: 50,
+                                        paddingBottom: 50,
+                                        backgroundColor: TARGET_OPEN_COLOR,
+                                        opacity: 0.7,
+                                        width: 150,
+                                        height: 100,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        ...FONT,
+                                        ...NO_SELECT,
                                     }}
-                                    position={position}
-                                    arrowColor={TARGET_OPEN_COLOR}
-                                    arrowStyle={{ opacity: 0.7 }}
                                 >
-                                    <div
-                                        style={{
-                                            paddingLeft: 130,
-                                            paddingRight: 130,
-                                            paddingTop: 50,
-                                            paddingBottom: 50,
-                                            backgroundColor: TARGET_OPEN_COLOR,
-                                            opacity: 0.7,
-                                            // width: 150,
-                                            // height: 100,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            ...FONT,
-                                            ...NO_SELECT,
-                                        }}
-                                    >
-                                        Position: {position}
-                                    </div>
-                                </ArrowContainer>
+                                    Position: {position}
+                                </div>
                             )}
                             position={currentPosition}
                         >

@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = {
     entry: {
@@ -7,6 +8,7 @@ const config = {
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname + '/dist'),
+        libraryExport: 'default',
         libraryTarget: 'commonjs',
     },
     devtool: 'source-map',
@@ -22,6 +24,11 @@ const config = {
             { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
         ],
     },
+    plugins: [
+        new CopyWebpackPlugin([
+            { from: './src/index.d.ts', to: './' },
+        ]),
+    ],
     externals: {
         'react': 'commonjs react',
         'react-dom': 'commonjs react-dom',

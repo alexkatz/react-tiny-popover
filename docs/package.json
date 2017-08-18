@@ -20,7 +20,7 @@
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-popover-typescript": "file:./../",
+    "react-tiny-popover": "^1.0.2",
     "react-virtualized": "^9.9.0"
   }
 }

@@ -10,6 +10,7 @@ interface PopoverProps {
     padding?: number;
     position?: Position | Position[];
     onClickOutside?: (e: MouseEvent) => void;
+    disableReposition?: boolean;
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -65,15 +66,48 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
 
         this.renderWithPosition(this.positionOrder[positionIndex], (violation, rect) => {
-            if (violation) {
+            const { disableReposition, padding } = this.props;
+
+            if (violation && !disableReposition) {
                 this.renderPopover(positionIndex + 1);
             } else {
-                const { top, left } = this.getNudgedPopoverPosition(rect);
-                this.popoverDiv.style.left = `${left.toFixed()}px`;
-                this.popoverDiv.style.top = `${top.toFixed()}px`;
+                const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(rect);
+                if (!disableReposition) {
+                    this.popoverDiv.style.left = `${nudgedLeft.toFixed()}px`;
+                    this.popoverDiv.style.top = `${nudgedTop.toFixed()}px`;
+                } else {
+                    const position = this.positionOrder[0];
+                    const { top, left } = rect;
+
+                    this.popoverDiv.style.left = `${left.toFixed()}px`;
+                    this.popoverDiv.style.top = `${top.toFixed()}px`;
+
+                    const topCollision = top <= padding;
+                    const leftCollision = left <= padding;
+                    let width: number;
+                    let height: number;
+                    if (!topCollision && !leftCollision) {
+                        width = rect.width - (left - nudgedLeft);
+                        height = rect.height - (top - nudgedTop);
+                    } else { // TODO: insert extra parent div and push that over by offset to simulate overflow in left or top violation
+                        if (topCollision) {
+                            this.popoverDiv.style.top = `${padding}px`;
+                            height = rect.height - (padding - top);
+                        }
+                        if (leftCollision) {
+                            this.popoverDiv.style.left = `${padding}px`;
+                            width = rect.width - (padding - left);
+                        }
+                    }
+
+                    this.popoverDiv.style.height = `${height}px`;
+                    this.popoverDiv.style.width = `${width}px`;
+                }
+
                 if (this.popoverDiv.style.opacity !== '1') {
                     this.popoverDiv.style.opacity = '1';
                 }
+
                 this.startTargetPositionListener(10);
             }
         });
@@ -98,9 +132,10 @@ class Popover extends React.Component<PopoverProps, {}> {
                 ? content({ position })
                 : content;
 
-        render(getContent({ position }), this.popoverDiv, () => { // TODO: pass nudge top left offset so we can keep the arrow centered on the target, potentially
+        render(getContent({ position }), this.popoverDiv, () => { // TODO: pass nudge top left offset so we can keep ArrowContainer's arrow centered on the target, potentially
             const targetRect = this.target.getBoundingClientRect();
-            const popoverRect = this.popoverDiv.getBoundingClientRect();
+            const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
             callback(
                 position === Position.Top && top < padding ||
@@ -170,6 +205,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         container.style.position = 'absolute';
         container.style.top = '0';
         container.style.left = '0';
+        container.style.overflow = 'hidden';
 
         return container;
     }
