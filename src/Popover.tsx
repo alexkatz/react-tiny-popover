@@ -27,8 +27,10 @@ class Popover extends React.Component<PopoverProps, {}> {
 
     public componentDidMount() {
         if (window) {
+            const { position, isOpen } = this.props;
             this.target = findDOMNode(this);
-            this.positionOrder = this.getPositionPriorityOrder(this.props.position);
+            this.positionOrder = this.getPositionPriorityOrder(position);
+            this.updatePopover(isOpen);
         }
     }
 
@@ -38,25 +40,29 @@ class Popover extends React.Component<PopoverProps, {}> {
             const { isOpen, content, position } = this.props;
             this.positionOrder = this.getPositionPriorityOrder(this.props.position);
             if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
-                if (isOpen) {
-                    if (!this.popoverDiv || !this.popoverDiv.parentNode) {
-                        this.popoverDiv = this.createContainer();
-                        this.popoverDiv.style.opacity = '0';
-                        this.popoverDiv.style.transition = `opacity ${Constants.FADE_TRANSITION_MS / 1000}s`;
-                        window.document.body.appendChild(this.popoverDiv);
-                        window.addEventListener('resize', this.onResize);
-                        window.addEventListener('click', this.onClick);
-                    }
-                    this.renderPopover();
-                } else {
-                    this.removePopover();
-                }
+                this.updatePopover(isOpen);
             }
         }
     }
 
     public render() {
         return this.props.children;
+    }
+
+    private updatePopover(isOpen: boolean) {
+        if (isOpen) {
+            if (!this.popoverDiv || !this.popoverDiv.parentNode) {
+                this.popoverDiv = this.createContainer();
+                this.popoverDiv.style.opacity = '0';
+                this.popoverDiv.style.transition = `opacity ${Constants.FADE_TRANSITION_MS / 1000}s`;
+                window.document.body.appendChild(this.popoverDiv);
+                window.addEventListener('resize', this.onResize);
+                window.addEventListener('click', this.onClick);
+            }
+            this.renderPopover();
+        } else {
+            this.removePopover();
+        }
     }
 
     private renderPopover(positionIndex: number = 0) {

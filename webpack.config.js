@@ -8,8 +8,7 @@ const config = {
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname + '/dist'),
-        libraryExport: 'default',
-        libraryTarget: 'commonjs',
+        libraryTarget: 'umd',
     },
     devtool: 'source-map',
     resolve: {
