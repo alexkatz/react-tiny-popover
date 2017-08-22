@@ -39159,34 +39159,41 @@ var FONT = {
     fontFamily: 'sans-serif',
     fontWeight: 100,
 };
+var PADDING = 15;
 var Demo = (function (_super) {
     __extends(Demo, _super);
     function Demo() {
         var _this = _super.call(this) || this;
+        _this.isTogglingPosition = function (x, y) { return x > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - TOGGLE_BUTTON_WIDTH; };
+        _this.isTogglingReposition = function (x, y) { return x <= TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - TOGGLE_BUTTON_WIDTH; };
         _this.onTargetMouseDown = function (e) {
             var target = e.currentTarget;
             var targetClickOffsetX = e.clientX - target.offsetLeft;
             var targetClickOffsetY = e.clientY - target.offsetTop;
-            var isTogglingPosition = targetClickOffsetX > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && targetClickOffsetY > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+            var isTogglingPosition = _this.isTogglingPosition(targetClickOffsetX, targetClickOffsetY);
+            var isTogglingReposition = _this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
             _this.setState({
-                isTargetActive: !isTogglingPosition,
-                isToggleActive: isTogglingPosition,
+                isTargetActive: !isTogglingPosition && !isTogglingReposition,
+                isTogglePositionActive: isTogglingPosition,
+                isToggleRepositionActive: isTogglingReposition,
                 isMouseDown: true,
                 targetClickOffsetX: targetClickOffsetX,
                 targetClickOffsetY: targetClickOffsetY,
             });
         };
         _this.onTargetMouseUp = function (e) {
-            var _a = _this.state, isPopoverOpen = _a.isPopoverOpen, isTargetActive = _a.isTargetActive, isToggleActive = _a.isToggleActive, positionIndex = _a.positionIndex;
+            var _a = _this.state, isPopoverOpen = _a.isPopoverOpen, isTargetActive = _a.isTargetActive, isTogglePositionActive = _a.isTogglePositionActive, repositionEnabled = _a.repositionEnabled, positionIndex = _a.positionIndex;
             var target = e.currentTarget;
             var targetClickOffsetX = e.clientX - target.offsetLeft;
             var targetClickOffsetY = e.clientY - target.offsetTop;
-            var isTogglingPosition = targetClickOffsetX > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && targetClickOffsetY > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+            var isTogglingPosition = _this.isTogglingPosition(targetClickOffsetX, targetClickOffsetY);
+            var isTogglingReposition = _this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
             var shouldPopoverToggle = isTargetActive;
-            var shouldTogglePosition = isToggleActive;
+            var shouldTogglePosition = isTogglePositionActive;
+            var shouldToggleReposition = isTogglingReposition;
             _this.setState({
                 isTargetActive: false,
-                isToggleActive: false,
+                isTogglePositionActive: false,
                 isMouseDown: false,
                 isPopoverOpen: shouldPopoverToggle
                     ? !isPopoverOpen
@@ -39194,6 +39201,9 @@ var Demo = (function (_super) {
                 positionIndex: shouldTogglePosition
                     ? positionIndex + 1
                     : positionIndex,
+                repositionEnabled: shouldToggleReposition
+                    ? !repositionEnabled
+                    : repositionEnabled,
             });
         };
         _this.onMouseMove = function (e) {
@@ -39201,7 +39211,8 @@ var Demo = (function (_super) {
             if (isMouseDown) {
                 _this.setState({
                     isTargetActive: false,
-                    isToggleActive: false,
+                    isTogglePositionActive: false,
+                    isToggleRepositionActive: false,
                     targetY: e.clientY - targetClickOffsetY,
                     targetX: e.clientX - targetClickOffsetX,
                 });
@@ -39210,30 +39221,32 @@ var Demo = (function (_super) {
         _this.state = {
             targetX: null,
             targetY: null,
-            isToggleActive: false,
+            isTogglePositionActive: false,
+            isToggleRepositionActive: false,
             isTargetActive: false,
             targetClickOffsetX: 0,
             targetClickOffsetY: 0,
             isPopoverOpen: false,
             isMouseDown: false,
             positionIndex: 0,
+            repositionEnabled: true,
         };
         return _this;
     }
     Demo.prototype.render = function () {
         var _this = this;
-        var _a = this.state, targetX = _a.targetX, targetY = _a.targetY, isTargetActive = _a.isTargetActive, isPopoverOpen = _a.isPopoverOpen, positionIndex = _a.positionIndex, isToggleActive = _a.isToggleActive;
+        var _a = this.state, targetX = _a.targetX, targetY = _a.targetY, isTargetActive = _a.isTargetActive, isPopoverOpen = _a.isPopoverOpen, positionIndex = _a.positionIndex, isTogglePositionActive = _a.isTogglePositionActive, isToggleRepositionActive = _a.isToggleRepositionActive, repositionEnabled = _a.repositionEnabled;
         var positions = ['top', 'right', 'bottom', 'left'];
         var currentPosition = positions[positionIndex % positions.length];
         return (React.createElement(react_virtualized_1.AutoSizer, null, function (_a) {
             var width = _a.width, height = _a.height;
             return (React.createElement("div", { style: {
-                    position: 'relative',
+                    position: 'fixed',
                     width: width,
                     height: height,
                     backgroundColor: BACKGROUND_COLOR,
                 }, onMouseMove: _this.onMouseMove },
-                React.createElement(react_tiny_popover_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, content: function (_a) {
+                React.createElement(react_tiny_popover_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, disableReposition: !repositionEnabled, content: function (_a) {
                         var position = _a.position;
                         return (React.createElement("div", { style: __assign({ paddingLeft: 130, paddingRight: 130, paddingTop: 50, paddingBottom: 50, backgroundColor: TARGET_OPEN_COLOR, opacity: 0.7, width: 150, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }, FONT, NO_SELECT) },
                             "Position: ",
@@ -39243,7 +39256,8 @@ var Demo = (function (_super) {
                                 ? TARGET_OPEN_COLOR
                                 : TARGET_COLOR, position: 'absolute', left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2), top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2) }), onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
                         "move me!",
-                        React.createElement("div", { style: __assign({ position: 'absolute', width: TOGGLE_BUTTON_WIDTH, height: TOGGLE_BUTTON_WIDTH, bottom: 0, right: 0, opacity: isToggleActive ? 1 : 0.8, pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, FONT, NO_SELECT) }, currentPosition)))));
+                        React.createElement("div", { style: __assign({ position: 'absolute', width: TOGGLE_BUTTON_WIDTH, height: TOGGLE_BUTTON_WIDTH, bottom: 0, right: 0, opacity: isTogglePositionActive ? 1 : 0.8, pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, FONT, NO_SELECT) }, currentPosition),
+                        React.createElement("div", { style: __assign({ position: 'absolute', width: TARGET_SIZE - TOGGLE_BUTTON_WIDTH, height: TOGGLE_BUTTON_WIDTH, bottom: 0, left: 0, opacity: isToggleRepositionActive ? 1 : 0.8, pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, FONT, NO_SELECT, { textAlign: 'center' }) }, repositionEnabled ? 'reposition' : 'no reposition')))));
         }));
     };
     return Demo;
@@ -39460,6 +39474,8 @@ var Popover = (function (_super) {
                 if (!disableReposition) {
                     _this.popoverDiv.style.left = nudgedLeft.toFixed() + "px";
                     _this.popoverDiv.style.top = nudgedTop.toFixed() + "px";
+                    _this.popoverDiv.style.width = null;
+                    _this.popoverDiv.style.height = null;
                 }
                 else {
                     var position = _this.positionOrder[0];
@@ -39478,12 +39494,16 @@ var Popover = (function (_super) {
                         if (topCollision) {
                             _this.popoverDiv.style.top = padding + "px";
                             height = rect.height - (padding - top_1);
+                            width = rect.width - (left - nudgedLeft);
                         }
                         if (leftCollision) {
                             _this.popoverDiv.style.left = padding + "px";
                             width = rect.width - (padding - left);
+                            height = rect.height - (topCollision ? (padding - top_1) : (top_1 - nudgedTop));
                         }
                     }
+                    height = height < 0 ? 0 : height;
+                    width = width < 0 ? 0 : width;
                     _this.popoverDiv.style.height = height + "px";
                     _this.popoverDiv.style.width = width + "px";
                 }

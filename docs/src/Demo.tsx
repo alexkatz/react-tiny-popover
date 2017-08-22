@@ -29,7 +29,8 @@ interface DemoState {
     targetX: number;
     targetY: number;
     isTargetActive: boolean;
-    isToggleActive: boolean;
+    isTogglePositionActive: boolean;
+    isToggleRepositionActive: boolean;
     targetClickOffsetX: number;
     targetClickOffsetY: number;
     isPopoverOpen: boolean;
@@ -44,7 +45,8 @@ class Demo extends React.Component<{}, DemoState> {
         this.state = {
             targetX: null,
             targetY: null,
-            isToggleActive: false,
+            isTogglePositionActive: false,
+            isToggleRepositionActive: false,
             isTargetActive: false,
             targetClickOffsetX: 0,
             targetClickOffsetY: 0,
@@ -56,7 +58,7 @@ class Demo extends React.Component<{}, DemoState> {
     }
 
     public render() {
-        const { targetX, targetY, isTargetActive, isPopoverOpen, positionIndex, isToggleActive, repositionEnabled } = this.state;
+        const { targetX, targetY, isTargetActive, isPopoverOpen, positionIndex, isTogglePositionActive, isToggleRepositionActive, repositionEnabled } = this.state;
         const positions: Position[] = ['top', 'right', 'bottom', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
         return (
@@ -71,25 +73,9 @@ class Demo extends React.Component<{}, DemoState> {
                         }}
                         onMouseMove={this.onMouseMove}
                     >
-                        <div
-                            style={{
-                                marginLeft: PADDING,
-                                marginTop: PADDING,
-                            }}
-                        >
-                            <button
-                                onClick={() => this.setState({ repositionEnabled: !repositionEnabled })}
-                                style={{
-                                    padding: PADDING,
-                                    outline: 'none',
-                                }}
-                            >
-                                Reposition: {repositionEnabled ? 'Enabled' : 'Disabled'}
-                            </button>
-                        </div>
                         <Popover
                             isOpen={isPopoverOpen}
-                           // onClickOutside={() => this.setState({ isPopoverOpen: false })}
+                            onClickOutside={() => this.setState({ isPopoverOpen: false })}
                             disableReposition={!repositionEnabled}
                             content={({ position }) => (
                                 <div
@@ -145,7 +131,7 @@ class Demo extends React.Component<{}, DemoState> {
                                         height: TOGGLE_BUTTON_WIDTH,
                                         bottom: 0,
                                         right: 0,
-                                        opacity: isToggleActive ? 1 : 0.8,
+                                        opacity: isTogglePositionActive ? 1 : 0.8,
                                         pointerEvents: 'none',
                                         backgroundColor: TOGGLE_BUTTON_COLOR,
                                         display: 'flex',
@@ -158,6 +144,27 @@ class Demo extends React.Component<{}, DemoState> {
                                 >
                                     {currentPosition}
                                 </div>
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        width: TARGET_SIZE - TOGGLE_BUTTON_WIDTH,
+                                        height: TOGGLE_BUTTON_WIDTH,
+                                        bottom: 0,
+                                        left: 0,
+                                        opacity: isToggleRepositionActive ? 1 : 0.8,
+                                        pointerEvents: 'none',
+                                        backgroundColor: TOGGLE_BUTTON_COLOR,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
+                                        ...FONT,
+                                        ...NO_SELECT,
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    {repositionEnabled ? 'reposition' : 'no reposition'}
+                                </div>
                             </div>
                         </Popover>
                     </div>
@@ -166,14 +173,20 @@ class Demo extends React.Component<{}, DemoState> {
         );
     }
 
+    private isTogglingPosition: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+    private isTogglingReposition: (x: number, y: number) => boolean = (x, y) => x <= TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+
     private onTargetMouseDown: React.MouseEventHandler<HTMLDivElement> = e => {
         const target = e.currentTarget;
         const targetClickOffsetX = e.clientX - target.offsetLeft;
         const targetClickOffsetY = e.clientY - target.offsetTop;
-        const isTogglingPosition = targetClickOffsetX > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && targetClickOffsetY > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+        const isTogglingPosition = this.isTogglingPosition(targetClickOffsetX, targetClickOffsetY);
+        const isTogglingReposition = this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
+
         this.setState({
-            isTargetActive: !isTogglingPosition,
-            isToggleActive: isTogglingPosition,
+            isTargetActive: !isTogglingPosition && !isTogglingReposition,
+            isTogglePositionActive: isTogglingPosition,
+            isToggleRepositionActive: isTogglingReposition,
             isMouseDown: true,
             targetClickOffsetX,
             targetClickOffsetY,
@@ -181,18 +194,20 @@ class Demo extends React.Component<{}, DemoState> {
     }
 
     private onTargetMouseUp: React.MouseEventHandler<HTMLDivElement> = e => {
-        const { isPopoverOpen, isTargetActive, isToggleActive, positionIndex } = this.state;
+        const { isPopoverOpen, isTargetActive, isTogglePositionActive, repositionEnabled, positionIndex } = this.state;
         const target = e.currentTarget;
         const targetClickOffsetX = e.clientX - target.offsetLeft;
         const targetClickOffsetY = e.clientY - target.offsetTop;
-        const isTogglingPosition = targetClickOffsetX > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && targetClickOffsetY > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+        const isTogglingPosition = this.isTogglingPosition(targetClickOffsetX, targetClickOffsetY);
+        const isTogglingReposition = this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
 
         const shouldPopoverToggle = isTargetActive;
-        const shouldTogglePosition = isToggleActive;
+        const shouldTogglePosition = isTogglePositionActive;
+        const shouldToggleReposition = isTogglingReposition;
 
         this.setState({
             isTargetActive: false,
-            isToggleActive: false,
+            isTogglePositionActive: false,
             isMouseDown: false,
             isPopoverOpen: shouldPopoverToggle
                 ? !isPopoverOpen
@@ -200,6 +215,9 @@ class Demo extends React.Component<{}, DemoState> {
             positionIndex: shouldTogglePosition
                 ? positionIndex + 1
                 : positionIndex,
+            repositionEnabled: shouldToggleReposition
+                ? !repositionEnabled
+                : repositionEnabled,
         });
     }
 
@@ -208,7 +226,8 @@ class Demo extends React.Component<{}, DemoState> {
         if (isMouseDown) {
             this.setState({
                 isTargetActive: false,
-                isToggleActive: false,
+                isTogglePositionActive: false,
+                isToggleRepositionActive: false,
                 targetY: e.clientY - targetClickOffsetY,
                 targetX: e.clientX - targetClickOffsetX,
             });

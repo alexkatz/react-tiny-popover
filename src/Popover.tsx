@@ -111,6 +111,8 @@ class Popover extends React.Component<PopoverProps, {}> {
                         }
                     }
 
+                    height = height < 0 ? 0 : height;
+                    width = width < 0 ? 0 : width;
                     this.popoverDiv.style.height = `${height}px`;
                     this.popoverDiv.style.width = `${width}px`;
                 }
