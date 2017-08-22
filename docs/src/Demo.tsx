@@ -23,6 +23,8 @@ const FONT: React.CSSProperties = {
     fontWeight: 100,
 };
 
+const PADDING = 15;
+
 interface DemoState {
     targetX: number;
     targetY: number;
@@ -33,6 +35,7 @@ interface DemoState {
     isPopoverOpen: boolean;
     isMouseDown: boolean;
     positionIndex: number;
+    repositionEnabled: boolean;
 }
 
 class Demo extends React.Component<{}, DemoState> {
@@ -48,11 +51,12 @@ class Demo extends React.Component<{}, DemoState> {
             isPopoverOpen: false,
             isMouseDown: false,
             positionIndex: 0,
+            repositionEnabled: true,
         };
     }
 
     public render() {
-        const { targetX, targetY, isTargetActive, isPopoverOpen, positionIndex, isToggleActive } = this.state;
+        const { targetX, targetY, isTargetActive, isPopoverOpen, positionIndex, isToggleActive, repositionEnabled } = this.state;
         const positions: Position[] = ['top', 'right', 'bottom', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
         return (
@@ -60,16 +64,33 @@ class Demo extends React.Component<{}, DemoState> {
                 {({ width, height }) => (
                     <div
                         style={{
-                            position: 'relative',
+                            position: 'fixed',
                             width,
                             height,
                             backgroundColor: BACKGROUND_COLOR,
                         }}
                         onMouseMove={this.onMouseMove}
                     >
+                        <div
+                            style={{
+                                marginLeft: PADDING,
+                                marginTop: PADDING,
+                            }}
+                        >
+                            <button
+                                onClick={() => this.setState({ repositionEnabled: !repositionEnabled })}
+                                style={{
+                                    padding: PADDING,
+                                    outline: 'none',
+                                }}
+                            >
+                                Reposition: {repositionEnabled ? 'Enabled' : 'Disabled'}
+                            </button>
+                        </div>
                         <Popover
                             isOpen={isPopoverOpen}
-                            onClickOutside={() => this.setState({ isPopoverOpen: false })}
+                           // onClickOutside={() => this.setState({ isPopoverOpen: false })}
+                            disableReposition={!repositionEnabled}
                             content={({ position }) => (
                                 <div
                                     style={{

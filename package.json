@@ -7,6 +7,14 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [
+    "react",
+    "popover",
+    "react-popover",
+    "popout",
+    "pop",
+    "out"
+  ],
   "license": "MIT",
   "author": "Alex Katz",
   "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",

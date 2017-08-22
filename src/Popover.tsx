@@ -81,6 +81,8 @@ class Popover extends React.Component<PopoverProps, {}> {
                 if (!disableReposition) {
                     this.popoverDiv.style.left = `${nudgedLeft.toFixed()}px`;
                     this.popoverDiv.style.top = `${nudgedTop.toFixed()}px`;
+                    this.popoverDiv.style.width = null;
+                    this.popoverDiv.style.height = null;
                 } else {
                     const position = this.positionOrder[0];
                     const { top, left } = rect;
@@ -92,6 +94,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                     const leftCollision = left <= padding;
                     let width: number;
                     let height: number;
+
                     if (!topCollision && !leftCollision) {
                         width = rect.width - (left - nudgedLeft);
                         height = rect.height - (top - nudgedTop);
@@ -99,10 +102,12 @@ class Popover extends React.Component<PopoverProps, {}> {
                         if (topCollision) {
                             this.popoverDiv.style.top = `${padding}px`;
                             height = rect.height - (padding - top);
+                            width = rect.width - (left - nudgedLeft);
                         }
                         if (leftCollision) {
                             this.popoverDiv.style.left = `${padding}px`;
                             width = rect.width - (padding - left);
+                            height = rect.height - (topCollision ? (padding - top) : (top - nudgedTop));
                         }
                     }
 
