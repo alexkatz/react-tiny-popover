@@ -16,6 +16,7 @@ export declare interface PopoverProps {
     position?: Position | Position[];
     onClickOutside?: (e: MouseEvent) => void;
     disableReposition?: boolean;
+    containerStyle?: Partial<CSSStyleDeclaration>;
 }
 
 export declare interface ArrowContainerProps {
@@ -23,7 +24,7 @@ export declare interface ArrowContainerProps {
     children: JSX.Element;
     style?: React.CSSProperties;
     arrowSize?: number;
-    arrowColor?: string;
+    arrowColor?: React.CSSWideKeyword | any;
     arrowStyle?: React.CSSProperties;
 }
 

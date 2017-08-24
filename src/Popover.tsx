@@ -11,6 +11,7 @@ interface PopoverProps {
     position?: Position | Position[];
     onClickOutside?: (e: MouseEvent) => void;
     disableReposition?: boolean;
+    containerStyle?: CSSStyleDeclaration;
 }
 
 class Popover extends React.Component<PopoverProps, {}> {
@@ -212,7 +213,12 @@ class Popover extends React.Component<PopoverProps, {}> {
     }
 
     private createContainer(): HTMLDivElement {
+        const { containerStyle } = this.props;
         const container = window.document.createElement('div');
+
+        if (containerStyle) {
+            Object.keys(containerStyle).forEach(key => container.style[key as any] = containerStyle[key as any]);
+        }
 
         container.className = Constants.POPOVER_CLASS_NAME;
         container.style.position = 'absolute';
