@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 export interface ContentRendererArgs {
-    position?: Position;
-    nudgedLeft?: number;
-    nudgedTop?: number;
+    position: Position;
+    nudgedLeft: number;
+    nudgedTop: number;
 }
 
 export type ContentRenderer = (args: ContentRendererArgs) => JSX.Element;

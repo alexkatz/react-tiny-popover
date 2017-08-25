@@ -96,7 +96,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
     }
 
-    private renderWithPosition({ position, nudgedLeft = 0, nudgedTop = 0 }: ContentRendererArgs, callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void) {
+    private renderWithPosition({ position, nudgedLeft = 0, nudgedTop = 0 }: Partial<ContentRendererArgs>, callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void) {
         const { padding, content } = this.props;
         const getContent: (args: ContentRendererArgs) =>
             JSX.Element = (args) => typeof content === 'function'
