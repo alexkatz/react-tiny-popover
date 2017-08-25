@@ -118,3 +118,4 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 |arrowColor|```string```||The color of the arrow! Exciting. |
 |arrowStyle|```object```||You may append to the arrow's style here.|
 |style|```object```||If you'd like to append to the style of the ```ArrowContainer``` itself, do so here. Rad.|
+|disableReposition|```boolean```||If repositioning is disabled on your ```Popover```, be sure to let the ```ArrowContainer``` know, so it doesn't try to wrongly compensate arrow position!|
