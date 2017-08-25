@@ -25,6 +25,7 @@ export declare interface ArrowContainerProps {
     position: Position;
     nudgedTop: number;
     nudgedLeft: number;
+    disableReposition: boolean;
     children: JSX.Element;
     style?: React.CSSProperties;
     arrowSize?: number;

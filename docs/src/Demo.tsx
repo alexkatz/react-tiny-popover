@@ -81,6 +81,8 @@ class Demo extends React.Component<{}, DemoState> {
                                 <ArrowContainer
                                     position={args.position}
                                     arrowColor={TARGET_OPEN_COLOR}
+                                    arrowSize={20}
+                                    disableReposition={!repositionEnabled}
                                     arrowStyle={{ opacity: 0.7 }}
                                     nudgedLeft={args.nudgedLeft}
                                     nudgedTop={args.nudgedTop}
@@ -108,7 +110,7 @@ class Demo extends React.Component<{}, DemoState> {
                                                     Object.keys(args).map(key => (
                                                         <tr key={key}>
                                                             <td style={{ textAlign: 'right', paddingRight: 15, opacity: 0.7 }} >{`${key}: `}</td>
-                                                            <td style={{ fontSize: 20 }}>{args[key]}</td>
+                                                            <td style={{ fontSize: 25 }}>{args[key]}</td>
                                                         </tr>
                                                     ))
                                                 }
@@ -213,7 +215,7 @@ class Demo extends React.Component<{}, DemoState> {
     }
 
     private onTargetMouseUp: React.MouseEventHandler<HTMLDivElement> = e => {
-        const { isPopoverOpen, isTargetActive, isTogglePositionActive, repositionEnabled, positionIndex } = this.state;
+        const { isPopoverOpen, isTargetActive, isTogglePositionActive, isToggleRepositionActive, repositionEnabled, positionIndex } = this.state;
         const target = e.currentTarget;
         const targetClickOffsetX = e.clientX - target.offsetLeft;
         const targetClickOffsetY = e.clientY - target.offsetTop;
@@ -222,7 +224,7 @@ class Demo extends React.Component<{}, DemoState> {
 
         const shouldPopoverToggle = isTargetActive;
         const shouldTogglePosition = isTogglePositionActive;
-        const shouldToggleReposition = isTogglingReposition;
+        const shouldToggleReposition = isToggleRepositionActive;
 
         this.setState({
             isTargetActive: false,
