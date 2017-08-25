@@ -77,26 +77,45 @@ class Demo extends React.Component<{}, DemoState> {
                             isOpen={isPopoverOpen}
                             onClickOutside={() => this.setState({ isPopoverOpen: false })}
                             disableReposition={!repositionEnabled}
-                            content={({ position }) => (
-                                <div
-                                    style={{
-                                        paddingLeft: 130,
-                                        paddingRight: 130,
-                                        paddingTop: 50,
-                                        paddingBottom: 50,
-                                        backgroundColor: TARGET_OPEN_COLOR,
-                                        opacity: 0.7,
-                                        width: 150,
-                                        height: 100,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        ...FONT,
-                                        ...NO_SELECT,
-                                    }}
+                            content={(args) => (
+                                <ArrowContainer
+                                    position={args.position}
+                                    arrowColor={TARGET_OPEN_COLOR}
+                                    arrowStyle={{ opacity: 0.7 }}
+                                    nudgedLeft={args.nudgedLeft}
+                                    nudgedTop={args.nudgedTop}
                                 >
-                                    Position: {position}
-                                </div>
+                                    <div
+                                        style={{
+                                            paddingLeft: 130,
+                                            paddingRight: 130,
+                                            paddingTop: 50,
+                                            paddingBottom: 50,
+                                            backgroundColor: TARGET_OPEN_COLOR,
+                                            opacity: 0.7,
+                                            width: 150,
+                                            height: 100,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            ...FONT,
+                                            ...NO_SELECT,
+                                        }}
+                                    >
+                                        <table>
+                                            <tbody>
+                                                {
+                                                    Object.keys(args).map(key => (
+                                                        <tr key={key}>
+                                                            <td style={{ textAlign: 'right', paddingRight: 15, opacity: 0.7 }} >{`${key}: `}</td>
+                                                            <td style={{ fontSize: 20 }}>{args[key]}</td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </ArrowContainer>
                             )}
                             position={currentPosition}
                         >
@@ -167,7 +186,7 @@ class Demo extends React.Component<{}, DemoState> {
                                 </div>
                             </div>
                         </Popover>
-                    </div>
+                    </div >
                 )}
             </AutoSizer>
         );

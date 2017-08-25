@@ -1,7 +1,9 @@
 import * as React from 'react';
 
 export interface ContentRendererArgs {
-    position: Position;
+    position?: Position;
+    nudgedLeft?: number;
+    nudgedTop?: number;
 }
 
 export type ContentRenderer = (args: ContentRendererArgs) => JSX.Element;
@@ -21,6 +23,8 @@ export declare interface PopoverProps {
 
 export declare interface ArrowContainerProps {
     position: Position;
+    nudgedTop: number;
+    nudgedLeft: number;
     children: JSX.Element;
     style?: React.CSSProperties;
     arrowSize?: number;

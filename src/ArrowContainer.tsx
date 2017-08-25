@@ -1,14 +1,5 @@
 import * as React from 'react';
-import { Position } from './util';
-
-interface ArrowContainerProps {
-    position: Position;
-    children: JSX.Element;
-    style?: React.CSSProperties;
-    arrowSize?: number;
-    arrowColor?: React.CSSWideKeyword | any;
-    arrowStyle?: React.CSSProperties;
-}
+import { Position, ArrowContainerProps } from './index';
 
 const FLEX_CENTER_CHILD: React.CSSProperties = {
     display: 'flex',
@@ -16,28 +7,28 @@ const FLEX_CENTER_CHILD: React.CSSProperties = {
     justifyContent: 'center',
 };
 
-const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({ position, children, style, arrowSize = 10, arrowColor = 'black', arrowStyle }) => {
+const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({ position, nudgedLeft, nudgedTop, children, style, arrowSize = 10, arrowColor = 'black', arrowStyle }) => {
     const triangleBorderStyle = (size: number, color: React.CSSWideKeyword | any) => {
         switch (position) {
-            case Position.Right:
+            case 'right':
                 return {
                     borderTop: `${size}px solid transparent`,
                     borderBottom: `${size}px solid transparent`,
                     borderRight: `${size}px solid ${color}`,
                 };
-            case Position.Left:
+            case 'left':
                 return {
                     borderTop: `${size}px solid transparent`,
                     borderBottom: `${size}px solid transparent`,
                     borderLeft: `${size}px solid ${color}`,
                 };
-            case Position.Bottom:
+            case 'bottom':
                 return {
                     borderLeft: `${size}px solid transparent`,
                     borderRight: `${size}px solid transparent`,
                     borderBottom: `${size}px solid ${color}`,
                 };
-            case Position.Top:
+            case 'top':
             default:
                 return {
                     borderLeft: `${size}px solid transparent`,
@@ -47,10 +38,10 @@ const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({ positio
         }
     };
 
-    return position === Position.Top || position === Position.Bottom
+    return position === 'top' || position === 'bottom'
         ? (
             <div style={style}>
-                {position === Position.Top && children}
+                {position === 'top' && children}
                 <div
                     style={{
                         width: '100%',
@@ -60,13 +51,15 @@ const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({ positio
                 >
                     <div
                         style={{
+                            position: 'relative',
+                            left: -nudgedLeft,
                             ...triangleBorderStyle(arrowSize, arrowColor),
                             ...arrowStyle,
                         }}
                     >
                     </div>
                 </div>
-                {position === Position.Bottom && children}
+                {position === 'bottom' && children}
             </div>
         )
         : (
@@ -74,12 +67,14 @@ const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({ positio
                 style={{
                     ...FLEX_CENTER_CHILD,
                     flex: 'auto',
-                    flexDirection: position === Position.Left ? 'row-reverse' : 'row',
+                    flexDirection: position === 'left' ? 'row-reverse' : 'row',
                     ...style,
                 }}
             >
                 <div
                     style={{
+                        position: 'relative',
+                        top: -nudgedTop,
                         ...triangleBorderStyle(arrowSize, arrowColor),
                         ...arrowStyle,
                     }}
