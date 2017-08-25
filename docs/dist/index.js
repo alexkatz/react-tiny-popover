@@ -39182,7 +39182,7 @@ var Demo = (function (_super) {
             });
         };
         _this.onTargetMouseUp = function (e) {
-            var _a = _this.state, isPopoverOpen = _a.isPopoverOpen, isTargetActive = _a.isTargetActive, isTogglePositionActive = _a.isTogglePositionActive, repositionEnabled = _a.repositionEnabled, positionIndex = _a.positionIndex;
+            var _a = _this.state, isPopoverOpen = _a.isPopoverOpen, isTargetActive = _a.isTargetActive, isTogglePositionActive = _a.isTogglePositionActive, isToggleRepositionActive = _a.isToggleRepositionActive, repositionEnabled = _a.repositionEnabled, positionIndex = _a.positionIndex;
             var target = e.currentTarget;
             var targetClickOffsetX = e.clientX - target.offsetLeft;
             var targetClickOffsetY = e.clientY - target.offsetTop;
@@ -39190,7 +39190,7 @@ var Demo = (function (_super) {
             var isTogglingReposition = _this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
             var shouldPopoverToggle = isTargetActive;
             var shouldTogglePosition = isTogglePositionActive;
-            var shouldToggleReposition = isTogglingReposition;
+            var shouldToggleReposition = isToggleRepositionActive;
             _this.setState({
                 isTargetActive: false,
                 isTogglePositionActive: false,
@@ -39246,12 +39246,12 @@ var Demo = (function (_super) {
                     height: height,
                     backgroundColor: BACKGROUND_COLOR,
                 }, onMouseMove: _this.onMouseMove },
-                React.createElement(react_tiny_popover_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, disableReposition: !repositionEnabled, content: function (_a) {
-                        var position = _a.position;
-                        return (React.createElement("div", { style: __assign({ paddingLeft: 130, paddingRight: 130, paddingTop: 50, paddingBottom: 50, backgroundColor: TARGET_OPEN_COLOR, opacity: 0.7, width: 150, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }, FONT, NO_SELECT) },
-                            "Position: ",
-                            position));
-                    }, position: currentPosition },
+                React.createElement(react_tiny_popover_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, disableReposition: !repositionEnabled, content: function (args) { return (React.createElement(react_tiny_popover_1.ArrowContainer, { position: args.position, arrowColor: TARGET_OPEN_COLOR, arrowSize: 20, disableReposition: !repositionEnabled, arrowStyle: { opacity: 0.7 }, nudgedLeft: args.nudgedLeft, nudgedTop: args.nudgedTop },
+                        React.createElement("div", { style: __assign({ paddingLeft: 130, paddingRight: 130, paddingTop: 50, paddingBottom: 50, backgroundColor: TARGET_OPEN_COLOR, opacity: 0.7, width: 150, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }, FONT, NO_SELECT) },
+                            React.createElement("table", null,
+                                React.createElement("tbody", null, Object.keys(args).map(function (key) { return (React.createElement("tr", { key: key },
+                                    React.createElement("td", { style: { textAlign: 'right', paddingRight: 15, opacity: 0.7 } }, key + ": "),
+                                    React.createElement("td", { style: { fontSize: 25 } }, args[key]))); })))))); }, position: currentPosition },
                     React.createElement("div", { style: __assign({ width: TARGET_SIZE, height: TARGET_SIZE, display: 'flex' }, NO_SELECT, FONT, { paddingTop: 10, cursor: 'default', alignContent: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px', opacity: isTargetActive ? 0.9 : 0.7, backgroundColor: isPopoverOpen
                                 ? TARGET_OPEN_COLOR
                                 : TARGET_COLOR, position: 'absolute', left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2), top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2) }), onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
@@ -39357,17 +39357,11 @@ module.exports = __webpack_require__(179);
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Position;
-(function (Position) {
-    Position["Left"] = "left";
-    Position["Right"] = "right";
-    Position["Top"] = "top";
-    Position["Bottom"] = "bottom";
-})(Position = exports.Position || (exports.Position = {}));
 exports.Constants = {
     POPOVER_CLASS_NAME: 'another-react-popover-container',
     DEFAULT_PADDING: 6,
     FADE_TRANSITION_MS: 300,
+    DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'],
 };
 
 
@@ -39464,53 +39458,24 @@ var Popover = (function (_super) {
             this.removePopover();
             return;
         }
-        this.renderWithPosition(this.positionOrder[positionIndex], function (violation, rect) {
+        this.renderWithPosition({ position: this.positionOrder[positionIndex] }, function (violation, rect) {
             var _a = _this.props, disableReposition = _a.disableReposition, padding = _a.padding;
             if (violation && !disableReposition) {
                 _this.renderPopover(positionIndex + 1);
             }
             else {
                 var _b = _this.getNudgedPopoverPosition(rect), nudgedTop = _b.top, nudgedLeft = _b.left;
-                if (!disableReposition) {
-                    _this.popoverDiv.style.left = nudgedLeft.toFixed() + "px";
-                    _this.popoverDiv.style.top = nudgedTop.toFixed() + "px";
-                    _this.popoverDiv.style.width = null;
-                    _this.popoverDiv.style.height = null;
-                }
-                else {
-                    var position = _this.positionOrder[0];
-                    var top_1 = rect.top, left = rect.left;
-                    _this.popoverDiv.style.left = left.toFixed() + "px";
-                    _this.popoverDiv.style.top = top_1.toFixed() + "px";
-                    var topCollision = top_1 <= padding;
-                    var leftCollision = left <= padding;
-                    var width = void 0;
-                    var height = void 0;
-                    if (!topCollision && !leftCollision) {
-                        width = rect.width - (left - nudgedLeft);
-                        height = rect.height - (top_1 - nudgedTop);
+                var top_1 = rect.top, left = rect.left;
+                _this.popoverDiv.style.left = (disableReposition ? left : nudgedLeft.toFixed()) + "px";
+                _this.popoverDiv.style.top = (disableReposition ? top_1 : nudgedTop.toFixed()) + "px";
+                _this.popoverDiv.style.width = null;
+                _this.popoverDiv.style.height = null;
+                _this.renderWithPosition({ position: _this.positionOrder[positionIndex], nudgedTop: nudgedTop - rect.top, nudgedLeft: nudgedLeft - rect.left }, function () {
+                    _this.startTargetPositionListener(10);
+                    if (_this.popoverDiv.style.opacity !== '1') {
+                        _this.popoverDiv.style.opacity = '1';
                     }
-                    else {
-                        if (topCollision) {
-                            _this.popoverDiv.style.top = padding + "px";
-                            height = rect.height - (padding - top_1);
-                            width = rect.width - (left - nudgedLeft);
-                        }
-                        if (leftCollision) {
-                            _this.popoverDiv.style.left = padding + "px";
-                            width = rect.width - (padding - left);
-                            height = rect.height - (topCollision ? (padding - top_1) : (top_1 - nudgedTop));
-                        }
-                    }
-                    height = height < 0 ? 0 : height;
-                    width = width < 0 ? 0 : width;
-                    _this.popoverDiv.style.height = height + "px";
-                    _this.popoverDiv.style.width = width + "px";
-                }
-                if (_this.popoverDiv.style.opacity !== '1') {
-                    _this.popoverDiv.style.opacity = '1';
-                }
-                _this.startTargetPositionListener(10);
+                });
             }
         });
     };
@@ -39526,23 +39491,21 @@ var Popover = (function (_super) {
             }, checkInterval);
         }
     };
-    Popover.prototype.renderWithPosition = function (position, callback) {
+    Popover.prototype.renderWithPosition = function (_a, callback) {
         var _this = this;
-        var _a = this.props, padding = _a.padding, content = _a.content;
-        var getContent = function (_a) {
-            var position = _a.position;
-            return typeof content === 'function'
-                ? content({ position: position })
-                : content;
-        };
-        react_dom_1.render(getContent({ position: position }), this.popoverDiv, function () {
+        var position = _a.position, _b = _a.nudgedLeft, nudgedLeft = _b === void 0 ? 0 : _b, _c = _a.nudgedTop, nudgedTop = _c === void 0 ? 0 : _c;
+        var _d = this.props, padding = _d.padding, content = _d.content;
+        var getContent = function (args) { return typeof content === 'function'
+            ? content(args)
+            : content; };
+        react_dom_1.render(getContent({ position: position, nudgedLeft: nudgedLeft, nudgedTop: nudgedTop }), this.popoverDiv, function () {
             var targetRect = _this.target.getBoundingClientRect();
             var popoverRect = _this.popoverDiv.firstChild.getBoundingClientRect();
             var _a = _this.getLocationForPosition(position, targetRect, popoverRect), top = _a.top, left = _a.left;
-            callback(position === util_1.Position.Top && top < padding ||
-                position === util_1.Position.Left && left < padding ||
-                position === util_1.Position.Right && left + popoverRect.width > window.innerWidth - padding ||
-                position === util_1.Position.Bottom && top + popoverRect.height > window.innerHeight - padding, { width: popoverRect.width, height: popoverRect.height, top: top, left: left });
+            callback(position === 'top' && top < padding ||
+                position === 'left' && left < padding ||
+                position === 'right' && left + popoverRect.width > window.innerWidth - padding ||
+                position === 'bottom' && top + popoverRect.height > window.innerHeight - padding, { width: popoverRect.width, height: popoverRect.height, top: top, left: left });
         });
     };
     Popover.prototype.getNudgedPopoverPosition = function (_a) {
@@ -39570,23 +39533,26 @@ var Popover = (function (_super) {
         }
     };
     Popover.prototype.getPositionPriorityOrder = function (position) {
-        var defaultPositions = [util_1.Position.Top, util_1.Position.Right, util_1.Position.Left, util_1.Position.Bottom];
         if (position && typeof position !== 'string') {
-            if (defaultPositions.every(function (defaultPosition) { return position.find(function (p) { return p === defaultPosition; }) !== undefined; })) {
+            if (util_1.Constants.DEFAULT_POSITIONS.every(function (defaultPosition) { return position.find(function (p) { return p === defaultPosition; }) !== undefined; })) {
                 return Array.from(new Set(position));
             }
             else {
-                var remainingPositions = defaultPositions.filter(function (defaultPosition) { return position.find(function (p) { return p === defaultPosition; }) === undefined; });
+                var remainingPositions = util_1.Constants.DEFAULT_POSITIONS.filter(function (defaultPosition) { return position.find(function (p) { return p === defaultPosition; }) === undefined; });
                 return Array.from(new Set(position.concat(remainingPositions)));
             }
         }
         else if (position && typeof position === 'string') {
-            var remainingPositions = defaultPositions.filter(function (defaultPosition) { return defaultPosition !== position; });
+            var remainingPositions = util_1.Constants.DEFAULT_POSITIONS.filter(function (defaultPosition) { return defaultPosition !== position; });
             return Array.from(new Set([position].concat(remainingPositions)));
         }
     };
     Popover.prototype.createContainer = function () {
+        var containerStyle = this.props.containerStyle;
         var container = window.document.createElement('div');
+        if (containerStyle) {
+            Object.keys(containerStyle).forEach(function (key) { return container.style[key] = containerStyle[key]; });
+        }
         container.className = util_1.Constants.POPOVER_CLASS_NAME;
         container.style.position = 'absolute';
         container.style.top = '0';
@@ -39601,19 +39567,19 @@ var Popover = (function (_super) {
         var top;
         var left;
         switch (position) {
-            case util_1.Position.Top:
+            case 'top':
                 top = newTargetRect.top - popoverRect.height - padding;
                 left = targetMidX - (popoverRect.width / 2);
                 break;
-            case util_1.Position.Left:
+            case 'left':
                 top = targetMidY - (popoverRect.height / 2);
                 left = newTargetRect.left - padding - popoverRect.width;
                 break;
-            case util_1.Position.Bottom:
+            case 'bottom':
                 top = newTargetRect.bottom + padding;
                 left = targetMidX - (popoverRect.width / 2);
                 break;
-            case util_1.Position.Right:
+            case 'right':
                 top = targetMidY - (popoverRect.height / 2);
                 left = newTargetRect.right + padding;
                 break;
@@ -39629,7 +39595,7 @@ var Popover = (function (_super) {
     };
     Popover.defaultProps = {
         padding: util_1.Constants.DEFAULT_PADDING,
-        position: [util_1.Position.Top, util_1.Position.Right, util_1.Position.Left, util_1.Position.Bottom],
+        position: ['top', 'right', 'left', 'bottom'],
     };
     return Popover;
 }(React.Component));
@@ -39648,6 +39614,16 @@ module.exports = __webpack_require__(187);
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -39658,35 +39634,64 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var util_1 = __webpack_require__(1);
 var FLEX_CENTER_CHILD = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
 };
-var ArrowContainer = function (_a) {
-    var position = _a.position, children = _a.children, style = _a.style, _b = _a.arrowSize, arrowSize = _b === void 0 ? 10 : _b, _c = _a.arrowColor, arrowColor = _c === void 0 ? 'black' : _c, arrowStyle = _a.arrowStyle;
-    var triangleBorderStyle = function (size, color) {
+var ArrowContainer = (function (_super) {
+    __extends(ArrowContainer, _super);
+    function ArrowContainer(props) {
+        var _this = _super.call(this, props) || this;
+        _this.containerDiv = null;
+        _this.arrowDiv = null;
+        _this.state = {
+            nudgedLeft: 0,
+            nudgedTop: 0,
+        };
+        return _this;
+    }
+    ArrowContainer.prototype.componentDidMount = function () {
+        this.hydrateNudge(this.props);
+    };
+    ArrowContainer.prototype.componentWillReceiveProps = function (nextProps) {
+        this.hydrateNudge(nextProps);
+    };
+    ArrowContainer.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, position = _a.position, children = _a.children, style = _a.style, _b = _a.arrowSize, arrowSize = _b === void 0 ? 10 : _b, _c = _a.arrowColor, arrowColor = _c === void 0 ? 'black' : _c, arrowStyle = _a.arrowStyle;
+        var _d = this.state, nudgedLeft = _d.nudgedLeft, nudgedTop = _d.nudgedTop;
+        return position === 'top' || position === 'bottom'
+            ? (React.createElement("div", { style: style, ref: function (div) { return _this.containerDiv = div; } },
+                position === 'top' && children,
+                React.createElement("div", { style: __assign({ width: '100%', height: arrowSize }, FLEX_CENTER_CHILD) },
+                    React.createElement("div", { style: __assign({ position: 'relative', left: -nudgedLeft }, this.triangleBorderStyle(position, arrowSize, arrowColor), arrowStyle), ref: function (div) { return _this.arrowDiv = div; } })),
+                position === 'bottom' && children))
+            : (React.createElement("div", { style: __assign({}, FLEX_CENTER_CHILD, { flex: 'auto', flexDirection: position === 'left' ? 'row-reverse' : 'row' }, style), ref: function (div) { return _this.containerDiv = div; } },
+                React.createElement("div", { style: __assign({ position: 'relative', top: -nudgedTop }, this.triangleBorderStyle(position, arrowSize, arrowColor), arrowStyle), ref: function (div) { return _this.arrowDiv = div; } }),
+                children));
+    };
+    ArrowContainer.prototype.triangleBorderStyle = function (position, size, color) {
         switch (position) {
-            case util_1.Position.Right:
+            case 'right':
                 return {
                     borderTop: size + "px solid transparent",
                     borderBottom: size + "px solid transparent",
                     borderRight: size + "px solid " + color,
                 };
-            case util_1.Position.Left:
+            case 'left':
                 return {
                     borderTop: size + "px solid transparent",
                     borderBottom: size + "px solid transparent",
                     borderLeft: size + "px solid " + color,
                 };
-            case util_1.Position.Bottom:
+            case 'bottom':
                 return {
                     borderLeft: size + "px solid transparent",
                     borderRight: size + "px solid transparent",
                     borderBottom: size + "px solid " + color,
                 };
-            case util_1.Position.Top:
+            case 'top':
             default:
                 return {
                     borderLeft: size + "px solid transparent",
@@ -39695,16 +39700,40 @@ var ArrowContainer = function (_a) {
                 };
         }
     };
-    return position === util_1.Position.Top || position === util_1.Position.Bottom
-        ? (React.createElement("div", { style: style },
-            position === util_1.Position.Top && children,
-            React.createElement("div", { style: __assign({ width: '100%', height: arrowSize }, FLEX_CENTER_CHILD) },
-                React.createElement("div", { style: __assign({}, triangleBorderStyle(arrowSize, arrowColor), arrowStyle) })),
-            position === util_1.Position.Bottom && children))
-        : (React.createElement("div", { style: __assign({}, FLEX_CENTER_CHILD, { flex: 'auto', flexDirection: position === util_1.Position.Left ? 'row-reverse' : 'row' }, style) },
-            React.createElement("div", { style: __assign({}, triangleBorderStyle(arrowSize, arrowColor), arrowStyle) }),
-            children));
-};
+    ArrowContainer.prototype.hydrateNudge = function (props) {
+        var nudgedLeft = props.nudgedLeft, nudgedTop = props.nudgedTop, position = props.position, disableReposition = props.disableReposition;
+        var containerRect = this.containerDiv.getBoundingClientRect();
+        var arrowRect = this.arrowDiv.getBoundingClientRect();
+        if (disableReposition) {
+            this.setState({ nudgedLeft: 0, nudgedTop: 0 });
+        }
+        else {
+            if (position === 'top' || position === 'bottom') {
+                if (arrowRect.right - nudgedLeft > containerRect.right) {
+                    this.setState({ nudgedLeft: -((containerRect.width / 2) - (arrowRect.width / 2)), nudgedTop: nudgedTop });
+                }
+                else if (arrowRect.left - nudgedLeft < containerRect.left) {
+                    this.setState({ nudgedLeft: (containerRect.width / 2) - (arrowRect.width / 2), nudgedTop: nudgedTop });
+                }
+                else {
+                    this.setState({ nudgedLeft: nudgedLeft, nudgedTop: nudgedTop });
+                }
+            }
+            else {
+                if (arrowRect.top - nudgedTop < containerRect.top) {
+                    this.setState({ nudgedLeft: nudgedLeft, nudgedTop: (containerRect.height / 2) - (arrowRect.height / 2) });
+                }
+                else if (arrowRect.bottom - nudgedTop > containerRect.bottom) {
+                    this.setState({ nudgedLeft: nudgedLeft, nudgedTop: -((containerRect.height / 2) - (arrowRect.height / 2)) });
+                }
+                else {
+                    this.setState({ nudgedLeft: nudgedLeft, nudgedTop: nudgedTop });
+                }
+            }
+        }
+    };
+    return ArrowContainer;
+}(React.Component));
 exports.ArrowContainer = ArrowContainer;
 
 
