@@ -24056,19 +24056,22 @@ var Popover = (function (_super) {
         _this.popoverDiv = null;
         _this.positionOrder = null;
         _this.willUnmount = false;
+        _this.willMount = false;
         _this.onResize = function (e) {
             _this.renderPopover();
         };
         _this.onClick = function (e) {
             var _a = _this.props, onClickOutside = _a.onClickOutside, isOpen = _a.isOpen;
-            if (!_this.willUnmount && !_this.popoverDiv.contains(e.target) && !_this.target.contains(e.target) && onClickOutside && isOpen) {
+            if (!_this.willUnmount && !_this.willMount && !_this.popoverDiv.contains(e.target) && !_this.target.contains(e.target) && onClickOutside && isOpen) {
                 onClickOutside(e);
             }
         };
         return _this;
     }
     Popover.prototype.componentDidMount = function () {
+        var _this = this;
         if (window) {
+            window.setTimeout(function () { return _this.willMount = false; });
             var _a = this.props, position = _a.position, isOpen = _a.isOpen;
             this.target = react_dom_1.findDOMNode(this);
             this.positionOrder = this.getPositionPriorityOrder(position);
@@ -24087,6 +24090,7 @@ var Popover = (function (_super) {
     };
     Popover.prototype.componentWillMount = function () {
         this.willUnmount = false;
+        this.willMount = true;
     };
     Popover.prototype.componentWillUnmount = function () {
         this.willUnmount = true;
@@ -24120,30 +24124,30 @@ var Popover = (function (_super) {
             return;
         }
         this.renderWithPosition({ position: this.positionOrder[positionIndex] }, function (violation, rect) {
-            var _a = _this.props, disableReposition = _a.disableReposition, padding = _a.padding, locationGetter = _a.locationGetter;
-            if (violation && !disableReposition && !(typeof locationGetter === 'object')) {
+            var _a = _this.props, disableReposition = _a.disableReposition, contentLocation = _a.contentLocation;
+            if (violation && !disableReposition && !(typeof contentLocation === 'object')) {
                 _this.renderPopover(positionIndex + 1);
             }
             else {
-                var locationGetter_1 = _this.props.locationGetter;
+                var contentLocation_1 = _this.props.contentLocation;
                 var _b = _this.getNudgedPopoverPosition(rect), nudgedTop = _b.top, nudgedLeft = _b.left;
                 var rectTop = rect.top, rectLeft = rect.left;
                 var _c = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft }, top_1 = _c.top, left = _c.left;
-                if (locationGetter_1) {
-                    (_d = typeof locationGetter_1 === 'function' ? locationGetter_1({ top: top_1, left: left }) : locationGetter_1, top_1 = _d.top, left = _d.left);
+                var targetRect = _this.target.getBoundingClientRect();
+                var popoverRect = _this.popoverDiv.firstChild.getBoundingClientRect();
+                if (contentLocation_1) {
+                    (_d = typeof contentLocation_1 === 'function' ? contentLocation_1({ targetRect: targetRect, popoverRect: popoverRect }) : contentLocation_1, top_1 = _d.top, left = _d.left);
                 }
                 _this.popoverDiv.style.left = left.toFixed() + "px";
                 _this.popoverDiv.style.top = top_1.toFixed() + "px";
                 _this.popoverDiv.style.width = null;
                 _this.popoverDiv.style.height = null;
-                var targetRect = _this.target.getBoundingClientRect();
-                var popoverRect = _this.popoverDiv.firstChild.getBoundingClientRect();
                 _this.renderWithPosition({
                     position: _this.positionOrder[positionIndex],
                     nudgedTop: nudgedTop - rect.top,
                     nudgedLeft: nudgedLeft - rect.left,
-                    targetRect: targetRect,
-                    popoverRect: popoverRect,
+                    targetRect: _this.target.getBoundingClientRect(),
+                    popoverRect: _this.popoverDiv.firstChild.getBoundingClientRect(),
                 }, function () {
                     _this.startTargetPositionListener(10);
                     if (_this.popoverDiv.style.opacity !== '1') {
@@ -24169,7 +24173,7 @@ var Popover = (function (_super) {
     Popover.prototype.renderWithPosition = function (_a, callback) {
         var _this = this;
         var position = _a.position, _b = _a.nudgedLeft, nudgedLeft = _b === void 0 ? 0 : _b, _c = _a.nudgedTop, nudgedTop = _c === void 0 ? 0 : _c, _d = _a.targetRect, targetRect = _d === void 0 ? util_1.Constants.EMPTY_CLIENT_RECT : _d, _e = _a.popoverRect, popoverRect = _e === void 0 ? util_1.Constants.EMPTY_CLIENT_RECT : _e;
-        var _f = this.props, padding = _f.padding, content = _f.content, align = _f.align;
+        var _f = this.props, padding = _f.windowBorderPadding, content = _f.content, align = _f.align;
         var getContent = function (args) { return typeof content === 'function'
             ? content(args)
             : content; };
@@ -24185,7 +24189,7 @@ var Popover = (function (_super) {
     };
     Popover.prototype.getNudgedPopoverPosition = function (_a) {
         var top = _a.top, left = _a.left, width = _a.width, height = _a.height;
-        var padding = this.props.padding;
+        var padding = this.props.windowBorderPadding;
         top = top < padding ? padding : top;
         top = top + height > window.innerHeight - padding ? window.innerHeight - padding - height : top;
         left = left < padding ? padding : left;
@@ -24301,6 +24305,7 @@ var Popover = (function (_super) {
     };
     Popover.defaultProps = {
         padding: util_1.Constants.DEFAULT_PADDING,
+        windowBorderPadding: util_1.Constants.DEFAULT_WINDOW_PADDING,
         position: ['top', 'right', 'left', 'bottom'],
         align: 'center',
     };
@@ -24325,6 +24330,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Constants = {
     POPOVER_CLASS_NAME: 'another-react-popover-container',
     DEFAULT_PADDING: 6,
+    DEFAULT_WINDOW_PADDING: 6,
     FADE_TRANSITION: 0.35,
     DEFAULT_ARROW_COLOR: 'black',
     DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'],
@@ -44199,7 +44205,7 @@ var RepositionDemo = (function (_super) {
                         key,
                         ":"),
                     React.createElement("td", { style: { fontSize: 25 } }, args[key]))); }))))); };
-        var arrowContentRenderer = function (args) { return (React.createElement(react_tiny_popover_1.ArrowContainer, { position: args.position, arrowColor: TARGET_OPEN_COLOR, arrowSize: 20, targetRect: args.targetRect, popoverRect: args.popoverRect, arrowStyle: { opacity: 0.7 }, nudgedLeft: args.nudgedLeft, nudgedTop: args.nudgedTop }, contentRenderer(args))); };
+        var arrowContentRenderer = function (args) { return (React.createElement(react_tiny_popover_1.ArrowContainer, { position: args.position, arrowColor: TARGET_OPEN_COLOR, arrowSize: 20, targetRect: args.targetRect, popoverRect: args.popoverRect, arrowStyle: { opacity: 0.7 } }, contentRenderer(args))); };
         var commonButtonStyle = __assign({ position: 'absolute', pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, DemoContainer_1.FONT, DemoContainer_1.NO_SELECT);
         return (React.createElement(react_virtualized_1.AutoSizer, null, function (_a) {
             var width = _a.width, height = _a.height;
@@ -56899,7 +56905,7 @@ var CustomPositionDemo = (function (_super) {
                     height: height,
                     backgroundColor: BACKGROUND_COLOR,
                 } },
-                React.createElement(index_1.default, { isOpen: isPopoverOpen, content: (React.createElement("div", { style: __assign({ width: CONTENT_SIZE, height: CONTENT_SIZE, backgroundColor: CONTENT_COLOR }, DemoContainer_1.FONT, { display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: MODAL_PADDING, boxSizing: 'border-box' }), onClick: function () { return _this.setState({ isPopoverOpen: false }); } }, "I could be a modal or something! Also, try resizing your browser! Click anywhere to dismiss me.")), locationGetter: {
+                React.createElement(index_1.default, { isOpen: isPopoverOpen, content: (React.createElement("div", { style: __assign({ width: CONTENT_SIZE, height: CONTENT_SIZE, backgroundColor: CONTENT_COLOR }, DemoContainer_1.FONT, { display: 'flex', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: MODAL_PADDING, boxSizing: 'border-box' }), onClick: function () { return _this.setState({ isPopoverOpen: false }); } }, "I could be a modal or something! Also, try resizing your browser! Click anywhere to dismiss me.")), contentLocation: {
                         top: (window.innerHeight / 2) - (CONTENT_SIZE / 2),
                         left: (window.innerWidth / 2) - (CONTENT_SIZE / 2),
                     }, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); } },
