@@ -14,13 +14,13 @@ export interface ContentRendererArgs {
     popoverRect: ClientRect;
 }
 
-export interface ContentPositionerArgs {
-    top: number;
-    left: number;
+export interface ContentLocationGetterArgs {
+    targetRect: ClientRect;
+    popoverRect: ClientRect;
 }
 
 export type ContentRenderer = (args: ContentRendererArgs) => JSX.Element;
-export type LocationGetter = (args: ContentPositionerArgs) => ContentLocation;
+export type ContentLocationGetter = (args: ContentLocationGetterArgs) => ContentLocation;
 
 export declare type Position = 'left' | 'right' | 'top' | 'bottom';
 export declare type Align = 'start' | 'center' | 'end';
@@ -29,7 +29,7 @@ export declare interface PopoverProps {
     children: JSX.Element;
     isOpen: boolean;
     content: ContentRenderer | JSX.Element;
-    locationGetter?: LocationGetter | ContentLocation;
+    contentLocation?: ContentLocationGetter | ContentLocation;
     padding?: number;
     position?: Position | Position[];
     onClickOutside?: (e: MouseEvent) => void;
@@ -45,8 +45,6 @@ export declare interface ArrowContainerProps {
     position: Position;
     targetRect: ClientRect;
     popoverRect: ClientRect;
-    nudgedTop?: number;
-    nudgedLeft?: number;
     style?: React.CSSProperties;
     arrowSize?: number;
     arrowColor?: React.CSSWideKeyword | any;

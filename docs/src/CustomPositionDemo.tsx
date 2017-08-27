@@ -55,7 +55,7 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
                                 Click anywhere to dismiss me.
                                 </div>
                             )}
-                            locationGetter={{
+                            contentLocation={{
                                 top: (window.innerHeight / 2) - (CONTENT_SIZE / 2),
                                 left: (window.innerWidth / 2) - (CONTENT_SIZE / 2),
                             }}

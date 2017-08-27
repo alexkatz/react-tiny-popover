@@ -120,8 +120,6 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                 targetRect={args.targetRect}
                 popoverRect={args.popoverRect}
                 arrowStyle={{ opacity: 0.7 }}
-                nudgedLeft={args.nudgedLeft}
-                nudgedTop={args.nudgedTop}
             >
                 {contentRenderer(args)}
             </ArrowContainer>

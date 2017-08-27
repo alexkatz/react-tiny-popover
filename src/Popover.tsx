@@ -79,28 +79,28 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
 
         this.renderWithPosition({ position: this.positionOrder[positionIndex] }, (violation, rect) => {
-            const { disableReposition, locationGetter } = this.props;
+            const { disableReposition, contentLocation } = this.props;
 
-            if (violation && !disableReposition && !(typeof locationGetter === 'object')) {
+            if (violation && !disableReposition && !(typeof contentLocation === 'object')) {
                 this.renderPopover(positionIndex + 1);
             } else {
-                const { locationGetter } = this.props;
+                const { contentLocation } = this.props;
                 const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(rect);
                 const { top: rectTop, left: rectLeft } = rect;
                 let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
-                if (locationGetter) { ({ top, left } = typeof locationGetter === 'function' ? locationGetter({ top, left }) : locationGetter); }
+                const targetRect = this.target.getBoundingClientRect();
+                const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+                if (contentLocation) { ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect }) : contentLocation); }
                 this.popoverDiv.style.left = `${left.toFixed()}px`;
                 this.popoverDiv.style.top = `${top.toFixed()}px`;
                 this.popoverDiv.style.width = null;
                 this.popoverDiv.style.height = null;
-                const targetRect = this.target.getBoundingClientRect();
-                const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
                 this.renderWithPosition({
                     position: this.positionOrder[positionIndex],
                     nudgedTop: nudgedTop - rect.top,
                     nudgedLeft: nudgedLeft - rect.left,
-                    targetRect,
-                    popoverRect,
+                    targetRect: this.target.getBoundingClientRect(),
+                    popoverRect: (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect(),
                 }, () => {
                     this.startTargetPositionListener(10);
                     if (this.popoverDiv.style.opacity !== '1') {
