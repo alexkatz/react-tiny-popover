@@ -51,11 +51,13 @@ import Popover from 'react-tiny-popover'
     isOpen={isPopoverOpen}
     position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
     padding={10}
+    disableReposition
     onClickOutside={() => this.setState({ isPopoverOpen: false })}
-    // you can also provide a render function that injects the current popover position
-    content={({ position }) => ( // position: 'left' | 'right' | 'top' | 'bottom'
+    content={({ position, nudgedLeft, nudgedTop, targetRect, popoverRect }) => ( // you can also provide a render function that injects some useful stuff!
         <div>
-            Hi! I'm popover content. Here's my position: {position}. 
+            <div>Hi! I'm popover content. Here's my position: {position}.</div>
+            <div>I'm {` ${nudgedLeft} `} pixels beyond the window horizontally!</div>
+            <div>I'm {` ${nudgedTop} `} pixels beyond the window vertically!</div>
         </div>
     )}
 >
@@ -72,17 +74,17 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
     position={['top', 'right', 'left', 'bottom']}
     padding={10}
     onClickOutside={() => this.setState({ isPopoverOpen: false })}
-    content={({ position, nudgedLeft, nudgedTop }) => (
+    content={({ position, targetRect, popoverRect }) => (
         <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
             position={position}
-            nudgedLeft={nudgedLeft}
-            nudgedTop={nudgedTop}
+            targetRect={targetRect}
+            popoverRect={popoverRect}
             arrowColor={'blue'}
             arrowSize={10}
-            arrowStyle={{ ... }}
+            arrowStyle={{ opacity: 0.7 }}
         >
             <div 
-                style={{ backgroundColor: 'blue' }}
+                style={{ backgroundColor: 'blue', opacity: 0.7 }}
                 onClick={() => this.setState({ isPopoverOpen: !isPopoverOpen })}
             >
                 Hi! I'm popover content. Here's my position: {position}.
@@ -98,24 +100,28 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 ## API
 ### Popover
 |<b>Property<b>|Type|Required|Description|                              
-|----------|----|--------|-----------|
+|--------------|----|--------|-----------|
 |children|```JSX.Element```|✔️|This is the JSX.Element target that you'd like the popover content to track. Sweet. |
-| isOpen |```boolean```|✔️|When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.|
-| content |```JSX.Element``` or ```Function``` |✔️|Here, you'll provide the content that will appear as the popover. Rather than a JSX element like a ```<div>```, you may supply a function that returns a JSX.Element, which will look like this: ```({ position, nudgedLeft, nudgedTop }) => JSX.Element```. Here, ```position``` is of type ```'top', 'bottom', 'left', 'right'```. You may want to use this value to adjust your content depending on its location in relation to its target. ```nudgedLeft``` and ```nudgedTop``` specify the X and Y offset the popover content is shifted by to keep it within the window's bounds during a boundary collision. Sweet. |
-| padding|```number``` ||This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.|
-| position|```string``` or ```string[]``` ||You may provide a preferred position for your popover content in relation to its target. Valid values are ```'top', 'bottom', 'left', 'right'```. The default is ```'top'```. If you'd like, you can supply an array of preferred positions ranked in priority order. If the popover reaches the edge of the window, it will attempt to render in the order you specify. The default order is ```['top', 'right', 'left', 'bottom']```. If you'd like, you can provide a shorter array like ```['top', 'left']```. The remaining positions will be automatically filled in. If you provide any duplicate or other values in the array, they will be ignored.|
+|isOpen |```boolean```|✔️|When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.|
+|content |```JSX.Element``` or ```Function``` |✔️|Here, you'll provide the content that will appear as the popover. Rather than a JSX element like a ```<div>```, you may supply a function that returns a JSX.Element, which will look like this: ```({ position, targetRect, popoverRect, align,  nudgedLeft, nudgedTop }) => JSX.Element```. Here, ```position``` is of type ```'top', 'bottom', 'left', 'right'```. ```align``` is of type ```start```, ```center```, or ```end```. Both ```targetRect``` and ```popoverRect``` are ```ClientRect``` objects of format ```{ height: number, width: number, top: number, left: number, right: number, bottom: number }```, and represent the popover content and target ```div```'s coordinates within your browser's window. ```nudgedLeft``` and ```nudgedTop``` specify the X and Y offset the popover content is shifted by to keep it within the window's bounds during a boundary collision. You may want to use these values to adjust your content depending on its location in relation to the window and the target, especially if you have repositioning disabled. Sweet. |
+|padding|```number``` ||This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.|
+|windowBorderPadding|```number```||This number specifies the padding around the browser window's border that boundary violations are determined at. Defaults to 6.|
+|position|```string``` or ```string[]``` ||You may provide a preferred position for your popover content in relation to its target. Valid values are ```'top', 'bottom', 'left', 'right'```. The default is ```'top'```. If you'd like, you can supply an array of preferred positions ranked in priority order. If the popover reaches the edge of the window, it will attempt to render in the order you specify. The default order is ```['top', 'right', 'left', 'bottom']```. If you'd like, you can provide a shorter array like ```['top', 'left']```. The remaining positions will be automatically filled in. If you provide any duplicate or other values in the array, they will be ignored.|
+|contentLocation|```object``` or ```Function```||If you'd like to hook directly into the positioning process, you may do so here! You can provide an object of type ```{ top: number, left: number }``` to completely override the popover content's (```popoverRect```) location. You can also provide a function that looks like this: ```({ targetRect, popoverRect }) => { top: number, left: number }```, where ```targetRect``` and ```popoverRect``` are of shape ```{ width: number, height: number, top: number, left: number, right: number, bottom: number }```. Note that if repositioning is enabled, it happens before this step, so within here you'll be responsible for keeping ```popoverRect``` within the window's bounds if that matters to you!|
+|align|```string```||Possible values are ```start```, ```center```, and ```end```. If ```start``` is specified, the popover content's top or left location is aligned with its target's. With ```end``` specified, the content's bottom or right location is aligned with its target's. If ```center``` is specified, the popover content and target's centers are aligned. Defaults to ```center```.|
 |onClickOutside|```Function```||If ```react-tiny-popover``` detects a click event outside of the target and outside of the popover, you may handle this event here, in the form of ```(e: MouseEvent) => void```.|
 |disableReposition|```boolean```||If this property is enabled, rather than the popover content repositioning on a boundary collision, the popover content container will move beyond the window's bounds. You are, however, supplied with ```nudgedLeft``` and ```nudgedTop``` values, so you may choose to handle content overflow as you wish.|
+|transitionDuration|```number```||The length of the popover content's fade transition in seconds. Defaults to 0.35.|
+|containerStyle|```object``` (```CSSStyleDeclaration```)||Your popover content is rendered to the DOM in a single container ```div```. If you'd like to apply style directly to this container ```div```, you may do so here! Be aware that as this ```div``` is a DOM element and not a React element, all style values must be strings. For example, 5 pixels must be represented as ```'5px'```, as you'd do with vanilla DOM manipulation in Javascript.|
 
 ### ArrowContainer
 |<b>Property<b>|Type|Required|Description|                                  
 |-----------|----|--------|-----------|
 |position|```string```|✔️|The ```ArrowContainer``` needs to know its own position in relation to the target, so it can point in the correct direction!|
-|nudgedLeft|```number```|✔️|This value allows the ```ArrowContainer``` to reposition its arrow properly in the X dimension during a collision with a window boundary.|
-|nudgedTop|```number```|✔️|As with ```nudgedLeft```, ```nudgedTop``` allows the ```ArrowContainer``` to reposition its arrow in the Y dimension during a window boundary collision. |
 |children|```JSX.Element```|✔️|You'll provide the ```ArrowContainer``` with a JSX.Element child to render as your popover content.|
+|targetRect|```object```|✔️|The ```ArrowContainer``` must know its target's bounding rect in order to position its arrow properly. This object is of type ```{ width: number, height: number, top: number, left: number, right: number, bottom: number }```.|
+|popoverRect|```object```|✔️|This allows the ```ArrowContainer``` to know its own bounding rect in order to position its arrow properly. This object is of type ```{ width: number, height: number, top: number, left: number, right: number, bottom: number }```.|
 |arrowSize|```number```||The size of the triangle arrow. Defaults to 10 or something like that.|
 |arrowColor|```string```||The color of the arrow! Exciting. |
 |arrowStyle|```object```||You may append to the arrow's style here.|
 |style|```object```||If you'd like to append to the style of the ```ArrowContainer``` itself, do so here. Rad.|
-|disableReposition|```boolean```||If repositioning is disabled on your ```Popover```, be sure to let the ```ArrowContainer``` know, so it doesn't try to wrongly compensate arrow position!|
