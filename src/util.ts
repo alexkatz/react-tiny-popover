@@ -1,12 +1,17 @@
 import { Position } from './index';
-export interface Location {
-    top: number;
-    left: number;
-}
 
 export const Constants = {
     POPOVER_CLASS_NAME: 'another-react-popover-container',
     DEFAULT_PADDING: 6,
-    FADE_TRANSITION_MS: 300,
+    FADE_TRANSITION: 0.35,
+    DEFAULT_ARROW_COLOR: 'black',
     DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'] as Position[],
+    EMPTY_CLIENT_RECT: {
+        top: 0,
+        left: 0,
+        bottom: 0,
+        height: 0,
+        right: 0,
+        width: 0,
+    } as ClientRect,
 };

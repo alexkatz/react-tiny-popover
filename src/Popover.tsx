@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { findDOMNode, render } from 'react-dom';
-import { Constants, Location } from './util';
+import { Constants } from './util';
 import { ArrowContainer } from './ArrowContainer';
-import { PopoverProps, ContentRenderer, ContentRendererArgs, Position } from './index';
+import { PopoverProps, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
 
 class Popover extends React.Component<PopoverProps, {}> {
     private target: Element = null;
@@ -10,10 +10,12 @@ class Popover extends React.Component<PopoverProps, {}> {
     private targetPositionIntervalHandler: number = null;
     private popoverDiv: HTMLDivElement = null;
     private positionOrder: Position[] = null;
+    private willUnmount = false;
 
     public static defaultProps: Partial<PopoverProps> = {
         padding: Constants.DEFAULT_PADDING,
         position: ['top', 'right', 'left', 'bottom'],
+        align: 'center',
     };
 
     public componentDidMount() {
@@ -36,6 +38,15 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
     }
 
+    public componentWillMount() {
+        this.willUnmount = false;
+    }
+
+    public componentWillUnmount() {
+        this.willUnmount = true;
+        this.removePopover();
+    }
+
     public render() {
         return this.props.children;
     }
@@ -43,15 +54,16 @@ class Popover extends React.Component<PopoverProps, {}> {
     private updatePopover(isOpen: boolean) {
         if (isOpen) {
             if (!this.popoverDiv || !this.popoverDiv.parentNode) {
+                const { transitionDuration } = this.props;
                 this.popoverDiv = this.createContainer();
                 this.popoverDiv.style.opacity = '0';
-                this.popoverDiv.style.transition = `opacity ${Constants.FADE_TRANSITION_MS / 1000}s`;
+                this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
                 window.document.body.appendChild(this.popoverDiv);
                 window.addEventListener('resize', this.onResize);
                 window.addEventListener('click', this.onClick);
             }
             this.renderPopover();
-        } else {
+        } else if (this.popoverDiv && this.popoverDiv.parentNode) {
             this.removePopover();
         }
     }
@@ -63,18 +75,29 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
 
         this.renderWithPosition({ position: this.positionOrder[positionIndex] }, (violation, rect) => {
-            const { disableReposition, padding } = this.props;
+            const { disableReposition, padding, locationGetter } = this.props;
 
-            if (violation && !disableReposition) {
+            if (violation && !disableReposition && !(typeof locationGetter === 'object')) {
                 this.renderPopover(positionIndex + 1);
             } else {
+                const { locationGetter } = this.props;
                 const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(rect);
-                const { top, left } = rect;
-                this.popoverDiv.style.left = `${disableReposition ? left : nudgedLeft.toFixed()}px`;
-                this.popoverDiv.style.top = `${disableReposition ? top : nudgedTop.toFixed()}px`;
+                const { top: rectTop, left: rectLeft } = rect;
+                let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
+                if (locationGetter) { ({ top, left } = typeof locationGetter === 'function' ? locationGetter({ top, left }) : locationGetter); }
+                this.popoverDiv.style.left = `${left}px`;
+                this.popoverDiv.style.top = `${top}px`;
                 this.popoverDiv.style.width = null;
                 this.popoverDiv.style.height = null;
-                this.renderWithPosition({ position: this.positionOrder[positionIndex], nudgedTop: nudgedTop - rect.top, nudgedLeft: nudgedLeft - rect.left }, () => {
+                const targetRect = this.target.getBoundingClientRect();
+                const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+                this.renderWithPosition({
+                    position: this.positionOrder[positionIndex],
+                    nudgedTop: nudgedTop - rect.top,
+                    nudgedLeft: nudgedLeft - rect.left,
+                    targetRect,
+                    popoverRect,
+                }, () => {
                     this.startTargetPositionListener(10);
                     if (this.popoverDiv.style.opacity !== '1') {
                         this.popoverDiv.style.opacity = '1';
@@ -96,17 +119,16 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
     }
 
-    private renderWithPosition({ position, nudgedLeft = 0, nudgedTop = 0 }: Partial<ContentRendererArgs>, callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void) {
-        const { padding, content } = this.props;
+    private renderWithPosition({ position, nudgedLeft = 0, nudgedTop = 0, targetRect = Constants.EMPTY_CLIENT_RECT, popoverRect = Constants.EMPTY_CLIENT_RECT }: Partial<ContentRendererArgs>, callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void) {
+        const { padding, content, align } = this.props;
         const getContent: (args: ContentRendererArgs) =>
             JSX.Element = (args) => typeof content === 'function'
                 ? content(args)
                 : content;
 
-        render(getContent({ position, nudgedLeft, nudgedTop }), this.popoverDiv, () => { // TODO: pass nudge top left offset so we can keep ArrowContainer's arrow centered on the target, potentially
+        render(getContent({ position, nudgedLeft, nudgedTop, targetRect, popoverRect, align }), this.popoverDiv, () => {
             const targetRect = this.target.getBoundingClientRect();
             const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
-
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
             callback(
                 position === 'top' && top < padding ||
@@ -118,7 +140,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         });
     }
 
-    private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): Location {
+    private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
         const { padding } = this.props;
         top = top < padding ? padding : top;
         top = top + height > window.innerHeight - padding ? window.innerHeight - padding - height : top;
@@ -129,17 +151,22 @@ class Popover extends React.Component<PopoverProps, {}> {
 
     private removePopover() {
         if (this.popoverDiv) {
+            const { transitionDuration } = this.props;
             this.popoverDiv.style.opacity = '0';
-            window.setTimeout(() => {
-                if (!this.props.isOpen || !this.popoverDiv.parentNode) {
+            const remove = () => {
+                if (this.willUnmount || !this.props.isOpen || !this.popoverDiv.parentNode) {
                     window.clearInterval(this.targetPositionIntervalHandler);
                     window.removeEventListener('resize', this.onResize);
                     window.removeEventListener('click', this.onClick);
                     this.targetPositionIntervalHandler = null;
                     this.popoverDiv.remove();
                 }
-            }, Constants.FADE_TRANSITION_MS);
-
+            };
+            if (!this.willUnmount) {
+                window.setTimeout(remove, (transitionDuration || Constants.FADE_TRANSITION) * 1000);
+            } else {
+                remove();
+            }
         }
     }
 
@@ -149,7 +176,7 @@ class Popover extends React.Component<PopoverProps, {}> {
 
     private onClick = (e: MouseEvent) => {
         const { onClickOutside, isOpen } = this.props;
-        if (!this.popoverDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
+        if (!this.willUnmount && !this.popoverDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
             onClickOutside(e);
         }
     }
@@ -185,8 +212,8 @@ class Popover extends React.Component<PopoverProps, {}> {
         return container;
     }
 
-    private getLocationForPosition(position: Position, newTargetRect: ClientRect, popoverRect: ClientRect): Location {
-        const { padding } = this.props;
+    private getLocationForPosition(position: Position, newTargetRect: ClientRect, popoverRect: ClientRect): ContentLocation {
+        const { padding, align } = this.props;
         const targetMidX = newTargetRect.left + (newTargetRect.width / 2);
         const targetMidY = newTargetRect.top + (newTargetRect.height / 2);
         let top: number;
@@ -195,18 +222,26 @@ class Popover extends React.Component<PopoverProps, {}> {
             case 'top':
                 top = newTargetRect.top - popoverRect.height - padding;
                 left = targetMidX - (popoverRect.width / 2);
+                if (align === 'start') { left = newTargetRect.left; }
+                if (align === 'end') { left = newTargetRect.right - popoverRect.width; }
                 break;
             case 'left':
                 top = targetMidY - (popoverRect.height / 2);
                 left = newTargetRect.left - padding - popoverRect.width;
+                if (align === 'start') { top = newTargetRect.top; }
+                if (align === 'end') { top = newTargetRect.bottom - popoverRect.height; }
                 break;
             case 'bottom':
                 top = newTargetRect.bottom + padding;
                 left = targetMidX - (popoverRect.width / 2);
+                if (align === 'start') { left = newTargetRect.left; }
+                if (align === 'end') { left = newTargetRect.right - popoverRect.width; }
                 break;
             case 'right':
                 top = targetMidY - (popoverRect.height / 2);
                 left = newTargetRect.right + padding;
+                if (align === 'start') { top = newTargetRect.top; }
+                if (align === 'end') { top = newTargetRect.bottom - popoverRect.height; }
                 break;
         }
 

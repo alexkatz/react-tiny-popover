@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Demo } from './Demo';
+import { DemoContainer } from './DemoContainer';
 
 ReactDOM.render(
-    <Demo />,
+    <DemoContainer />,
     document.getElementById('root'),
 );

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Position, ArrowContainerProps } from './index';
+import { Constants } from './util';
 
 const FLEX_CENTER_CHILD: React.CSSProperties = {
     display: 'flex',
@@ -12,146 +13,76 @@ interface ArrowContainerState {
     nudgedTop: number;
 }
 
-class ArrowContainer extends React.Component<ArrowContainerProps, ArrowContainerState> {
-    private containerDiv: HTMLDivElement = null;
-    private arrowDiv: HTMLDivElement = null;
-
-    constructor(props: ArrowContainerProps) {
-        super(props);
-        this.state = {
-            nudgedLeft: 0,
-            nudgedTop: 0,
-        };
-    }
-
-    public componentDidMount() {
-        this.hydrateNudge(this.props);
-    }
-
-    public componentWillReceiveProps(nextProps: ArrowContainerProps) {
-        this.hydrateNudge(nextProps);
-    }
-
-    public render() {
-        const {
-            position,
-            children,
-            style,
-            arrowSize = 10,
-            arrowColor = 'black',
-            arrowStyle,
-        } = this.props;
-        const { nudgedLeft, nudgedTop } = this.state;
-        return position === 'top' || position === 'bottom'
-            ? (
-                <div
-                    style={style}
-                    ref={div => this.containerDiv = div}
-                >
-                    {position === 'top' && children}
-                    <div
-                        style={{
-                            width: '100%',
-                            height: arrowSize,
-                            ...FLEX_CENTER_CHILD,
-                        }}
-                    >
-                        <div
-                            style={{
-                                position: 'relative',
-                                left: -nudgedLeft,
-                                ...this.triangleBorderStyle(position, arrowSize, arrowColor),
-                                ...arrowStyle,
-                            }}
-                            ref={div => this.arrowDiv = div}
-                        >
-                        </div>
-                    </div>
-                    {position === 'bottom' && children}
-                </div>
-            )
-            : (
-                <div
-                    style={{
-                        ...FLEX_CENTER_CHILD,
-                        flex: 'auto',
-                        flexDirection: position === 'left' ? 'row-reverse' : 'row',
-                        ...style,
-                    }}
-                    ref={div => this.containerDiv = div}
-                >
-                    <div
-                        style={{
-                            position: 'relative',
-                            top: -nudgedTop,
-                            ...this.triangleBorderStyle(position, arrowSize, arrowColor),
-                            ...arrowStyle,
-                        }}
-                        ref={div => this.arrowDiv = div}
-                    >
-                    </div>
-                    {children}
-                </div>
-            );
-    }
-
-    private triangleBorderStyle(position: Position, size: number, color: React.CSSWideKeyword | any) {
-        switch (position) {
-            case 'right':
-                return {
-                    borderTop: `${size}px solid transparent`,
-                    borderBottom: `${size}px solid transparent`,
-                    borderRight: `${size}px solid ${color}`,
-                };
-            case 'left':
-                return {
-                    borderTop: `${size}px solid transparent`,
-                    borderBottom: `${size}px solid transparent`,
-                    borderLeft: `${size}px solid ${color}`,
-                };
-            case 'bottom':
-                return {
-                    borderLeft: `${size}px solid transparent`,
-                    borderRight: `${size}px solid transparent`,
-                    borderBottom: `${size}px solid ${color}`,
-                };
-            case 'top':
-            default:
-                return {
-                    borderLeft: `${size}px solid transparent`,
-                    borderRight: `${size}px solid transparent`,
-                    borderTop: `${size}px solid ${color}`,
-                };
-        }
-    }
-
-    private hydrateNudge(props: ArrowContainerProps) {
-        const { nudgedLeft, nudgedTop, position, disableReposition } = props;
-        const containerRect = this.containerDiv.getBoundingClientRect();
-        const arrowRect = this.arrowDiv.getBoundingClientRect();
-        if (disableReposition) {
-            this.setState({ nudgedLeft: 0, nudgedTop: 0 });
-        } else {
-            if (position === 'top' || position === 'bottom') {
-                if (arrowRect.right - nudgedLeft > containerRect.right) {
-                    this.setState({ nudgedLeft: -((containerRect.width / 2) - (arrowRect.width / 2)), nudgedTop });
-                } else if (arrowRect.left - nudgedLeft < containerRect.left) {
-                    this.setState({ nudgedLeft: (containerRect.width / 2) - (arrowRect.width / 2), nudgedTop });
-                } else {
-                    this.setState({ nudgedLeft, nudgedTop });
-                }
-            } else {
-                if (arrowRect.top - nudgedTop < containerRect.top) {
-                    this.setState({ nudgedLeft, nudgedTop: (containerRect.height / 2) - (arrowRect.height / 2) });
-                } else if (arrowRect.bottom - nudgedTop > containerRect.bottom) {
-                    this.setState({ nudgedLeft, nudgedTop: -((containerRect.height / 2) - (arrowRect.height / 2)) });
-                } else {
-                    this.setState({ nudgedLeft, nudgedTop });
-                }
-            }
-        }
-    }
-
-}
+const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({
+    position,
+    children,
+    style,
+    arrowColor = Constants.DEFAULT_ARROW_COLOR,
+    arrowSize = 10,
+    arrowStyle,
+    popoverRect,
+    targetRect,
+}) => (
+        <div
+            style={{
+                paddingLeft: position === 'right' ? arrowSize : 0,
+                paddingTop: position === 'bottom' ? arrowSize : 0,
+                paddingBottom: position === 'top' ? arrowSize : 0,
+                paddingRight: position === 'left' ? arrowSize : 0,
+                ...style,
+            }}
+        >
+            <div
+                style={{
+                    position: 'absolute',
+                    ...(() => {
+                        let top = (targetRect.top - popoverRect.top) + (targetRect.height / 2) - (arrowSize / 2);
+                        let left = (targetRect.left - popoverRect.left) + (targetRect.width / 2) - (arrowSize / 2);
+                        left = left < 0 ? 0 : left;
+                        left = left + (arrowSize * 2) > popoverRect.width ? popoverRect.width - (arrowSize * 2) : left;
+                        top = top < 0 ? 0 : top;
+                        top = top + (arrowSize * 2) > popoverRect.height ? popoverRect.height - (arrowSize * 2) : top;
+                        switch (position) {
+                            case 'right':
+                                return {
+                                    borderTop: `${arrowSize}px solid transparent`,
+                                    borderBottom: `${arrowSize}px solid transparent`,
+                                    borderRight: `${arrowSize}px solid ${arrowColor}`,
+                                    left: 0,
+                                    top,
+                                };
+                            case 'left':
+                                return {
+                                    borderTop: `${arrowSize}px solid transparent`,
+                                    borderBottom: `${arrowSize}px solid transparent`,
+                                    borderLeft: `${arrowSize}px solid ${arrowColor}`,
+                                    right: 0,
+                                    top,
+                                };
+                            case 'bottom':
+                                return {
+                                    borderLeft: `${arrowSize}px solid transparent`,
+                                    borderRight: `${arrowSize}px solid transparent`,
+                                    borderBottom: `${arrowSize}px solid ${arrowColor}`,
+                                    top: 0,
+                                    left,
+                                };
+                            case 'top':
+                            default:
+                                return {
+                                    borderLeft: `${arrowSize}px solid transparent`,
+                                    borderRight: `${arrowSize}px solid transparent`,
+                                    borderTop: `${arrowSize}px solid ${arrowColor}`,
+                                    bottom: 0,
+                                    left,
+                                };
+                        }
+                    })(),
+                    ...arrowStyle,
+                }}
+            />
+            {children}
+        </div>
+    );
 
 export { ArrowContainer };
