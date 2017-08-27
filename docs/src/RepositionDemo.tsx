@@ -8,12 +8,14 @@ const TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
 const TARGET_OPEN_COLOR = 'rgba(30, 90, 250, 0.6)';
 const TOGGLE_BUTTON_COLOR = 'rgba(30, 50, 90, 0.3)';
 
-const TARGET_SIZE = 180;
-const TOGGLE_BUTTON_WIDTH = 65;
+const TARGET_SIZE = 250;
+const TOGGLE_BUTTON_HEIGHT = TARGET_SIZE / 4;
 
 const BUTTON_OPACITY = 0.65;
 
 const PADDING = 15;
+
+const DEFAULT_POPOVER_PADDING = 5;
 
 interface DemoState {
     targetX: number;
@@ -31,6 +33,7 @@ interface DemoState {
     repositionEnabled: boolean;
     showArrow: boolean;
     align: Align;
+    paddingText: string;
 }
 
 class RepositionDemo extends React.Component<{}, DemoState> {
@@ -46,12 +49,13 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             isTargetActive: false,
             targetClickOffsetX: 0,
             targetClickOffsetY: 0,
-            isPopoverOpen: false,
+            isPopoverOpen: true,
             isMouseDown: false,
             positionIndex: 0,
             repositionEnabled: true,
             showArrow: true,
             align: 'center',
+            paddingText: DEFAULT_POPOVER_PADDING.toString(),
         };
     }
 
@@ -69,6 +73,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             repositionEnabled,
             showArrow,
             align,
+            paddingText,
              } = this.state;
         const positions: Position[] = ['top', 'right', 'bottom', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
@@ -82,8 +87,8 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                     paddingBottom: 50,
                     backgroundColor: TARGET_OPEN_COLOR,
                     opacity: 0.7,
-                    width: 150,
-                    height: 150,
+                    width: 190,
+                    height: 180,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -153,6 +158,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                             content={showArrow ? arrowContentRenderer : contentRenderer}
                             position={currentPosition}
                             align={align}
+                            padding={isNaN(Number(paddingText)) ? DEFAULT_POPOVER_PADDING : Number(paddingText)}
                             transitionDuration={0.5}
                         >
                             <div
@@ -160,12 +166,10 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                     width: TARGET_SIZE,
                                     height: TARGET_SIZE,
                                     display: 'flex',
+                                    flexDirection: 'column',
                                     ...NO_SELECT,
                                     ...FONT,
-                                    paddingTop: 10,
                                     cursor: 'default',
-                                    alignContent: 'center',
-                                    justifyContent: 'center',
                                     boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
                                     opacity: isTargetActive ? 0.9 : 0.7,
                                     backgroundColor: isPopoverOpen
@@ -178,11 +182,46 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                 onMouseDown={this.onTargetMouseDown}
                                 onMouseUp={this.onTargetMouseUp}
                             >
-                                drag me around!
                                 <div
                                     style={{
-                                        width: TOGGLE_BUTTON_WIDTH,
-                                        height: TOGGLE_BUTTON_WIDTH,
+                                        ...commonButtonStyle,
+                                        height: TOGGLE_BUTTON_HEIGHT,
+                                        width: TARGET_SIZE,
+                                        opacity: 0.7,
+                                    }}
+                                >
+                                    toggle here, drag from anywhere!
+                                </div>
+                                <div
+                                    style={{
+                                        ...commonButtonStyle,
+                                        opacity: 0.7,
+                                        pointerEvents: 'inherit',
+                                        width: TARGET_SIZE,
+                                        height: TOGGLE_BUTTON_HEIGHT,
+                                        left: 0,
+                                        bottom: TOGGLE_BUTTON_HEIGHT * 2,
+                                        justifyContent: 'space-around',
+                                    }}
+                                >
+                                    <div style={{ paddingLeft: 5, paddingRight: 5 }}>padding:</div>
+                                    <div style={{ width: 50, position: 'relative' }}>
+                                        <input
+                                            style={{
+                                                width: '100%',
+                                            }}
+                                            type='text'
+                                            onMouseDown={e => e.stopPropagation()}
+                                            onMouseUp={e => e.stopPropagation()}
+                                            value={paddingText}
+                                            onChange={e => this.setState({ paddingText: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        width: TARGET_SIZE / 2,
+                                        height: TOGGLE_BUTTON_HEIGHT,
                                         bottom: 0,
                                         right: 0,
                                         opacity: isTogglePositionActive ? 1 : BUTTON_OPACITY,
@@ -193,8 +232,8 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                 </div>
                                 <div
                                     style={{
-                                        width: TARGET_SIZE - TOGGLE_BUTTON_WIDTH,
-                                        height: TOGGLE_BUTTON_WIDTH,
+                                        width: TARGET_SIZE / 2,
+                                        height: TOGGLE_BUTTON_HEIGHT,
                                         bottom: 0,
                                         left: 0,
                                         opacity: isToggleRepositionActive ? 1 : BUTTON_OPACITY,
@@ -205,9 +244,9 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                 </div>
                                 <div
                                     style={{
-                                        width: TARGET_SIZE - TOGGLE_BUTTON_WIDTH,
-                                        height: TOGGLE_BUTTON_WIDTH,
-                                        bottom: TOGGLE_BUTTON_WIDTH,
+                                        width: TARGET_SIZE / 2,
+                                        height: TOGGLE_BUTTON_HEIGHT,
+                                        bottom: TOGGLE_BUTTON_HEIGHT,
                                         left: 0,
                                         opacity: isToggleArrowActive ? 1 : BUTTON_OPACITY,
                                         ...commonButtonStyle,
@@ -217,9 +256,9 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                 </div>
                                 <div
                                     style={{
-                                        width: TOGGLE_BUTTON_WIDTH,
-                                        height: TOGGLE_BUTTON_WIDTH,
-                                        bottom: TOGGLE_BUTTON_WIDTH,
+                                        width: TARGET_SIZE / 2,
+                                        height: TOGGLE_BUTTON_HEIGHT,
+                                        bottom: TOGGLE_BUTTON_HEIGHT,
                                         right: 0,
                                         opacity: isToggleAlignActive ? 1 : BUTTON_OPACITY,
                                         ...commonButtonStyle,
@@ -235,10 +274,10 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         );
     }
 
-    private isTogglingPosition: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
-    private isTogglingReposition: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
-    private isTogglingArrow: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_WIDTH) && y < TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
-    private isTogglingAlign: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE - TOGGLE_BUTTON_WIDTH && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_WIDTH) && y < TARGET_SIZE - TOGGLE_BUTTON_WIDTH;
+    private isTogglingPosition: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+    private isTogglingReposition: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+    private isTogglingArrow: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE / 2 && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_HEIGHT) && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+    private isTogglingAlign: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE / 2 && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_HEIGHT) && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
 
     private onTargetMouseDown: React.MouseEventHandler<HTMLDivElement> = e => {
         const target = e.currentTarget;
@@ -280,6 +319,9 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         this.setState({
             isTargetActive: false,
             isTogglePositionActive: false,
+            isToggleAlignActive: false,
+            isToggleArrowActive: false,
+            isToggleRepositionActive: false,
             isMouseDown: false,
             isPopoverOpen: shouldPopoverToggle
                 ? !isPopoverOpen

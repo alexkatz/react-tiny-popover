@@ -3,6 +3,7 @@ import { Position } from './index';
 export const Constants = {
     POPOVER_CLASS_NAME: 'another-react-popover-container',
     DEFAULT_PADDING: 6,
+    DEFAULT_WINDOW_PADDING: 6,
     FADE_TRANSITION: 0.35,
     DEFAULT_ARROW_COLOR: 'black',
     DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'] as Position[],

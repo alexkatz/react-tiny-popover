@@ -5,8 +5,9 @@ import Popover from '../../dist/index';
 
 const BACKGROUND_COLOR = 'rgba(100, 40, 20, 0.4)';
 const TARGET_COLOR = 'rgba(40, 20, 30, 0.4)';
+const CONTENT_COLOR = 'rgba(90, 100, 150, 1)';
 const TARGET_SIZE = 200;
-const CONTENT_SIZE = 800;
+const MODAL_PADDING = 40;
 
 interface CustomPositionDemoState {
     isPopoverOpen: boolean;
@@ -21,6 +22,7 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
 
     public render() {
         const { isTargetActive, isPopoverOpen } = this.state;
+        const CONTENT_SIZE = Math.min(window.innerWidth - (2 * MODAL_PADDING), window.innerHeight - (2 * MODAL_PADDING));
         return (
             <AutoSizer>
                 {({ width, height }) => (
@@ -38,10 +40,20 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
                                     style={{
                                         width: CONTENT_SIZE,
                                         height: CONTENT_SIZE,
-                                        backgroundColor: 'black',
+                                        backgroundColor: CONTENT_COLOR,
+                                        ...FONT,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        textAlign: 'center',
+                                        padding: MODAL_PADDING,
+                                        boxSizing: 'border-box',
                                     }}
                                     onClick={() => this.setState({ isPopoverOpen: false })}
-                                />
+                                >
+                                    I could be a modal or something! Also, try resizing your browser!
+                                Click anywhere to dismiss me.
+                                </div>
                             )}
                             locationGetter={{
                                 top: (window.innerHeight / 2) - (CONTENT_SIZE / 2),

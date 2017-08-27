@@ -36,12 +36,13 @@ const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({
                 style={{
                     position: 'absolute',
                     ...(() => {
-                        let top = (targetRect.top - popoverRect.top) + (targetRect.height / 2) - (arrowSize / 2);
-                        let left = (targetRect.left - popoverRect.left) + (targetRect.width / 2) - (arrowSize / 2);
+                        const arrowWidth = arrowSize * 2;
+                        let top = (targetRect.top - popoverRect.top) + (targetRect.height / 2) - (arrowWidth / 2);
+                        let left = (targetRect.left - popoverRect.left) + (targetRect.width / 2) - (arrowWidth / 2);
                         left = left < 0 ? 0 : left;
-                        left = left + (arrowSize * 2) > popoverRect.width ? popoverRect.width - (arrowSize * 2) : left;
+                        left = left + arrowWidth > popoverRect.width ? popoverRect.width - arrowWidth : left;
                         top = top < 0 ? 0 : top;
-                        top = top + (arrowSize * 2) > popoverRect.height ? popoverRect.height - (arrowSize * 2) : top;
+                        top = top + arrowWidth > popoverRect.height ? popoverRect.height - arrowWidth : top;
                         switch (position) {
                             case 'right':
                                 return {

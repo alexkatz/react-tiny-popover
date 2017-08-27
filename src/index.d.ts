@@ -37,6 +37,7 @@ export declare interface PopoverProps {
     containerStyle?: Partial<CSSStyleDeclaration>;
     align?: Align;
     transitionDuration?: number;
+    windowBorderPadding?: number;
 }
 
 export declare interface ArrowContainerProps {
