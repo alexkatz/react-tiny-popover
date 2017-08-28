@@ -31,8 +31,6 @@ import Popover from 'react-tiny-popover'
 <Popover
     isOpen={isPopoverOpen}
     position={'top'} // preferred position
-    padding={10} // padding between target div and appearing popover div
-    onClickOutside={() => this.setState({ isPopoverOpen: false })} // handle click events outside of the popover/target here!
     content={(
         <div>
             Hi! I'm popover content.
@@ -50,9 +48,9 @@ import Popover from 'react-tiny-popover'
 <Popover
     isOpen={isPopoverOpen}
     position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
-    padding={10}
+    padding={10} // adjust padding here!
     disableReposition
-    onClickOutside={() => this.setState({ isPopoverOpen: false })}
+    onClickOutside={() => this.setState({ isPopoverOpen: false })} // handle click events outside of the popover/target here!
     content={({ position, nudgedLeft, nudgedTop, targetRect, popoverRect }) => ( // you can also provide a render function that injects some useful stuff!
         <div>
             <div>Hi! I'm popover content. Here's my position: {position}.</div>
