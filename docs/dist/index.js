@@ -11604,6 +11604,7 @@ exports.FONT = {
     color: 'white',
     fontFamily: 'sans-serif',
     fontWeight: 100,
+    fontSize: 12,
 };
 var DemoContainer = (function (_super) {
     __extends(DemoContainer, _super);
@@ -44089,7 +44090,7 @@ var BACKGROUND_COLOR = 'rgba(40, 200, 80, 0.4)';
 var TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
 var TARGET_OPEN_COLOR = 'rgba(30, 90, 250, 0.6)';
 var TOGGLE_BUTTON_COLOR = 'rgba(30, 50, 90, 0.3)';
-var TARGET_SIZE = 250;
+var TARGET_SIZE = 180;
 var TOGGLE_BUTTON_HEIGHT = TARGET_SIZE / 4;
 var BUTTON_OPACITY = 0.65;
 var PADDING = 15;
@@ -44206,7 +44207,7 @@ var RepositionDemo = (function (_super) {
                         ":"),
                     React.createElement("td", { style: { fontSize: 25 } }, args[key]))); }))))); };
         var arrowContentRenderer = function (args) { return (React.createElement(react_tiny_popover_1.ArrowContainer, { position: args.position, arrowColor: TARGET_OPEN_COLOR, arrowSize: 20, targetRect: args.targetRect, popoverRect: args.popoverRect, arrowStyle: { opacity: 0.7 } }, contentRenderer(args))); };
-        var commonButtonStyle = __assign({ position: 'absolute', pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px' }, DemoContainer_1.FONT, DemoContainer_1.NO_SELECT);
+        var commonButtonStyle = __assign({ position: 'absolute', pointerEvents: 'none', backgroundColor: TOGGLE_BUTTON_COLOR, display: 'flex', alignItems: 'center', justifyContent: 'center' }, DemoContainer_1.FONT, DemoContainer_1.NO_SELECT);
         return (React.createElement(react_virtualized_1.AutoSizer, null, function (_a) {
             var width = _a.width, height = _a.height;
             return (React.createElement("div", { style: {
@@ -44219,7 +44220,7 @@ var RepositionDemo = (function (_super) {
                     React.createElement("div", { style: __assign({ width: TARGET_SIZE, height: TARGET_SIZE, display: 'flex', flexDirection: 'column' }, DemoContainer_1.NO_SELECT, DemoContainer_1.FONT, { cursor: 'default', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px', opacity: isTargetActive ? 0.9 : 0.7, backgroundColor: isPopoverOpen
                                 ? TARGET_OPEN_COLOR
                                 : TARGET_COLOR, position: 'absolute', left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2), top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2) }), onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
-                        React.createElement("div", { style: __assign({}, commonButtonStyle, { height: TOGGLE_BUTTON_HEIGHT, width: TARGET_SIZE, opacity: 0.7 }) }, "toggle here, drag from anywhere!"),
+                        React.createElement("div", { style: __assign({}, commonButtonStyle, { height: TOGGLE_BUTTON_HEIGHT, width: TARGET_SIZE, opacity: 0.7, boxSizing: 'border-box', padding: PADDING }) }, "drag me around and click on me and stuff!"),
                         React.createElement("div", { style: __assign({}, commonButtonStyle, { opacity: 0.7, pointerEvents: 'inherit', width: TARGET_SIZE, height: TOGGLE_BUTTON_HEIGHT, left: 0, bottom: TOGGLE_BUTTON_HEIGHT * 2, justifyContent: 'space-around' }) },
                             React.createElement("div", { style: { paddingLeft: 5, paddingRight: 5 } }, "padding:"),
                             React.createElement("div", { style: { width: 50, position: 'relative' } },

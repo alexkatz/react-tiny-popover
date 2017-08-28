@@ -19,6 +19,7 @@ export const FONT: React.CSSProperties = {
     color: 'white',
     fontFamily: 'sans-serif',
     fontWeight: 100,
+    fontSize: 12,
 };
 
 interface DemoContainerState {

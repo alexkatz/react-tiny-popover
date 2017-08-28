@@ -8,7 +8,7 @@ const TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
 const TARGET_OPEN_COLOR = 'rgba(30, 90, 250, 0.6)';
 const TOGGLE_BUTTON_COLOR = 'rgba(30, 50, 90, 0.3)';
 
-const TARGET_SIZE = 250;
+const TARGET_SIZE = 180;
 const TOGGLE_BUTTON_HEIGHT = TARGET_SIZE / 4;
 
 const BUTTON_OPACITY = 0.65;
@@ -132,7 +132,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
+            // boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
             ...FONT,
             ...NO_SELECT,
         };
@@ -186,9 +186,11 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                         height: TOGGLE_BUTTON_HEIGHT,
                                         width: TARGET_SIZE,
                                         opacity: 0.7,
+                                        boxSizing: 'border-box',
+                                        padding: PADDING,
                                     }}
                                 >
-                                    toggle here, drag from anywhere!
+                                    drag me around and click on me and stuff!
                                 </div>
                                 <div
                                     style={{
