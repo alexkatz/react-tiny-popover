@@ -84,19 +84,28 @@ class Popover extends React.Component<PopoverProps, {}> {
             if (violation && !disableReposition && !(typeof contentLocation === 'object')) {
                 this.renderPopover(positionIndex + 1);
             } else {
-                const { contentLocation } = this.props;
+                const { contentLocation, align } = this.props;
                 const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(rect);
                 const { top: rectTop, left: rectLeft } = rect;
+                const position = this.positionOrder[positionIndex];
                 let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
-                const targetRect = this.target.getBoundingClientRect();
-                const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
-                if (contentLocation) { ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect }) : contentLocation); }
+
                 this.popoverDiv.style.left = `${left.toFixed()}px`;
                 this.popoverDiv.style.top = `${top.toFixed()}px`;
+
+                if (contentLocation) {
+                    const targetRect = this.target.getBoundingClientRect();
+                    const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+                    ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect, position, align, nudgedLeft, nudgedTop }) : contentLocation);
+                    this.popoverDiv.style.left = `${left.toFixed()}px`;
+                    this.popoverDiv.style.top = `${top.toFixed()}px`;
+                }
+
                 this.popoverDiv.style.width = null;
                 this.popoverDiv.style.height = null;
+
                 this.renderWithPosition({
-                    position: this.positionOrder[positionIndex],
+                    position,
                     nudgedTop: nudgedTop - rect.top,
                     nudgedLeft: nudgedLeft - rect.left,
                     targetRect: this.target.getBoundingClientRect(),

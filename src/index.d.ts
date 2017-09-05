@@ -15,6 +15,10 @@ export interface ContentRendererArgs {
 }
 
 export interface ContentLocationGetterArgs {
+    position: Position;
+    align: Align;
+    nudgedLeft: number;
+    nudgedTop: number;
     targetRect: ClientRect;
     popoverRect: ClientRect;
 }
