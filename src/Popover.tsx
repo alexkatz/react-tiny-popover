@@ -132,10 +132,13 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
     }
 
-    private renderWithPosition({ position, nudgedLeft = 0, nudgedTop = 0, targetRect = Constants.EMPTY_CLIENT_RECT, popoverRect = Constants.EMPTY_CLIENT_RECT }: Partial<ContentRendererArgs>, callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void) {
+    private renderWithPosition(
+        { position, nudgedLeft = 0, nudgedTop = 0, targetRect = Constants.EMPTY_CLIENT_RECT, popoverRect = Constants.EMPTY_CLIENT_RECT }: Partial<ContentRendererArgs>,
+        callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void,
+    ) {
         const { windowBorderPadding: padding, content, align } = this.props;
-        const getContent: (args: ContentRendererArgs) =>
-            JSX.Element = (args) => typeof content === 'function'
+        const getContent = (args: ContentRendererArgs): JSX.Element =>
+            typeof content === 'function'
                 ? content(args)
                 : content;
 
