@@ -35,7 +35,7 @@ const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({
             <div
                 style={{
                     position: 'absolute',
-                    ...(() => {
+                    ...((): React.CSSProperties => {
                         const arrowWidth = arrowSize * 2;
                         let top = (targetRect.top - popoverRect.top) + (targetRect.height / 2) - (arrowWidth / 2);
                         let left = (targetRect.left - popoverRect.left) + (targetRect.width / 2) - (arrowWidth / 2);
