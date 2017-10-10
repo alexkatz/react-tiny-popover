@@ -21,23 +21,19 @@ class Popover extends React.Component<PopoverProps, {}> {
     };
 
     public componentDidMount() {
-        if (window) {
-            window.setTimeout(() => this.willMount = false);
-            const { position, isOpen } = this.props;
-            this.target = findDOMNode(this);
-            this.positionOrder = this.getPositionPriorityOrder(position);
-            this.updatePopover(isOpen);
-        }
+        window.setTimeout(() => this.willMount = false);
+        const { position, isOpen } = this.props;
+        this.target = findDOMNode(this);
+        this.positionOrder = this.getPositionPriorityOrder(position);
+        this.updatePopover(isOpen);
     }
 
     public componentDidUpdate(prevProps: PopoverProps) {
-        if (window) {
-            const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
-            const { isOpen, content, position } = this.props;
-            this.positionOrder = this.getPositionPriorityOrder(this.props.position);
-            if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
-                this.updatePopover(isOpen);
-            }
+        const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
+        const { isOpen, content, position } = this.props;
+        this.positionOrder = this.getPositionPriorityOrder(this.props.position);
+        if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
+            this.updatePopover(isOpen);
         }
     }
 
