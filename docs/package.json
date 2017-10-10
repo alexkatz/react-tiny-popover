@@ -4,13 +4,13 @@
   "main": "dist/index.js",
   "license": "MIT",
   "devDependencies": {
-    "@types/react": "^16.0.2",
-    "@types/react-dom": "^15.5.2",
-    "@types/react-virtualized": "^9.7.3",
-    "awesome-typescript-loader": "^3.2.2",
-    "source-map-loader": "^0.2.1",
-    "tslint": "^5.6.0",
-    "typescript": "^2.4.2",
+    "@types/react": "^16.0.10",
+    "@types/react-dom": "^16.0.1",
+    "@types/react-virtualized": "^9.7.4",
+    "awesome-typescript-loader": "^3.2.3",
+    "source-map-loader": "^0.2.2",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.3",
     "webpack": "^3.5.3",
     "webpack-dev-server": "^2.7.1"
   },
@@ -18,9 +18,9 @@
     "start": "webpack-dev-server --inline --hot"
   },
   "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-tiny-popover": "^1.0.2",
-    "react-virtualized": "^9.9.0"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-tiny-popover": "^3.2.2",
+    "react-virtualized": "^9.10.1"
   }
 }
