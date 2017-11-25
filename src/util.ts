@@ -16,3 +16,6 @@ export const Constants = {
         width: 0,
     } as ClientRect,
 };
+
+export const arrayUnique = (array: T[]) => array.filter(
+    (value: any, index: number, self: T[]) => self.indexOf(value) === index);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { findDOMNode, render } from 'react-dom';
-import { Constants } from './util';
+import { Constants, arrayUnique } from './util';
 import { ArrowContainer } from './ArrowContainer';
 import { PopoverProps, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
 
@@ -175,7 +175,9 @@ class Popover extends React.Component<PopoverProps, {}> {
                     window.removeEventListener('resize', this.onResize);
                     window.removeEventListener('click', this.onClick);
                     this.targetPositionIntervalHandler = null;
-                    this.popoverDiv.remove();
+                    if (this.popoverDiv.parentNode) {
+                        this.popoverDiv.parentNode.removeChild(this.popoverDiv);
+                    }
                 }
             };
             if (!this.willUnmount) {
@@ -200,14 +202,14 @@ class Popover extends React.Component<PopoverProps, {}> {
     private getPositionPriorityOrder(position: Position | Position[]): Position[] {
         if (position && typeof position !== 'string') {
             if (Constants.DEFAULT_POSITIONS.every(defaultPosition => position.find(p => p === defaultPosition) !== undefined)) {
-                return Array.from(new Set(position));
+                return arrayUnique(position);
             } else {
                 const remainingPositions = Constants.DEFAULT_POSITIONS.filter(defaultPosition => position.find(p => p === defaultPosition) === undefined);
-                return Array.from(new Set([...position, ...remainingPositions]));
+                return arrayUnique([...position, ...remainingPositions]);
             }
         } else if (position && typeof position === 'string') {
             const remainingPositions = Constants.DEFAULT_POSITIONS.filter(defaultPosition => defaultPosition !== position);
-            return Array.from(new Set([position, ...remainingPositions]));
+            return arrayUnique([position, ...remainingPositions]);
         }
     }
 
