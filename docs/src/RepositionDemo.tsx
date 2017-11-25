@@ -37,8 +37,8 @@ interface DemoState {
 }
 
 class RepositionDemo extends React.Component<{}, DemoState> {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             targetX: null,
             targetY: null,
@@ -290,9 +290,9 @@ class RepositionDemo extends React.Component<{}, DemoState> {
 
         this.setState({
             isTargetActive: !isTogglePositionActive
-            && !isToggleRepositionActive
-            && !isToggleArrowActive
-            && !isToggleAlignActive,
+                && !isToggleRepositionActive
+                && !isToggleArrowActive
+                && !isToggleAlignActive,
             isTogglePositionActive,
             isToggleRepositionActive,
             isToggleArrowActive,

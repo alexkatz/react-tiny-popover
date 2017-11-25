@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { AutoSizer } from 'react-virtualized';
 import { FONT, NO_SELECT } from './DemoContainer';
-import Popover from '../../dist/index';
+import Popover from 'react-tiny-popover';
+
+console.log(Popover);
 
 const BACKGROUND_COLOR = 'rgba(100, 40, 20, 0.4)';
 const TARGET_COLOR = 'rgba(40, 20, 30, 0.4)';
@@ -15,8 +17,8 @@ interface CustomPositionDemoState {
 }
 
 class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { isPopoverOpen: false, isTargetActive: false };
     }
 

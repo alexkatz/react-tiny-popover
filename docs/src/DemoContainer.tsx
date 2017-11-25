@@ -27,8 +27,8 @@ interface DemoContainerState {
 }
 
 class DemoContainer extends React.Component<{}, DemoContainerState> {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { tabIndex: 0 };
     }
     public render() {

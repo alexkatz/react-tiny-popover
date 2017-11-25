@@ -5,22 +5,22 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^16.0.2",
-    "@types/react-dom": "^15.5.2",
-    "@types/react-virtualized": "^9.7.3",
-    "awesome-typescript-loader": "^3.2.2",
-    "source-map-loader": "^0.2.1",
+    "@types/react-dom": "^16.0.3",
+    "@types/react-virtualized": "^9.7.7",
+    "awesome-typescript-loader": "^3.4.0",
+    "source-map-loader": "^0.2.3",
     "tslint": "^5.6.0",
-    "typescript": "^2.4.2",
-    "webpack": "^3.5.3",
-    "webpack-dev-server": "^2.7.1"
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
     "start": "webpack-dev-server --inline --hot"
   },
   "dependencies": {
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-tiny-popover": "^1.0.2",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "react-tiny-popover": "^3.2.2",
     "react-virtualized": "^9.9.0"
   }
 }
