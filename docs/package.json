@@ -17,10 +17,12 @@
   "scripts": {
     "start": "webpack-dev-server --inline --hot"
   },
+  "peerDependencies": {
+    "react": "^15.6.1 || ^16.1.1",
+    "react-dom": "^15.6.1 || ^16.1.1"
+  },
   "dependencies": {
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1",
-    "react-tiny-popover": "^3.2.2",
+    "react-tiny-popover": "file:../../react-tiny-popover",
     "react-virtualized": "^9.9.0"
   }
 }
