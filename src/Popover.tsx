@@ -217,6 +217,8 @@ class Popover extends React.Component<PopoverProps, {}> {
         const { containerStyle } = this.props;
         const container = window.document.createElement('div');
 
+        container.style.overflow = 'hidden';
+
         if (containerStyle) {
             Object.keys(containerStyle).forEach(key => container.style[key as any] = (containerStyle as CSSStyleDeclaration)[key as any]);
         }
@@ -225,7 +227,6 @@ class Popover extends React.Component<PopoverProps, {}> {
         container.style.position = 'absolute';
         container.style.top = '0';
         container.style.left = '0';
-        container.style.overflow = 'hidden';
 
         return container;
     }
