@@ -59,6 +59,14 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         };
     }
 
+    public componentDidMount() {
+        window.addEventListener('mousemove', this.onMouseMove);
+    }
+
+    public componentWillUnmount() {
+        window.removeEventListener('mousemove', this.onMouseMove);
+    }
+
     public render() {
         const {
             targetX,
@@ -147,8 +155,8 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                             height,
                             backgroundColor: BACKGROUND_COLOR,
                             overflowY: 'auto',
+                            overflowX: 'hidden',
                         }}
-                        onMouseMove={this.onMouseMove}
                     >
                         <div
                             style={{
@@ -197,7 +205,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                         }}
                                     >
                                         drag me around and click on me and stuff!
-                                </div>
+                                    </div>
                                     <div
                                         style={{
                                             ...commonButtonStyle,
@@ -289,7 +297,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
     private onTargetMouseDown: React.MouseEventHandler<HTMLDivElement> = e => {
         const target = e.currentTarget;
         const targetClickOffsetX = e.clientX - target.offsetLeft;
-        const targetClickOffsetY = e.clientY - target.offsetTop - target.parentElement.offsetTop;
+        const targetClickOffsetY = e.clientY - target.offsetTop;
         const isTogglePositionActive = this.isTogglingPosition(targetClickOffsetX, targetClickOffsetY);
         const isToggleRepositionActive = this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
         const isToggleArrowActive = this.isTogglingArrow(targetClickOffsetX, targetClickOffsetY);
@@ -314,7 +322,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         const { isPopoverOpen, isTargetActive, isTogglePositionActive, isToggleRepositionActive, isToggleAlignActive, isToggleArrowActive, repositionEnabled, positionIndex, showArrow, align } = this.state;
         const target = e.currentTarget;
         const targetClickOffsetX = e.clientX - target.offsetLeft;
-        const targetClickOffsetY = e.clientY - target.offsetTop - target.parentElement.offsetTop;
+        const targetClickOffsetY = e.clientY - target.offsetTop;
         const shouldPopoverToggle = isTargetActive;
         const shouldTogglePosition = isTogglePositionActive;
         const shouldToggleReposition = isToggleRepositionActive;
@@ -348,7 +356,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         });
     }
 
-    private onMouseMove: React.MouseEventHandler<HTMLDivElement> = e => {
+    private onMouseMove = (e: MouseEvent) => {
         const { isMouseDown, targetClickOffsetX, targetClickOffsetY } = this.state;
         if (isMouseDown) {
             this.setState({
@@ -357,7 +365,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                 isToggleRepositionActive: false,
                 isToggleArrowActive: false,
                 isToggleAlignActive: false,
-                targetY: e.clientY - targetClickOffsetY - 70,
+                targetY: e.clientY - targetClickOffsetY,
                 targetX: e.clientX - targetClickOffsetX,
             });
         }
