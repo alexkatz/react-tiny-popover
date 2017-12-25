@@ -90,8 +90,9 @@ class Popover extends React.Component<PopoverProps, {}> {
                 const position = this.positionOrder[positionIndex];
                 let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
 
-                this.popoverDiv.style.left = `${left.toFixed()}px`;
-                this.popoverDiv.style.top = `${top.toFixed()}px`;
+                const [absoluteTop, absoluteLeft] = [top + window.scrollY, left + window.scrollX];
+                this.popoverDiv.style.left = `${absoluteLeft.toFixed()}px`;
+                this.popoverDiv.style.top = `${absoluteTop.toFixed()}px`;
 
                 if (contentLocation) {
                     const targetRect = this.target.getBoundingClientRect();

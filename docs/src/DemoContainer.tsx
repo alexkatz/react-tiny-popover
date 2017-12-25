@@ -41,8 +41,6 @@ class DemoContainer extends React.Component<{}, DemoContainerState> {
                             position: 'fixed',
                             width,
                             height,
-                            display: 'flex',
-                            flexDirection: 'column',
                         }}
                     >
                         <div
@@ -50,6 +48,11 @@ class DemoContainer extends React.Component<{}, DemoContainerState> {
                                 height: 70,
                                 backgroundColor: TABS_BACKGROUND_COLOR,
                                 display: 'flex',
+                                position: 'fixed',
+                                width: '100%',
+                                top: 0,
+                                left: 0,
+                                zIndex: 2,
                             }}
                         >
                             {
@@ -75,7 +78,15 @@ class DemoContainer extends React.Component<{}, DemoContainerState> {
                                 ))
                             }
                         </div>
-                        <div style={{ flex: 'auto' }}>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                            }}
+                        >
                             {tabIndex === 0 && (
                                 <RepositionDemo />
                             )}
