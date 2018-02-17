@@ -18,6 +18,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         windowBorderPadding: Constants.DEFAULT_WINDOW_PADDING,
         position: ['top', 'right', 'left', 'bottom'],
         align: 'center',
+        containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
     };
 
     public componentDidMount() {
@@ -211,7 +212,7 @@ class Popover extends React.Component<PopoverProps, {}> {
     }
 
     private createContainer(): HTMLDivElement {
-        const { containerStyle } = this.props;
+        const { containerStyle, containerClassName } = this.props;
         const container = window.document.createElement('div');
 
         container.style.overflow = 'hidden';
@@ -220,7 +221,7 @@ class Popover extends React.Component<PopoverProps, {}> {
             Object.keys(containerStyle).forEach(key => container.style[key as any] = (containerStyle as CSSStyleDeclaration)[key as any]);
         }
 
-        container.className = Constants.POPOVER_CLASS_NAME;
+        container.className = containerClassName;
         container.style.position = 'absolute';
         container.style.top = '0';
         container.style.left = '0';

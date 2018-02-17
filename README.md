@@ -111,6 +111,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 |disableReposition|```boolean```||If this property is enabled, rather than the popover content repositioning on a boundary collision, the popover content container will move beyond the window's bounds. You are, however, supplied with ```nudgedLeft``` and ```nudgedTop``` values, so you may choose to handle content overflow as you wish.|
 |transitionDuration|```number```||The length of the popover content's fade transition in seconds. Defaults to 0.35.|
 |containerStyle|```object``` (```CSSStyleDeclaration```)||Your popover content is rendered to the DOM in a single container ```div```. If you'd like to apply style directly to this container ```div```, you may do so here! Be aware that as this ```div``` is a DOM element and not a React element, all style values must be strings. For example, 5 pixels must be represented as ```'5px'```, as you'd do with vanilla DOM manipulation in Javascript.|
+|containerClassName|```string```||If you'd like to apply styles to the single container ```div``` that your popover content is rendered within via stylesheets, you can specify a custom className for the container here.
 
 ### ArrowContainer
 |<b>Property<b>|Type|Required|Description|                                  

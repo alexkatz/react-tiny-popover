@@ -1,5 +1,5 @@
 {
-  "name": "another-react-popover-demo",
+  "name": "react-tiny-popover-demo",
   "version": "1.0.0",
   "main": "dist/index.js",
   "license": "MIT",
@@ -20,7 +20,7 @@
   "dependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-tiny-popover": "^3.2.2",
+    "react-tiny-popover": "latest",
     "react-virtualized": "^9.10.1"
   }
 }

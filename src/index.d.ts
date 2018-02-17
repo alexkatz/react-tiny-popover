@@ -38,6 +38,7 @@ export declare interface PopoverProps {
     position?: Position | Position[];
     onClickOutside?: (e: MouseEvent) => void;
     disableReposition?: boolean;
+    containerClassName?: string;
     containerStyle?: Partial<CSSStyleDeclaration>;
     align?: Align;
     transitionDuration?: number;
