@@ -1,7 +1,7 @@
 import { Position } from './index';
 
 export const Constants = {
-    POPOVER_CLASS_NAME: 'another-react-popover-container',
+    POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
     DEFAULT_PADDING: 6,
     DEFAULT_WINDOW_PADDING: 6,
     FADE_TRANSITION: 0.35,

@@ -15,8 +15,8 @@ interface CustomPositionDemoState {
 }
 
 class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { isPopoverOpen: false, isTargetActive: false };
     }
 

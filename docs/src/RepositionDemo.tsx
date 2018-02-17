@@ -37,8 +37,8 @@ interface DemoState {
 }
 
 class RepositionDemo extends React.Component<{}, DemoState> {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             targetX: null,
             targetY: null,
