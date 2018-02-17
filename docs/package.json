@@ -8,6 +8,8 @@
     "@types/react-dom": "^16.0.1",
     "@types/react-virtualized": "^9.7.4",
     "awesome-typescript-loader": "^3.2.3",
+    "html-string-replace-webpack-plugin": "^1.0.5",
+    "html-webpack-plugin": "^2.30.1",
     "source-map-loader": "^0.2.2",
     "tslint": "^5.7.0",
     "typescript": "^2.5.3",

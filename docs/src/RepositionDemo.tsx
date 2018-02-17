@@ -172,6 +172,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                 align={align}
                                 padding={isNaN(Number(paddingText)) ? DEFAULT_POPOVER_PADDING : Number(paddingText)}
                                 transitionDuration={0.5}
+                                containerClassName={'reposition-demo-popover-container'}
                             >
                                 <div
                                     style={{
