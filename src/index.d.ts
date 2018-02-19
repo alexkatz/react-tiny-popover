@@ -58,3 +58,5 @@ export declare interface ArrowContainerProps {
 
 export declare const ArrowContainer: React.StatelessComponent<ArrowContainerProps>;
 export default class Popover extends React.Component<PopoverProps> { }
+export declare class PortalPopover extends React.Component<Partial<PopoverProps>> { }
+

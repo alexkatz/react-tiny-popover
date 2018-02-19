@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Popover, { Position, ArrowContainer, ContentRendererArgs, Align } from 'react-tiny-popover';
+import Popover, { Position, ArrowContainer, ContentRendererArgs, Align, PortalPopover } from 'react-tiny-popover';
 import { AutoSizer } from 'react-virtualized';
 import { FONT, NO_SELECT } from './DemoContainer';
 
@@ -82,7 +82,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             showArrow,
             align,
             paddingText,
-             } = this.state;
+        } = this.state;
         const positions: Position[] = ['top', 'right', 'bottom', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
 
@@ -163,7 +163,138 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                 height: 2000,
                             }}
                         >
-                            <Popover
+                            <PortalPopover
+                                isOpen={isPopoverOpen}
+                                onClickOutside={() => this.setState({ isPopoverOpen: false })}
+                                disableReposition={!repositionEnabled}
+                                // content={showArrow ? arrowContentRenderer : contentRenderer}
+                                position={currentPosition}
+                                align={align}
+                                padding={isNaN(Number(paddingText)) ? DEFAULT_POPOVER_PADDING : Number(paddingText)}
+                                transitionDuration={0.5}
+                                containerClassName={'reposition-demo-popover-container'}
+                                content={(
+                                    <div
+                                        style={{
+                                            width: 300,
+                                            height: 300,
+                                            backgroundColor: 'red',
+                                        }}
+                                    >
+
+                                    </div>
+                                )}
+                            >
+                                <div
+                                    style={{
+                                        width: TARGET_SIZE,
+                                        height: TARGET_SIZE,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        ...NO_SELECT,
+                                        ...FONT,
+                                        cursor: 'default',
+                                        boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
+                                        opacity: isTargetActive ? 0.9 : 0.7,
+                                        backgroundColor: isPopoverOpen
+                                            ? TARGET_OPEN_COLOR
+                                            : TARGET_COLOR,
+                                        position: 'absolute',
+                                        left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2),
+                                        top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2),
+                                    }}
+                                    onMouseDown={this.onTargetMouseDown}
+                                    onMouseUp={this.onTargetMouseUp}
+                                >
+                                    <div
+                                        style={{
+                                            ...commonButtonStyle,
+                                            height: TOGGLE_BUTTON_HEIGHT,
+                                            width: TARGET_SIZE,
+                                            opacity: 0.7,
+                                            boxSizing: 'border-box',
+                                            padding: PADDING,
+                                        }}
+                                    >
+                                        drag me around and click on me and stuff!
+                                    </div>
+                                    <div
+                                        style={{
+                                            ...commonButtonStyle,
+                                            opacity: 0.7,
+                                            pointerEvents: 'inherit',
+                                            width: TARGET_SIZE,
+                                            height: TOGGLE_BUTTON_HEIGHT,
+                                            left: 0,
+                                            bottom: TOGGLE_BUTTON_HEIGHT * 2,
+                                            justifyContent: 'space-around',
+                                        }}
+                                    >
+                                        <div style={{ paddingLeft: 5, paddingRight: 5 }}>padding:</div>
+                                        <div style={{ width: 50, position: 'relative' }}>
+                                            <input
+                                                style={{
+                                                    width: '100%',
+                                                }}
+                                                type='text'
+                                                onMouseDown={e => e.stopPropagation()}
+                                                onMouseUp={e => e.stopPropagation()}
+                                                value={paddingText}
+                                                onChange={e => this.setState({ paddingText: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: TARGET_SIZE / 2,
+                                            height: TOGGLE_BUTTON_HEIGHT,
+                                            bottom: 0,
+                                            right: 0,
+                                            opacity: isTogglePositionActive ? 1 : BUTTON_OPACITY,
+                                            ...commonButtonStyle,
+                                        }}
+                                    >
+                                        {currentPosition}
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: TARGET_SIZE / 2,
+                                            height: TOGGLE_BUTTON_HEIGHT,
+                                            bottom: 0,
+                                            left: 0,
+                                            opacity: isToggleRepositionActive ? 1 : BUTTON_OPACITY,
+                                            ...commonButtonStyle,
+                                        }}
+                                    >
+                                        {repositionEnabled ? 'reposition' : 'no reposition'}
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: TARGET_SIZE / 2,
+                                            height: TOGGLE_BUTTON_HEIGHT,
+                                            bottom: TOGGLE_BUTTON_HEIGHT,
+                                            left: 0,
+                                            opacity: isToggleArrowActive ? 1 : BUTTON_OPACITY,
+                                            ...commonButtonStyle,
+                                        }}
+                                    >
+                                        {showArrow ? 'arrow' : 'no arrow'}
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: TARGET_SIZE / 2,
+                                            height: TOGGLE_BUTTON_HEIGHT,
+                                            bottom: TOGGLE_BUTTON_HEIGHT,
+                                            right: 0,
+                                            opacity: isToggleAlignActive ? 1 : BUTTON_OPACITY,
+                                            ...commonButtonStyle,
+                                        }}
+                                    >
+                                        {align}
+                                    </div>
+                                </div>
+                            </PortalPopover>
+                            {/* <PortalPopover
                                 isOpen={isPopoverOpen}
                                 onClickOutside={() => this.setState({ isPopoverOpen: false })}
                                 disableReposition={!repositionEnabled}
@@ -282,7 +413,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                                         {align}
                                     </div>
                                 </div>
-                            </Popover>
+                            </PortalPopover> */}
                         </div>
                     </div >
                 )}

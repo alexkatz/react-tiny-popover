@@ -23,8 +23,8 @@
     "start-demo": "cd docs && yarn start"
   },
   "devDependencies": {
-    "@types/react": "^16.0.2",
-    "@types/react-dom": "^16.0.1",
+    "@types/react": "^16.0.38",
+    "@types/react-dom": "^16.0.4",
     "awesome-typescript-loader": "^3.2.3",
     "copy-webpack-plugin": "^4.0.1",
     "react": "^16.2.0",

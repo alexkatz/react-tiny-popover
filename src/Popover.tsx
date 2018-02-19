@@ -3,6 +3,7 @@ import { findDOMNode, render } from 'react-dom';
 import { Constants, arrayUnique } from './util';
 import { ArrowContainer } from './ArrowContainer';
 import { PopoverProps, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
+import { PortalPopover } from './PortalPopover';
 
 class Popover extends React.Component<PopoverProps, {}> {
     private target: Element = null;
@@ -274,5 +275,5 @@ class Popover extends React.Component<PopoverProps, {}> {
     }
 }
 
-export { ArrowContainer };
+export { ArrowContainer, PortalPopover };
 export default Popover;
