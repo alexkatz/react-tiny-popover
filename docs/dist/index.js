@@ -7330,7 +7330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -7362,21 +7362,24 @@ exports.Constants = {
         width: 0,
     },
 };
-function arrayUnique(array) {
-    return array.filter(function (value, index, self) { return self.indexOf(value) === index; });
-}
-exports.arrayUnique = arrayUnique;
+exports.arrayUnique = function (array) { return array.filter(function (value, index, self) { return self.indexOf(value) === index; }); };
 
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__(3);
-
+module.exports = __webpack_require__(226);
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(4);
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7393,7 +7396,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var react_dom_1 = __webpack_require__(4);
+var react_dom_1 = __webpack_require__(2);
 var util_1 = __webpack_require__(1);
 var ArrowContainer_1 = __webpack_require__(5);
 exports.ArrowContainer = ArrowContainer_1.ArrowContainer;
@@ -7481,15 +7484,17 @@ var Popover = /** @class */ (function (_super) {
                 var rectTop = rect.top, rectLeft = rect.left;
                 var position = _this.positionOrder[positionIndex];
                 var _d = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft }, top_1 = _d.top, left = _d.left;
-                var _e = [top_1 + window.scrollY, left + window.scrollX], absoluteTop = _e[0], absoluteLeft = _e[1];
-                _this.popoverDiv.style.left = absoluteLeft.toFixed() + "px";
-                _this.popoverDiv.style.top = absoluteTop.toFixed() + "px";
                 if (contentLocation_1) {
                     var targetRect = _this.target.getBoundingClientRect();
                     var popoverRect = _this.popoverDiv.firstChild.getBoundingClientRect();
-                    (_f = typeof contentLocation_1 === 'function' ? contentLocation_1({ targetRect: targetRect, popoverRect: popoverRect, position: position, align: align, nudgedLeft: nudgedLeft, nudgedTop: nudgedTop }) : contentLocation_1, top_1 = _f.top, left = _f.left);
+                    (_e = typeof contentLocation_1 === 'function' ? contentLocation_1({ targetRect: targetRect, popoverRect: popoverRect, position: position, align: align, nudgedLeft: nudgedLeft, nudgedTop: nudgedTop }) : contentLocation_1, top_1 = _e.top, left = _e.left);
                     _this.popoverDiv.style.left = left.toFixed() + "px";
                     _this.popoverDiv.style.top = top_1.toFixed() + "px";
+                }
+                else {
+                    var _f = [top_1 + window.scrollY, left + window.scrollX], absoluteTop = _f[0], absoluteLeft = _f[1];
+                    _this.popoverDiv.style.left = absoluteLeft.toFixed() + "px";
+                    _this.popoverDiv.style.top = absoluteTop.toFixed() + "px";
                 }
                 _this.popoverDiv.style.width = null;
                 _this.popoverDiv.style.height = null;
@@ -7506,7 +7511,7 @@ var Popover = /** @class */ (function (_super) {
                     }
                 });
             }
-            var _f;
+            var _e;
         });
     };
     Popover.prototype.startTargetPositionListener = function (checkInterval) {
@@ -7530,7 +7535,7 @@ var Popover = /** @class */ (function (_super) {
                 ? content(args)
                 : content;
         };
-        react_dom_1.render(getContent({ position: position, nudgedLeft: nudgedLeft, nudgedTop: nudgedTop, targetRect: targetRect, popoverRect: popoverRect, align: align }), this.popoverDiv, function () {
+        react_dom_1.unstable_renderSubtreeIntoContainer(this, getContent({ position: position, nudgedLeft: nudgedLeft, nudgedTop: nudgedTop, targetRect: targetRect, popoverRect: popoverRect, align: align }), this.popoverDiv, function () {
             var targetRect = _this.target.getBoundingClientRect();
             var popoverRect = _this.popoverDiv.firstChild.getBoundingClientRect();
             var _a = _this.getLocationForPosition(position, targetRect, popoverRect), top = _a.top, left = _a.left;
@@ -7669,12 +7674,6 @@ var Popover = /** @class */ (function (_super) {
 }(React.Component));
 exports.default = Popover;
 
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __webpack_require__(226);
 
 /***/ }),
 /* 5 */
@@ -32726,7 +32725,7 @@ var RepositionDemo = /** @class */ (function (_super) {
                 React.createElement("div", { style: {
                         height: 2000,
                     } },
-                    React.createElement(react_tiny_popover_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, disableReposition: !repositionEnabled, content: showArrow ? arrowContentRenderer : contentRenderer, position: currentPosition, align: align, padding: isNaN(Number(paddingText)) ? DEFAULT_POPOVER_PADDING : Number(paddingText), transitionDuration: 0.5 },
+                    React.createElement(react_tiny_popover_1.default, { isOpen: isPopoverOpen, onClickOutside: function () { return _this.setState({ isPopoverOpen: false }); }, disableReposition: !repositionEnabled, content: showArrow ? arrowContentRenderer : contentRenderer, position: currentPosition, align: align, padding: isNaN(Number(paddingText)) ? DEFAULT_POPOVER_PADDING : Number(paddingText), transitionDuration: 0.5, containerClassName: 'reposition-demo-popover-container' },
                         React.createElement("div", { style: __assign({ width: TARGET_SIZE, height: TARGET_SIZE, display: 'flex', flexDirection: 'column' }, DemoContainer_1.NO_SELECT, DemoContainer_1.FONT, { cursor: 'default', boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px', opacity: isTargetActive ? 0.9 : 0.7, backgroundColor: isPopoverOpen
                                     ? TARGET_OPEN_COLOR
                                     : TARGET_COLOR, position: 'absolute', left: targetX !== null ? targetX : (width / 2) - (TARGET_SIZE / 2), top: targetY !== null ? targetY : (height / 2) - (TARGET_SIZE / 2) }), onMouseDown: _this.onTargetMouseDown, onMouseUp: _this.onTargetMouseUp },
