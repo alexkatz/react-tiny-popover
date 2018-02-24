@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { findDOMNode, render } from 'react-dom';
+import { findDOMNode, unstable_renderSubtreeIntoContainer } from 'react-dom';
 import { Constants, arrayUnique } from './util';
 import { ArrowContainer } from './ArrowContainer';
 import { PopoverProps, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
@@ -87,16 +87,16 @@ class Popover extends React.Component<PopoverProps, {}> {
                 const position = this.positionOrder[positionIndex];
                 let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
 
-                const [absoluteTop, absoluteLeft] = [top + window.scrollY, left + window.scrollX];
-                this.popoverDiv.style.left = `${absoluteLeft.toFixed()}px`;
-                this.popoverDiv.style.top = `${absoluteTop.toFixed()}px`;
-
                 if (contentLocation) {
                     const targetRect = this.target.getBoundingClientRect();
                     const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
                     ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect, position, align, nudgedLeft, nudgedTop }) : contentLocation);
                     this.popoverDiv.style.left = `${left.toFixed()}px`;
                     this.popoverDiv.style.top = `${top.toFixed()}px`;
+                } else {
+                    const [absoluteTop, absoluteLeft] = [top + window.scrollY, left + window.scrollX];
+                    this.popoverDiv.style.left = `${absoluteLeft.toFixed()}px`;
+                    this.popoverDiv.style.top = `${absoluteTop.toFixed()}px`;
                 }
 
                 this.popoverDiv.style.width = null;
@@ -140,7 +140,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 ? content(args)
                 : content;
 
-        render(getContent({ position, nudgedLeft, nudgedTop, targetRect, popoverRect, align }), this.popoverDiv, () => {
+        unstable_renderSubtreeIntoContainer(this, getContent({ position, nudgedLeft, nudgedTop, targetRect, popoverRect, align }), this.popoverDiv, () => {
             const targetRect = this.target.getBoundingClientRect();
             const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
