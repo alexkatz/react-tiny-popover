@@ -172,6 +172,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 if (this.willUnmount || !this.props.isOpen || !this.popoverDiv.parentNode) {
                     window.clearInterval(this.targetPositionIntervalHandler);
                     window.removeEventListener('resize', this.onResize);
+                    window.removeEventListener('scroll', this.onResize);
                     window.removeEventListener('click', this.onClick);
                     this.targetPositionIntervalHandler = null;
                     if (this.popoverDiv.parentNode) {
