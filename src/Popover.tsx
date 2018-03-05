@@ -61,6 +61,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
                 window.document.body.appendChild(this.popoverDiv);
                 window.addEventListener('resize', this.onResize);
+                window.addEventListener('scroll', this.onResize);
                 window.addEventListener('click', this.onClick);
             }
             this.renderPopover();
