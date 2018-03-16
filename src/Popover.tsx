@@ -19,6 +19,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         position: ['top', 'right', 'left', 'bottom'],
         align: 'center',
         containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
+        delay: 0,
     };
 
     public componentDidMount() {
@@ -63,7 +64,9 @@ class Popover extends React.Component<PopoverProps, {}> {
                 window.addEventListener('resize', this.onResize);
                 window.addEventListener('click', this.onClick);
             }
-            this.renderPopover();
+            window.setTimeout(() => {
+                this.renderPopover();
+            }, this.props.delay);
         } else if (this.popoverDiv && this.popoverDiv.parentNode) {
             this.removePopover();
         }

@@ -43,6 +43,7 @@ export declare interface PopoverProps {
     align?: Align;
     transitionDuration?: number;
     windowBorderPadding?: number;
+    delay?: number;
 }
 
 export declare interface ArrowContainerProps {
