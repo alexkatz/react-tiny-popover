@@ -24,7 +24,7 @@ class Popover extends React.Component<PopoverProps, {}> {
     public componentDidMount() {
         window.setTimeout(() => this.willMount = false);
         const { position, isOpen } = this.props;
-        this.target = findDOMNode(this);
+        this.target = findDOMNode(this) as Element;
         this.positionOrder = this.getPositionPriorityOrder(position);
         this.updatePopover(isOpen);
     }
