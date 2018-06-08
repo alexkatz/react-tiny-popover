@@ -94,7 +94,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                     this.popoverDiv.style.left = `${left.toFixed()}px`;
                     this.popoverDiv.style.top = `${top.toFixed()}px`;
                 } else {
-                    const [absoluteTop, absoluteLeft] = [top + window.scrollY, left + window.scrollX];
+                    const [absoluteTop, absoluteLeft] = [top + window.pageYOffset, left + window.pageXOffset];
                     this.popoverDiv.style.left = `${absoluteLeft.toFixed()}px`;
                     this.popoverDiv.style.top = `${absoluteTop.toFixed()}px`;
                 }
