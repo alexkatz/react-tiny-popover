@@ -58,7 +58,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 const { transitionDuration } = this.props;
                 this.popoverDiv = this.createContainer();
                 this.popoverDiv.style.opacity = '0';
-                this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
+                this.popoverDiv.style.transition = `opacity ${!isNaN(transitionDuration) ? transitionDuration : Constants.FADE_TRANSITION}s`;
                 if (this.props.parent) {
                     this.props.parent.appendChild(this.popoverDiv);
                 } else {
