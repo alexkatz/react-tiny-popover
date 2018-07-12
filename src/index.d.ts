@@ -30,6 +30,7 @@ export declare type Position = 'left' | 'right' | 'top' | 'bottom';
 export declare type Align = 'start' | 'center' | 'end';
 
 export declare interface PopoverProps {
+    parent: Element;
     children: JSX.Element;
     isOpen: boolean;
     content: ContentRenderer | JSX.Element;

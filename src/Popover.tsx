@@ -59,7 +59,11 @@ class Popover extends React.Component<PopoverProps, {}> {
                 this.popoverDiv = this.createContainer();
                 this.popoverDiv.style.opacity = '0';
                 this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
-                window.document.body.appendChild(this.popoverDiv);
+                if (this.props.parent) {
+                    this.props.parent.appendChild(this.popoverDiv);
+                } else {
+                    window.document.body.appendChild(this.popoverDiv);
+                }
                 window.addEventListener('resize', this.onResize);
                 window.addEventListener('click', this.onClick);
             }
@@ -215,16 +219,17 @@ class Popover extends React.Component<PopoverProps, {}> {
         const { containerStyle, containerClassName } = this.props;
         const container = window.document.createElement('div');
 
+        container.className = containerClassName;
+        container.style.position = 'fixed';
+        container.style.zIndex = '1';
+
+        container.style.top = '0';
+        container.style.left = '0';
         container.style.overflow = 'hidden';
 
         if (containerStyle) {
             Object.keys(containerStyle).forEach(key => container.style[key as any] = (containerStyle as CSSStyleDeclaration)[key as any]);
         }
-
-        container.className = containerClassName;
-        container.style.position = 'absolute';
-        container.style.top = '0';
-        container.style.left = '0';
 
         return container;
     }
