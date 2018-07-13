@@ -20,7 +20,7 @@
   "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",
   "scripts": {
     "prepare": "webpack",
-    "watch": "webpack --watch",
+    "watch": "webpack --watch --mode=development",
     "start-demo": "cd docs && yarn start"
   },
   "devDependencies": {
@@ -34,7 +34,8 @@
     "tslint": "^5.7.0",
     "tslint-react": "^3.2.0",
     "typescript": "^2.5.3",
-    "webpack": "^3.6.0"
+    "webpack": "^4",
+    "webpack-cli": "^3.0.3"
   },
   "peerDependencies": {
     "react": "^15.6.1 || ^16.0.0",
