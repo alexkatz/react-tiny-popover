@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/alexkatz/react-tiny-popover.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/Popover.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "react",
