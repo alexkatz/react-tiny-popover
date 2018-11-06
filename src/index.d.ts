@@ -33,6 +33,7 @@ export declare interface PopoverProps {
     children: JSX.Element;
     isOpen: boolean;
     content: ContentRenderer | JSX.Element;
+    contentDestination?: HTMLElement;
     contentLocation?: ContentLocationGetter | ContentLocation;
     padding?: number;
     position?: Position | Position[];
