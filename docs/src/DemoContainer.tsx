@@ -6,11 +6,9 @@ import { CustomPositionDemo } from './CustomPositionDemo';
 const TABS_BACKGROUND_COLOR = 'rgba(10, 20, 70, 0.4)';
 const PADDING = 15;
 
-export const NO_SELECT = {
+export const NO_SELECT: React.CSSProperties = {
     userSelect: 'none',
-    MsUserSelect: 'none',
     MozUserSelect: 'none',
-    KhtmlUserSelect: 'none',
     WebkitUserSelect: 'none',
     WebkitTouchCallout: 'none',
 };

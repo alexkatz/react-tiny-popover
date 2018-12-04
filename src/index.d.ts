@@ -52,7 +52,7 @@ export declare interface ArrowContainerProps {
     popoverRect: ClientRect;
     style?: React.CSSProperties;
     arrowSize?: number;
-    arrowColor?: React.CSSWideKeyword | any;
+    arrowColor?: any;
     arrowStyle?: React.CSSProperties;
 }
 
