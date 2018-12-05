@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AutoSizer } from 'react-virtualized';
 import { FONT, NO_SELECT } from './DemoContainer';
-import Popover from 'react-tiny-popover';
+import { PortalPopover } from 'react-tiny-popover';
 
 const BACKGROUND_COLOR = 'rgba(100, 40, 20, 0.4)';
 const TARGET_COLOR = 'rgba(40, 20, 30, 0.4)';
@@ -33,7 +33,7 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
                             backgroundColor: BACKGROUND_COLOR,
                         }}
                     >
-                        <Popover
+                        <PortalPopover
                             isOpen={isPopoverOpen}
                             content={(
                                 <div
@@ -83,7 +83,7 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
                             >
                                 click me!
                             </div>
-                        </Popover>
+                        </PortalPopover>
                     </div>
                 )}
             </AutoSizer>

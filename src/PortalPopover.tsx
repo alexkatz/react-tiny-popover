@@ -1,15 +1,26 @@
 import * as React from 'react';
 import { findDOMNode, createPortal } from 'react-dom';
-import { PopoverProps, ContentRendererArgs, Position, ContentLocation } from '.';
-import { Constants, arrayUnique } from './util';
+import { PopoverProps, ContentRendererArgs, Position, ContentLocation, Align } from '.';
+import { Constants, getLocationForPosition, getPositionPriorityOrder } from './util';
 
-class PortalPopover extends React.Component<PopoverProps, {}> {
+interface PopoverState {
+  position: Position | Position[];
+  positionOrder: Position[];
+
+  currentPosition?: Position;
+  align?: Align;
+  nudgedLeft?: number;
+  nudgedTop?: number;
+}
+
+class PortalPopover extends React.Component<PopoverProps, PopoverState> {
   private target: Element = null;
   private popoverContainerDiv: HTMLDivElement = null;
-  private willUnmount = false;
-  private willMount = false;
-  private positionOrder: Position[] = null;
   private targetPositionIntervalHandler: number = null;
+
+  private preventSet = false;
+
+  private willUnmount = false;
 
   public static defaultProps: Partial<PopoverProps> = {
     padding: Constants.DEFAULT_PADDING,
@@ -19,77 +30,76 @@ class PortalPopover extends React.Component<PopoverProps, {}> {
     containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
   };
 
-  public componentWillMount() {
-    this.willUnmount = false;
-    this.willMount = true;
-    this.positionOrder = this.getPositionPriorityOrder(this.props.position);
+  public static getDerivedStateFromProps(nextProps: PopoverProps, prevState: PopoverState) {
+    const position = nextProps.position;
+    let positionOrder = prevState.positionOrder;
+
+    if (position !== prevState.position) {
+      positionOrder = getPositionPriorityOrder(nextProps.position);
+    }
+
+    return {
+      position,
+      positionOrder,
+    };
+  }
+
+  public constructor(props: PopoverProps) {
+    super(props);
+
+    this.state = {
+      position: props.position,
+      positionOrder: getPositionPriorityOrder(this.props.position),
+    };
   }
 
   public componentDidMount() {
-    this.target = findDOMNode(this);
-    window.setTimeout(() => this.willMount = false);
+    this.target = findDOMNode(this) as Element;
   }
 
   public componentWillUnmount() {
     this.willUnmount = true;
+    window.removeEventListener('click', this.onClick);
     this.removePopoverContainerDiv();
   }
 
-  public componentWillReceiveProps(nextProps: PopoverProps) {
-    if (nextProps.position !== this.props.position) {
-      this.positionOrder = this.getPositionPriorityOrder(nextProps.position);
-    }
-  }
-
-  public componentWillUpdate(nextProps: PopoverProps) {
-    const { isOpen: nextIsOpen } = nextProps;
+  public componentDidUpdate(prevProps: PopoverProps, prevState: PopoverState) {
+    const { isOpen: prevIsOpen } = prevProps;
     const { isOpen: currIsOpen } = this.props;
-    if (!nextIsOpen && currIsOpen) {
+
+    if (prevIsOpen && !currIsOpen) {
       this.removePopoverContainerDiv();
     }
-  }
 
-  public componentDidUpdate() {
-    if (this.props.isOpen) {
-      this.popoverContainerDiv.style.opacity = '1';
+    if (! prevIsOpen && currIsOpen) {
       this.positionPopover();
+      this.preventSet = true;
+    }
+
+    if (currIsOpen) {
+      this.popoverContainerDiv.style.opacity = '1';
+
+      if (! this.preventSet) {
+        this.positionPopover();
+        this.preventSet = true;
+      } else {
+        this.preventSet = false;
+      }
     }
   }
 
   public render() {
     const { children, isOpen } = this.props;
+
     return (
       <>
         {children}
-        {isOpen && this.createPopoverPortal()}
+        {isOpen && this.renderPopover()}
       </>
     );
   }
 
-  private positionPopover() {
-    const targetRect = this.target.getBoundingClientRect();
-    const popoverRect = (this.popoverContainerDiv.firstChild as HTMLElement).getBoundingClientRect();
-    const hasValidPosition = this.positionOrder.some(position => {
-      const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
-      const newPopoverRect = { ...popoverRect, top, left };
-      if (this.isBoundaryViolation(popoverRect, position, this.props.padding)) { return false; }
-      const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(newPopoverRect);
-      this.popoverContainerDiv.style.top = `${top}px`;
-      this.popoverContainerDiv.style.left = `${left}px`;
-      return true;
-    });
-    if (!hasValidPosition) {
-      this.removePopoverContainerDiv();
-    }
-  }
-
-  private isBoundaryViolation = (rect: ClientRect, position: Position, padding: number): boolean =>
-    (position === 'top' && rect.top < padding) ||
-    (position === 'left' && rect.left < padding) ||
-    (position === 'right' && rect.left + rect.width > window.innerWidth - padding) ||
-    (position === 'bottom' && rect.top + rect.height > window.innerHeight - padding)
-
-  private createPopoverPortal(): React.ReactPortal {
+  private renderPopover(): React.ReactPortal {
     if (!this.popoverContainerDiv || !this.popoverContainerDiv.parentNode) {
       const { transitionDuration } = this.props;
       this.popoverContainerDiv = this.createContainer();
@@ -98,13 +108,32 @@ class PortalPopover extends React.Component<PopoverProps, {}> {
       window.addEventListener('click', this.onClick);
     }
 
-    const { content } = this.props;
-    const getContent = (args: ContentRendererArgs): JSX.Element =>
-      typeof content === 'function'
-        ? content(args)
-        : content;
+    let portalContent = <div />;
 
-    return createPortal(content, this.popoverContainerDiv);
+    if (this.target && this.popoverContainerDiv.firstChild) {
+      const targetRect = this.target.getBoundingClientRect();
+      const popoverRect = (this.popoverContainerDiv.firstChild as HTMLElement).getBoundingClientRect();
+
+      const { content } = this.props;
+      const { align, currentPosition, nudgedTop, nudgedLeft } = this.state;
+      const getContent = (args: ContentRendererArgs): JSX.Element =>
+        typeof content === 'function'
+          ? content(args)
+          : content;
+
+      const contentArgs = {
+        align,
+        position: currentPosition,
+        nudgedTop,
+        nudgedLeft,
+        popoverRect,
+        targetRect,
+      };
+
+      portalContent = getContent(contentArgs);
+    }
+
+    return createPortal(portalContent, this.popoverContainerDiv);
   }
 
   private createContainer(): HTMLDivElement {
@@ -127,13 +156,79 @@ class PortalPopover extends React.Component<PopoverProps, {}> {
     return container;
   }
 
+  private positionPopover() {
+    if (! this.popoverContainerDiv.firstChild) {
+      return;
+    }
+
+    const targetRect = this.target.getBoundingClientRect();
+    const popoverRect = (this.popoverContainerDiv.firstChild as HTMLElement).getBoundingClientRect();
+
+    const firstValidPosition = this.state.positionOrder.find(position => {
+      const contentLocation = this.getLocationForPosition(position, targetRect, popoverRect);
+
+      return ! this.isBoundaryViolation(contentLocation, popoverRect, position, this.props.padding);
+    });
+
+    if (!firstValidPosition) {
+      this.removePopoverContainerDiv();
+      return;
+    }
+
+    const { disableReposition, contentLocation, align } = this.props;
+    const { top: locationTop, left: locationLeft } = this.getLocationForPosition(firstValidPosition, targetRect, popoverRect);
+    const newPopoverRect = { ...popoverRect, top: locationTop, left: locationLeft };
+    const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(newPopoverRect);
+
+    let { top, left } = disableReposition ? { top: locationTop, left: locationLeft } : { top: nudgedTop, left: nudgedLeft };
+
+    if (contentLocation) {
+      if (typeof contentLocation === 'function') {
+        ({ top, left } = contentLocation({
+          targetRect,
+          popoverRect,
+          position: firstValidPosition,
+          align,
+          nudgedLeft,
+          nudgedTop,
+        }));
+      } else {
+        ({ top, left } = contentLocation);
+      }
+    } else {
+      [top, left] = [top + window.pageYOffset, left + window.pageXOffset];
+    }
+
+    this.popoverContainerDiv.style.top = `${top.toFixed()}px`;
+    this.popoverContainerDiv.style.left = `${left.toFixed()}px`;
+    this.popoverContainerDiv.style.width = null;
+    this.popoverContainerDiv.style.height = null;
+
+    console.log(nudgedLeft - locationLeft, nudgedTop - locationTop, nudgedLeft, locationLeft, nudgedTop, locationTop);
+
+    this.setState({
+      currentPosition: firstValidPosition,
+      nudgedLeft: nudgedLeft - locationLeft,
+      nudgedTop: nudgedTop - locationTop,
+      align,
+    });
+  }
+
+  private isBoundaryViolation = (contentLocation: ContentLocation, rect: ClientRect, position: Position, padding: number): boolean =>
+    (position === 'top' && contentLocation.top < padding) ||
+      (position === 'left' && contentLocation.left < padding) ||
+      (position === 'right' && contentLocation.left + rect.width > window.innerWidth - padding) ||
+      (position === 'bottom' && contentLocation.top + rect.height > window.innerHeight - padding)
+
   private onResize = (e: any) => {
-    // this.renderPopover();
+    this.renderPopover();
+    this.preventSet = true;
   }
 
   private onClick = (e: MouseEvent) => {
     const { onClickOutside, isOpen } = this.props;
-    if (!this.willUnmount && !this.willMount && !this.popoverContainerDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
+
+    if (isOpen && onClickOutside && !this.target.contains(e.target as Node) && !this.popoverContainerDiv.contains(e.target as Node)) {
       onClickOutside(e);
     }
   }
@@ -161,54 +256,10 @@ class PortalPopover extends React.Component<PopoverProps, {}> {
     }
   }
 
-  private getPositionPriorityOrder(position: Position | Position[]): Position[] {
-    if (position && typeof position !== 'string') {
-      if (Constants.DEFAULT_POSITIONS.every(defaultPosition => position.find(p => p === defaultPosition) !== undefined)) {
-        return arrayUnique(position);
-      } else {
-        const remainingPositions = Constants.DEFAULT_POSITIONS.filter(defaultPosition => position.find(p => p === defaultPosition) === undefined);
-        return arrayUnique([...position, ...remainingPositions]);
-      }
-    } else if (position && typeof position === 'string') {
-      const remainingPositions = Constants.DEFAULT_POSITIONS.filter(defaultPosition => defaultPosition !== position);
-      return arrayUnique([position, ...remainingPositions]);
-    }
-  }
-
   private getLocationForPosition(position: Position, newTargetRect: ClientRect, popoverRect: ClientRect): ContentLocation {
     const { padding, align } = this.props;
-    const targetMidX = newTargetRect.left + (newTargetRect.width / 2);
-    const targetMidY = newTargetRect.top + (newTargetRect.height / 2);
-    let top: number;
-    let left: number;
-    switch (position) {
-      case 'top':
-        top = newTargetRect.top - popoverRect.height - padding;
-        left = targetMidX - (popoverRect.width / 2);
-        if (align === 'start') { left = newTargetRect.left; }
-        if (align === 'end') { left = newTargetRect.right - popoverRect.width; }
-        break;
-      case 'left':
-        top = targetMidY - (popoverRect.height / 2);
-        left = newTargetRect.left - padding - popoverRect.width;
-        if (align === 'start') { top = newTargetRect.top; }
-        if (align === 'end') { top = newTargetRect.bottom - popoverRect.height; }
-        break;
-      case 'bottom':
-        top = newTargetRect.bottom + padding;
-        left = targetMidX - (popoverRect.width / 2);
-        if (align === 'start') { left = newTargetRect.left; }
-        if (align === 'end') { left = newTargetRect.right - popoverRect.width; }
-        break;
-      case 'right':
-        top = targetMidY - (popoverRect.height / 2);
-        left = newTargetRect.right + padding;
-        if (align === 'start') { top = newTargetRect.top; }
-        if (align === 'end') { top = newTargetRect.bottom - popoverRect.height; }
-        break;
-    }
 
-    return { top, left };
+    return getLocationForPosition(padding, align, position, newTargetRect, popoverRect);
   }
 
   private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
