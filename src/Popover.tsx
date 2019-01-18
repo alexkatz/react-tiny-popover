@@ -141,6 +141,9 @@ class Popover extends React.Component<PopoverProps, {}> {
                 : content;
 
         unstable_renderSubtreeIntoContainer(this, getContent({ position, nudgedLeft, nudgedTop, targetRect, popoverRect, align }), this.popoverDiv, () => {
+            if (this.willUnmount) {
+                return;
+            }
             const targetRect = this.target.getBoundingClientRect();
             const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
