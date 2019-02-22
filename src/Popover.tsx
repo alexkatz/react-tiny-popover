@@ -29,7 +29,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         this.updatePopover(isOpen);
     }
 
-    public componentDidUpdate(prevProps: PopoverProps) {;
+    public componentDidUpdate(prevProps: PopoverProps) {
         this.target = findDOMNode(this) as Element;
         const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
         const { isOpen, content, position } = this.props;
