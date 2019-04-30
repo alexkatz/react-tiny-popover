@@ -89,7 +89,7 @@ class Popover extends React.Component<PopoverProps, {}> {
 
                 if (contentLocation) {
                     const targetRect = this.target.getBoundingClientRect();
-                    const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+                    const popoverRect = this.popoverDiv.getBoundingClientRect();
                     ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect, position, align, nudgedLeft, nudgedTop }) : contentLocation);
                     this.popoverDiv.style.left = `${left.toFixed()}px`;
                     this.popoverDiv.style.top = `${top.toFixed()}px`;
@@ -107,7 +107,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                     nudgedTop: nudgedTop - rect.top,
                     nudgedLeft: nudgedLeft - rect.left,
                     targetRect: this.target.getBoundingClientRect(),
-                    popoverRect: (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect(),
+                    popoverRect: this.popoverDiv.getBoundingClientRect(),
                 }, () => {
                     this.startTargetPositionListener(10);
                     if (this.popoverDiv.style.opacity !== '1') {
@@ -142,7 +142,7 @@ class Popover extends React.Component<PopoverProps, {}> {
 
         unstable_renderSubtreeIntoContainer(this, getContent({ position, nudgedLeft, nudgedTop, targetRect, popoverRect, align }), this.popoverDiv, () => {
             const targetRect = this.target.getBoundingClientRect();
-            const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+            const popoverRect = this.popoverDiv.getBoundingClientRect();
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
             callback(
                 position === 'top' && top < padding ||
