@@ -23,18 +23,18 @@
     "start-demo": "cd docs && yarn start"
   },
   "devDependencies": {
-    "@types/react": "^16.0.2",
-    "@types/react-dom": "^16.0.1",
-    "awesome-typescript-loader": "^3.2.3",
-    "copy-webpack-plugin": "^4.0.1",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
+    "awesome-typescript-loader": "^5.2.1",
+    "copy-webpack-plugin": "^5.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "source-map-loader": "^0.2.2",
-    "tslint": "^5.7.0",
-    "tslint-react": "^3.2.0",
-    "typescript": "^2.5.3",
+    "tslint": "^5.18.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "^3.5.3",
     "webpack": "^4",
-    "webpack-cli": "^3.0.3"
+    "webpack-cli": "^3.3.6"
   },
   "peerDependencies": {
     "react": "^15.6.1 || ^16.0.0",

@@ -9,7 +9,7 @@
       "semicolon": [true],
       "no-unused-variable": true,
       "object-literal-sort-keys": false,
-      "space-before-function-paren": ["error", {
+      "space-before-function-paren": [true, {
         "anonymous": "always",
         "named": "never",
         "asyncArrow": "always"
@@ -22,8 +22,6 @@
       "object-literal-key-quotes": [false],
       "no-shadowed-variable": false,
       "no-empty": false,
-      "jsx-self-close": false,
-      "max-classes-per-file": [false],
       "no-empty-interface": false,
       "no-object-literal-type-assertion": false,
       "jsx-no-lambda": false,
