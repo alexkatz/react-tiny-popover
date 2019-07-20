@@ -63,7 +63,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 this.popoverDiv = this.createContainer();
                 this.popoverDiv.style.opacity = '0';
                 this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
-                window.document.body.appendChild(this.popoverDiv);
+                (this.props.contentDestination || window.document.body).appendChild(this.popoverDiv);
                 window.addEventListener('resize', this.onResize);
                 window.addEventListener('click', this.onClick);
             }
@@ -93,7 +93,7 @@ class Popover extends React.Component<PopoverProps, {}> {
 
                 if (contentLocation) {
                     const targetRect = this.target.getBoundingClientRect();
-                    const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+                    const popoverRect = this.popoverDiv.getBoundingClientRect();
                     ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect, position, align, nudgedLeft, nudgedTop }) : contentLocation);
                     this.popoverDiv.style.left = `${left.toFixed()}px`;
                     this.popoverDiv.style.top = `${top.toFixed()}px`;
@@ -111,7 +111,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                     nudgedTop: nudgedTop - rect.top,
                     nudgedLeft: nudgedLeft - rect.left,
                     targetRect: this.target.getBoundingClientRect(),
-                    popoverRect: (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect(),
+                    popoverRect: this.popoverDiv.getBoundingClientRect(),
                 }, () => {
                     this.startTargetPositionListener(10);
                     if (this.popoverDiv.style.opacity !== '1') {
@@ -149,7 +149,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 return;
             }
             const targetRect = this.target.getBoundingClientRect();
-            const popoverRect = (this.popoverDiv.firstChild as HTMLElement).getBoundingClientRect();
+            const popoverRect = this.popoverDiv.getBoundingClientRect();
             const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
             callback(
                 position === 'top' && top < padding ||

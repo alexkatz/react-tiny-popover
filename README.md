@@ -13,7 +13,7 @@ Since ```react-tiny-popover``` tries to be as non-invasive as possible, it will 
 
 ```shell
 yarn add react-tiny-popover
-``` 
+```
 
 or
 
@@ -81,7 +81,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
             arrowSize={10}
             arrowStyle={{ opacity: 0.7 }}
         >
-            <div 
+            <div
                 style={{ backgroundColor: 'blue', opacity: 0.7 }}
                 onClick={() => this.setState({ isPopoverOpen: !isPopoverOpen })}
             >
@@ -97,7 +97,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 ```
 ## API
 ### Popover
-|<b>Property<b>|Type|Required|Description|                              
+|<b>Property<b>|Type|Required|Description|
 |--------------|----|--------|-----------|
 |children|```JSX.Element```|✔️|This is the JSX.Element target that you'd like the popover content to track. Sweet. |
 |isOpen |```boolean```|✔️|When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.|
@@ -105,6 +105,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 |padding|```number``` ||This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.|
 |windowBorderPadding|```number```||This number specifies the padding around the browser window's border that boundary violations are determined at. Defaults to 6.|
 |position|```string``` or ```string[]``` ||You may provide a preferred position for your popover content in relation to its target. Valid values are ```'top', 'bottom', 'left', 'right'```. The default is ```'top'```. If you'd like, you can supply an array of preferred positions ranked in priority order. If the popover reaches the edge of the window, it will attempt to render in the order you specify. The default order is ```['top', 'right', 'left', 'bottom']```. If you'd like, you can provide a shorter array like ```['top', 'left']```. The remaining positions will be automatically filled in. If you provide any duplicate or other values in the array, they will be ignored.|
+|contentDestination|```HTMLElement```|Allows for the popover contents to be rendered somewhere other than `document.body`.|
 |contentLocation|```object``` or ```Function```||If you'd like to hook directly into the positioning process, you may do so here! You can provide an object of type ```{ top: number, left: number }``` to completely override the popover content's (```popoverRect```) location. You can also provide a function that looks like this: ```({ targetRect, popoverRect, position, align, nudgedLeft,  nudgedTop }) => { top: number, left: number }``` (The arguments to this function are the same as the content renderer function above). Note that if repositioning is enabled, it happens before this step, so within here you'll be responsible for keeping ```popoverRect``` within the window's bounds if that matters to you!|
 |align|```string```||Possible values are ```start```, ```center```, and ```end```. If ```start``` is specified, the popover content's top or left location is aligned with its target's. With ```end``` specified, the content's bottom or right location is aligned with its target's. If ```center``` is specified, the popover content and target's centers are aligned. Defaults to ```center```.|
 |onClickOutside|```Function```||If ```react-tiny-popover``` detects a click event outside of the target and outside of the popover, you may handle this event here, in the form of ```(e: MouseEvent) => void```.|
@@ -114,7 +115,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 |containerClassName|```string```||If you'd like to apply styles to the single container ```div``` that your popover content is rendered within via stylesheets, you can specify a custom className for the container here.|
 
 ### ArrowContainer
-|<b>Property<b>|Type|Required|Description|                                  
+|<b>Property<b>|Type|Required|Description|
 |-----------|----|--------|-----------|
 |position|```string```|✔️|The ```ArrowContainer``` needs to know its own position in relation to the target, so it can point in the correct direction!|
 |children|```JSX.Element```|✔️|You'll provide the ```ArrowContainer``` with a JSX.Element child to render as your popover content.|
