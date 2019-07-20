@@ -30,10 +30,13 @@ class Popover extends React.Component<PopoverProps, {}> {
     }
 
     public componentDidUpdate(prevProps: PopoverProps) {
-        this.target = findDOMNode(this) as Element;
+        if (this.target == null) { this.target = findDOMNode(this) as Element; }
+
         const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
         const { isOpen, content, position } = this.props;
+
         this.positionOrder = this.getPositionPriorityOrder(this.props.position);
+
         if (prevIsOpen !== isOpen || prevBody !== content || prevPosition !== position) {
             this.updatePopover(isOpen);
         }
@@ -54,7 +57,7 @@ class Popover extends React.Component<PopoverProps, {}> {
     }
 
     private updatePopover(isOpen: boolean) {
-        if (isOpen) {
+        if (isOpen && this.target != null) {
             if (!this.popoverDiv || !this.popoverDiv.parentNode) {
                 const { transitionDuration } = this.props;
                 this.popoverDiv = this.createContainer();
