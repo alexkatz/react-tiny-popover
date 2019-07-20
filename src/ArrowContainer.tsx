@@ -1,17 +1,6 @@
 import * as React from 'react';
-import { Position, ArrowContainerProps } from './index';
+import { ArrowContainerProps } from './index';
 import { Constants } from './util';
-
-const FLEX_CENTER_CHILD: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-};
-
-interface ArrowContainerState {
-    nudgedLeft: number;
-    nudgedTop: number;
-}
 
 const ArrowContainer: React.StatelessComponent<ArrowContainerProps> = ({
     position,

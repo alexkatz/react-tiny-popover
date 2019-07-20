@@ -2,8 +2,6 @@ import * as React from 'react';
 import Popover, { Position, ArrowContainer, ContentRendererArgs, Align } from 'react-tiny-popover';
 import { AutoSizer } from 'react-virtualized';
 import { FONT, NO_SELECT } from './DemoContainer';
-import { findDOMNode } from 'react-dom';
-import { brotliDecompressSync } from 'zlib';
 
 const BACKGROUND_COLOR = 'rgba(40, 200, 80, 0.4)';
 const TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
@@ -402,7 +400,6 @@ class RepositionDemo extends React.Component<{}, DemoState> {
 
     private onTargetMouseUp: React.MouseEventHandler<HTMLDivElement> = e => {
         const { isPopoverOpen, isTargetActive, isRenderedInDestination, isTogglePositionActive, isToggleDestination, isToggleRepositionActive, isToggleAlignActive, isToggleArrowActive, repositionEnabled, positionIndex, showArrow, align } = this.state;
-        const target = e.currentTarget;
         const shouldPopoverToggle = isTargetActive;
         const shouldTogglePosition = isTogglePositionActive;
         const shouldToggleReposition = isToggleRepositionActive;
