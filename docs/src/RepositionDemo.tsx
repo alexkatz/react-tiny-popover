@@ -9,7 +9,7 @@ const TARGET_OPEN_COLOR = 'rgba(30, 90, 250, 0.6)';
 const TOGGLE_BUTTON_COLOR = 'rgba(30, 50, 90, 0.3)';
 
 const TARGET_SIZE = 180;
-const TOGGLE_BUTTON_HEIGHT = TARGET_SIZE / 4;
+const TOGGLE_BUTTON_HEIGHT = TARGET_SIZE / 5;
 
 const BUTTON_OPACITY = 0.65;
 
@@ -290,10 +290,11 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         );
     }
 
-    private isTogglingPosition: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+    private isTogglingPosition: (x: number, y: number) => boolean = (x, y) =>   x > TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+    private isTogglingAlign: (x: number, y: number) => boolean = (x, y) =>      x > TARGET_SIZE / 2 && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_HEIGHT) && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+
+    private isTogglingArrow: (x: number, y: number) => boolean = (x, y) =>      x < TARGET_SIZE / 2 && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_HEIGHT) && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
     private isTogglingReposition: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
-    private isTogglingArrow: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE / 2 && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_HEIGHT) && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
-    private isTogglingAlign: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE / 2 && y > TARGET_SIZE - (2 * TOGGLE_BUTTON_HEIGHT) && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
 
     private onTargetMouseDown: React.MouseEventHandler<HTMLDivElement> = e => {
         const target = e.currentTarget;
@@ -322,8 +323,6 @@ class RepositionDemo extends React.Component<{}, DemoState> {
     private onTargetMouseUp: React.MouseEventHandler<HTMLDivElement> = e => {
         const { isPopoverOpen, isTargetActive, isTogglePositionActive, isToggleRepositionActive, isToggleAlignActive, isToggleArrowActive, repositionEnabled, positionIndex, showArrow, align } = this.state;
         const target = e.currentTarget;
-        const targetClickOffsetX = e.clientX - target.offsetLeft;
-        const targetClickOffsetY = e.clientY - target.offsetTop;
         const shouldPopoverToggle = isTargetActive;
         const shouldTogglePosition = isTogglePositionActive;
         const shouldToggleReposition = isToggleRepositionActive;

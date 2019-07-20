@@ -1,7 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlStringReplace = require('html-string-replace-webpack-plugin');
+const HtmlReplaceWebpackPlugin = require('html-replace-webpack-plugin');
+
 const config = env => ({
     entry: {
         app: ['./src/index.tsx'],
@@ -22,14 +23,9 @@ const config = env => ({
             template: 'index.html',
             inject: false,
         }),
-        new HtmlStringReplace({
-            enable: true,
-            patterns: [
-                {
-                    match: /src=".\/dist\/index.js"/g,
-                    replacement: () => 'src="index.js"',
-                },
-            ]
+        new HtmlReplaceWebpackPlugin({
+            pattern: /src=".\/dist\/index.js"/g,
+            replacement: () => 'src="index.js"',
         }),
         ...(env === 'production' ? [
             new webpack.DefinePlugin({
