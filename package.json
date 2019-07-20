@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/alexkatz/react-tiny-popover.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/Popover.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "react",
@@ -19,6 +19,7 @@
   "author": "Alex Katz",
   "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",
   "scripts": {
+    "build": "tsc -p .",
     "watch": "webpack --watch --mode=development",
     "start-demo": "cd docs && yarn start"
   },
