@@ -47,7 +47,7 @@ class Popover extends React.Component<PopoverProps, {}> {
         ) {
             if (hasNewDestination) {
                 this.removePopover();
-                this.popoverDiv.remove();
+                this.popoverDiv && this.popoverDiv.remove();
             }
 
             this.updatePopover(isOpen);
