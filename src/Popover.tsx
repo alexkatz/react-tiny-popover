@@ -100,6 +100,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 const { contentLocation, align } = this.props;
                 const { top: nudgedTop, left: nudgedLeft } = this.getNudgedPopoverPosition(rect);
                 const { top: rectTop, left: rectLeft } = rect;
+
                 const position = this.positionOrder[positionIndex];
                 let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
                 
@@ -120,8 +121,8 @@ class Popover extends React.Component<PopoverProps, {}> {
                     }
 
                     const [absoluteTop, absoluteLeft] = [top + window.pageYOffset, left + window.pageXOffset];
-                    const finalLeft = absoluteLeft + destinationTopOffset;
-                    const finalTop = absoluteTop + destinationLeftOffset;
+                    const finalLeft = absoluteLeft + destinationLeftOffset;
+                    const finalTop = absoluteTop + destinationTopOffset;
 
                     this.popoverDiv.style.left = `${finalLeft.toFixed()}px`;
                     this.popoverDiv.style.top = `${finalTop.toFixed()}px`;
@@ -186,13 +187,13 @@ class Popover extends React.Component<PopoverProps, {}> {
     }
 
     private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
-        const { windowBorderPadding: padding } = this.props;
-
+        const { windowBorderPadding: windowPadding } = this.props;
         
-        top = top < padding ? padding : top;
-        top = top + height > window.innerHeight - padding ? window.innerHeight - padding - height : top;
-        left = left < padding ? padding : left;
-        left = left + width > window.innerWidth - padding ? window.innerWidth - padding - width : left;
+        top = top + height > 0 && top < windowPadding ? windowPadding : top;
+        top = top + height > window.innerHeight - windowPadding ? window.innerHeight - windowPadding - height : top;
+
+        left = left + width > 0 && left < windowPadding ? windowPadding : left;
+        left = left + width > window.innerWidth - windowPadding ? window.innerWidth - windowPadding - width : left;
         return { top, left };
     }
 
