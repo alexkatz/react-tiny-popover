@@ -1,6 +1,6 @@
 {
   "name": "react-tiny-popover",
-  "version": "3.4.5",
+  "version": "3.4.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/alexkatz/react-tiny-popover.git"
@@ -40,5 +40,9 @@
   "peerDependencies": {
     "react": "^15.6.1 || ^16.0.0",
     "react-dom": "^15.6.1 || ^16.0.0"
+  },
+  "dependencies": {
+    "@types/underscore": "^1.8.13",
+    "underscore": "^1.9.1"
   }
 }

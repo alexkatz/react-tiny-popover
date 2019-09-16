@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { findDOMNode, unstable_renderSubtreeIntoContainer } from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import { Constants, arrayUnique } from './util';
 import { ArrowContainer } from './ArrowContainer';
-import { PopoverProps, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
+import { Portal } from './Portal';
+import { PopoverProps, PopoverState, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
+import { isEqual } from 'underscore';
 
-class Popover extends React.Component<PopoverProps, {}> {
+class Popover extends React.Component<PopoverProps, PopoverState> {
     private target: Element = null;
     private targetRect: ClientRect = null;
     private targetPositionIntervalHandler: number = null;
@@ -20,6 +22,17 @@ class Popover extends React.Component<PopoverProps, {}> {
         align: 'center',
         containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
     };
+
+    constructor(props: PopoverProps){
+        super(props);
+
+        this.state = {
+            popoverInfo: null,
+        };
+
+        this.willUnmount = false;
+        this.willMount = true;
+    }
 
     public componentDidMount() {
         window.setTimeout(() => this.willMount = false);
@@ -40,9 +53,9 @@ class Popover extends React.Component<PopoverProps, {}> {
         const hasNewDestination = prevProps.contentDestination !== this.props.contentDestination;
 
         if (
-            prevIsOpen !== isOpen || 
-            prevBody !== content || 
-            prevPosition !== position || 
+            prevIsOpen !== isOpen ||
+            prevBody !== content ||
+            prevPosition !== position ||
             hasNewDestination
         ) {
             if (hasNewDestination) {
@@ -54,18 +67,31 @@ class Popover extends React.Component<PopoverProps, {}> {
         }
     }
 
-    public componentWillMount() {
-        this.willUnmount = false;
-        this.willMount = true;
-    }
-
     public componentWillUnmount() {
         this.willUnmount = true;
         this.removePopover();
     }
 
     public render() {
-        return this.props.children;
+        const { content } = this.props;
+        const { popoverInfo } = this.state;
+
+        let popoverContent = null;
+        if (this.props.isOpen && this.popoverDiv && popoverInfo) {
+            const getContent = (args: ContentRendererArgs): JSX.Element =>
+                typeof content === 'function'
+                    ? content(args)
+                    : content;
+
+            popoverContent = <Portal element={this.popoverDiv} container={this.props.contentDestination || window.document.body}>{getContent(popoverInfo)}</Portal>;
+        }
+
+        return (
+            <React.Fragment>
+                {this.props.children}
+                {popoverContent}
+            </React.Fragment>
+        );
     }
 
     private updatePopover(isOpen: boolean) {
@@ -75,10 +101,9 @@ class Popover extends React.Component<PopoverProps, {}> {
                 this.popoverDiv = this.createContainer();
                 this.popoverDiv.style.opacity = '0';
                 this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
-                (this.props.contentDestination || window.document.body).appendChild(this.popoverDiv);
-                window.addEventListener('resize', this.onResize);
-                window.addEventListener('click', this.onClick);
             }
+            window.addEventListener('resize', this.onResize);
+            window.addEventListener('click', this.onClick);
             this.renderPopover();
         } else if (this.popoverDiv && this.popoverDiv.parentNode) {
             this.removePopover();
@@ -102,7 +127,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 const { top: rectTop, left: rectLeft } = rect;
                 const position = this.positionOrder[positionIndex];
                 let { top, left } = disableReposition ? { top: rectTop, left: rectLeft } : { top: nudgedTop, left: nudgedLeft };
-                
+
                 if (contentLocation) {
                     const targetRect = this.target.getBoundingClientRect();
                     const popoverRect = this.popoverDiv.getBoundingClientRect();
@@ -112,7 +137,7 @@ class Popover extends React.Component<PopoverProps, {}> {
                 } else {
                     let destinationTopOffset = 0;
                     let destinationLeftOffset = 0;
-                    
+
                     if (this.props.contentDestination) {
                         const destRect = this.props.contentDestination.getBoundingClientRect();
                         destinationTopOffset = -destRect.top;
@@ -163,32 +188,34 @@ class Popover extends React.Component<PopoverProps, {}> {
         callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void,
     ) {
         const { windowBorderPadding: padding, content, align } = this.props;
-        const getContent = (args: ContentRendererArgs): JSX.Element =>
-            typeof content === 'function'
-                ? content(args)
-                : content;
+        const popoverInfo = { position, nudgedLeft, nudgedTop, targetRect, popoverRect, align };
 
-        unstable_renderSubtreeIntoContainer(this, getContent({ position, nudgedLeft, nudgedTop, targetRect, popoverRect, align }), this.popoverDiv, () => {
-            if (this.willUnmount) {
-                return;
-            }
-            const targetRect = this.target.getBoundingClientRect();
-            const popoverRect = this.popoverDiv.getBoundingClientRect();
-            const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
-            callback(
-                position === 'top' && top < padding ||
-                position === 'left' && left < padding ||
-                position === 'right' && left + popoverRect.width > window.innerWidth - padding ||
-                position === 'bottom' && top + popoverRect.height > window.innerHeight - padding,
-                { width: popoverRect.width, height: popoverRect.height, top, left },
-            );
-        });
+        if (!isEqual(this.state.popoverInfo, popoverInfo)) {
+            this.setState({
+                popoverInfo: popoverInfo,
+            }, () => {
+                if (this.willUnmount) {
+                    return;
+                }
+
+                targetRect = this.target.getBoundingClientRect();
+                popoverRect = this.popoverDiv.getBoundingClientRect();
+                const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
+                callback(
+                    position === 'top' && top < padding ||
+                    position === 'left' && left < padding ||
+                    position === 'right' && left + popoverRect.width > window.innerWidth - padding ||
+                    position === 'bottom' && top + popoverRect.height > window.innerHeight - padding,
+                    { width: popoverRect.width, height: popoverRect.height, top, left },
+                );
+            });
+        }
     }
 
     private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
         const { windowBorderPadding: padding } = this.props;
 
-        
+
         top = top < padding ? padding : top;
         top = top + height > window.innerHeight - padding ? window.innerHeight - padding - height : top;
         left = left < padding ? padding : left;
@@ -206,9 +233,6 @@ class Popover extends React.Component<PopoverProps, {}> {
                     window.removeEventListener('resize', this.onResize);
                     window.removeEventListener('click', this.onClick);
                     this.targetPositionIntervalHandler = null;
-                    if (this.popoverDiv.parentNode) {
-                        this.popoverDiv.parentNode.removeChild(this.popoverDiv);
-                    }
                 }
             };
             if (!this.willUnmount) {
