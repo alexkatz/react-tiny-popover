@@ -189,11 +189,9 @@ class Popover extends React.Component<PopoverProps, {}> {
     private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
         const { windowBorderPadding: windowPadding } = this.props;
         
-        top = top + height > 0 && top < windowPadding ? windowPadding : top;
         top = top + height > window.innerHeight - windowPadding ? window.innerHeight - windowPadding - height : top;
-
-        left = left + width > 0 && left < windowPadding ? windowPadding : left;
         left = left + width > window.innerWidth - windowPadding ? window.innerWidth - windowPadding - width : left;
+        
         return { top, left };
     }
 
