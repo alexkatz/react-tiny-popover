@@ -2,13 +2,7 @@ import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { PortalProps } from './index';
 
-class Portal extends React.PureComponent<PortalProps, any> {
-    el: HTMLDivElement;
-    constructor(props : PortalProps) {
-        super(props);
-
-    }
-
+class Portal extends React.PureComponent<PortalProps> {
     public componentDidMount () {
         this.props.container.appendChild(this.props.element);
     }
@@ -18,8 +12,7 @@ class Portal extends React.PureComponent<PortalProps, any> {
     }
 
     public render() {
-        const { children } = this.props;
-        return createPortal(children, this.props.element);
+        return createPortal(this.props.children, this.props.element);
     }
 }
 
