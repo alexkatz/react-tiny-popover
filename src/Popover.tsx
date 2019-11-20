@@ -44,7 +44,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     public componentDidUpdate(prevProps: PopoverProps) {
         if (this.target == null) { this.target = findDOMNode(this) as Element; }
 
-        const { isOpen: prevIsOpen, position: prevPosition, content: prevBody } = prevProps;
+        const { isOpen: prevIsOpen, position: prevPosition, content: prevContent } = prevProps;
         const { isOpen, content, position } = this.props;
 
         this.positionOrder = this.getPositionPriorityOrder(this.props.position);
@@ -53,7 +53,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
         if (
             prevIsOpen !== isOpen ||
-            prevBody !== content ||
+            prevContent !== content || // TODO: devise a way to test if popover content has changed... should we even check it?
             prevPosition !== position ||
             hasNewDestination
         ) {
@@ -110,7 +110,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
             window.addEventListener('resize', this.onResize);
             window.addEventListener('click', this.onClick);
             this.renderPopover();
-        } else if (this.popoverDiv && this.popoverDiv.parentNode) {
+        } else {
             this.removePopover();
         }
     }
