@@ -5,7 +5,7 @@ export interface ContentLocation {
     left: number;
 }
 
-export interface ContentRendererArgs {
+export interface PopoverInfo {
     position: Position;
     align: Align;
     nudgedLeft: number;
@@ -14,17 +14,8 @@ export interface ContentRendererArgs {
     popoverRect: ClientRect;
 }
 
-export interface ContentLocationGetterArgs {
-    position: Position;
-    align: Align;
-    nudgedLeft: number;
-    nudgedTop: number;
-    targetRect: ClientRect;
-    popoverRect: ClientRect;
-}
-
-export type ContentRenderer = (args: ContentRendererArgs) => JSX.Element;
-export type ContentLocationGetter = (args: ContentLocationGetterArgs) => ContentLocation;
+export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
+export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
 
 export declare type Position = 'left' | 'right' | 'top' | 'bottom';
 export declare type Align = 'start' | 'center' | 'end';
@@ -59,7 +50,7 @@ export declare interface ArrowContainerProps {
 
 export declare const ArrowContainer: React.StatelessComponent<ArrowContainerProps>;
 export declare interface PopoverState {
-    popoverInfo: ContentRendererArgs,
+    popoverInfo: PopoverInfo;
 }
 export default class Popover extends React.Component<PopoverProps, PopoverState> { }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Popover, { Position, ArrowContainer, ContentRendererArgs, Align } from 'react-tiny-popover';
+import Popover, { Position, ArrowContainer, PopoverInfo, Align } from 'react-tiny-popover';
 import { AutoSizer } from 'react-virtualized';
 import { FONT, NO_SELECT } from './DemoContainer';
 
@@ -60,7 +60,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             positionIndex: 0,
             repositionEnabled: true,
             showArrow: true,
-            isRenderedInDestination: true,
+            isRenderedInDestination: false,
             align: 'center',
             renderPopoverContentInOrangeBox: false,
             popoverPaddingText: DEFAULT_POPOVER_PADDING.toString(),
@@ -97,7 +97,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
         const positions: Position[] = ['top', 'right', 'bottom', 'left'];
         const currentPosition = positions[positionIndex % positions.length];
 
-        const contentRenderer = (args: ContentRendererArgs) => (
+        const contentRenderer = (args: PopoverInfo) => (
             <div
                 style={{
                     paddingLeft: 130,
@@ -131,7 +131,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             </div>
         );
 
-        const arrowContentRenderer = (args: ContentRendererArgs) => (
+        const arrowContentRenderer = (args: PopoverInfo) => (
             <ArrowContainer
                 position={args.position}
                 arrowColor={TARGET_OPEN_COLOR}
@@ -417,7 +417,7 @@ class RepositionDemo extends React.Component<{}, DemoState> {
             isToggleRepositionActive: false,
             isToggleDestination: false,
             isMouseDown: false,
-            isRenderedInDestination: shouldToggleDestination 
+            isRenderedInDestination: shouldToggleDestination
                 ? !isRenderedInDestination
                 : isRenderedInDestination,
             isPopoverOpen: shouldPopoverToggle

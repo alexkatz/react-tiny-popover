@@ -14,15 +14,17 @@
     "tslint": "^5.7.0",
     "typescript": "^3.5.3",
     "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.7.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --inline --hot"
+    "start": "webpack-dev-server --inline --hot",
+    "build": "webpack --mode=production"
   },
   "dependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-tiny-popover": "^3.4.0",
+    "react-tiny-popover": "3.5.0",
     "react-virtualized": "^9.10.1"
   }
 }

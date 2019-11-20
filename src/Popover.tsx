@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Constants, arrayUnique } from './util';
+import { Constants, arrayUnique, targetPositionHasChanged, popoverInfosAreEqual } from './util';
 import { ArrowContainer } from './ArrowContainer';
 import { Portal } from './Portal';
-import { PopoverProps, PopoverState, ContentRenderer, ContentRendererArgs, Position, Align, ContentLocation } from './index';
-import { isEqual } from 'underscore';
+import { PopoverProps, PopoverState, PopoverInfo, Position, ContentLocation } from './index';
 
 class Popover extends React.Component<PopoverProps, PopoverState> {
     private target: Element = null;
@@ -23,7 +22,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
     };
 
-    constructor(props: PopoverProps){
+    constructor(props: PopoverProps) {
         super(props);
 
         this.state = {
@@ -60,7 +59,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         ) {
             if (hasNewDestination) {
                 this.removePopover();
-                this.popoverDiv && this.popoverDiv.remove();
+                this.popoverDiv?.remove();
             }
 
             this.updatePopover(isOpen);
@@ -78,12 +77,18 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
         let popoverContent = null;
         if (this.props.isOpen && this.popoverDiv && popoverInfo) {
-            const getContent = (args: ContentRendererArgs): JSX.Element =>
+            const getContent = (args: PopoverInfo): JSX.Element =>
                 typeof content === 'function'
                     ? content(args)
                     : content;
 
-            popoverContent = <Portal element={this.popoverDiv} container={this.props.contentDestination || window.document.body}>{getContent(popoverInfo)}</Portal>;
+            popoverContent = (
+                <Portal
+                    element={this.popoverDiv}
+                    container={this.props.contentDestination || window.document.body}
+                    children={getContent(popoverInfo)}
+                />
+            );
         }
 
         return (
@@ -175,7 +180,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         if (this.targetPositionIntervalHandler === null) {
             this.targetPositionIntervalHandler = window.setInterval(() => {
                 const newTargetRect = this.target.getBoundingClientRect();
-                if (this.targetPositionHasChanged(this.targetRect, newTargetRect)) {
+                if (targetPositionHasChanged(this.targetRect, newTargetRect)) {
                     this.renderPopover();
                 }
                 this.targetRect = newTargetRect;
@@ -184,23 +189,23 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     }
 
     private renderWithPosition(
-        { position, nudgedLeft = 0, nudgedTop = 0, targetRect = Constants.EMPTY_CLIENT_RECT, popoverRect = Constants.EMPTY_CLIENT_RECT }: Partial<ContentRendererArgs>,
+        { position, nudgedLeft = 0, nudgedTop = 0, targetRect = Constants.EMPTY_CLIENT_RECT, popoverRect = Constants.EMPTY_CLIENT_RECT }: Partial<PopoverInfo>,
         callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void,
     ) {
         const { windowBorderPadding: padding, content, align } = this.props;
         const popoverInfo = { position, nudgedLeft, nudgedTop, targetRect, popoverRect, align };
 
-        if (!isEqual(this.state.popoverInfo, popoverInfo)) {
-            this.setState({
-                popoverInfo: popoverInfo,
-            }, () => {
+        if (!popoverInfosAreEqual(this.state.popoverInfo, popoverInfo)) {
+            this.setState({ popoverInfo }, () => {
                 if (this.willUnmount) {
                     return;
                 }
 
                 targetRect = this.target.getBoundingClientRect();
                 popoverRect = this.popoverDiv.getBoundingClientRect();
+
                 const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
+
                 callback(
                     position === 'top' && top < padding ||
                     position === 'left' && left < padding ||
@@ -214,8 +219,6 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
         const { windowBorderPadding: padding } = this.props;
-
-
         top = top < padding ? padding : top;
         top = top + height > window.innerHeight - padding ? window.innerHeight - padding - height : top;
         left = left < padding ? padding : left;
@@ -243,7 +246,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         }
     }
 
-    private onResize = (e: any) => {
+    private onResize = () => {
         this.renderPopover();
     }
 
@@ -321,14 +324,6 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         }
 
         return { top, left };
-    }
-
-    private targetPositionHasChanged(oldTargetRect: ClientRect, newTargetRect: ClientRect): boolean { // could move to a utilities file, along with some others potentially
-        return oldTargetRect === null
-            || oldTargetRect.left !== newTargetRect.left
-            || oldTargetRect.top !== newTargetRect.top
-            || oldTargetRect.width !== newTargetRect.width
-            || oldTargetRect.height !== newTargetRect.height;
     }
 }
 
