@@ -2,17 +2,18 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Constants, arrayUnique, targetPositionHasChanged, popoverInfosAreEqual } from './util';
 import { ArrowContainer } from './ArrowContainer';
-import { Portal } from './Portal';
+import { PopoverPortal } from './PopoverPortal';
 import { PopoverProps, PopoverState, PopoverInfo, Position, ContentLocation } from './index';
 
 class Popover extends React.Component<PopoverProps, PopoverState> {
     private target: Element = null;
     private targetRect: ClientRect = null;
     private targetPositionIntervalHandler: number = null;
-    private popoverDiv: HTMLDivElement = null;
+    private popoverDiv: HTMLDivElement = null; // TODO: potentially move this inside of PopoverPortal?
     private positionOrder: Position[] = null;
     private willUnmount = false;
     private willMount = false;
+    private removePopoverTimeout: number?;
 
     public static defaultProps: Partial<PopoverProps> = {
         padding: Constants.DEFAULT_PADDING,
@@ -22,11 +23,27 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
     };
 
+    public static getDerivedStateFromProps(props: PopoverProps, state: PopoverState): Partial<PopoverState> {
+        const { internalisOpen, isTransitioningToClosed } = state;
+        const { isOpen } = props;
+
+        if (internalisOpen === true && isOpen === false && !isTransitioningToClosed) {
+            return {
+                internalisOpen: false,
+                isTransitioningToClosed: true,
+            };
+        }
+
+        return null;
+    }
+
     constructor(props: PopoverProps) {
         super(props);
 
         this.state = {
             popoverInfo: null,
+            isTransitioningToClosed: false,
+            internalisOpen: false,
         };
 
         this.willUnmount = false;
@@ -41,6 +58,15 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         this.updatePopover(isOpen);
     }
 
+    public componentWillUnmount() {
+        this.willUnmount = true;
+        window.clearTimeout(this.removePopoverTimeout)
+        window.clearInterval(this.targetPositionIntervalHandler);
+        window.removeEventListener('resize', this.onResize);
+        window.removeEventListener('click', this.onClick);
+        this.removePopover();
+    }
+
     public componentDidUpdate(prevProps: PopoverProps) {
         if (this.target == null) { this.target = findDOMNode(this) as Element; }
 
@@ -53,37 +79,28 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
         if (
             prevIsOpen !== isOpen ||
-            prevContent !== content || // TODO: devise a way to test if popover content has changed... should we even check it?
             prevPosition !== position ||
             hasNewDestination
         ) {
-            if (hasNewDestination) {
-                this.removePopover();
-                this.popoverDiv?.remove();
-            }
-
             this.updatePopover(isOpen);
         }
     }
 
-    public componentWillUnmount() {
-        this.willUnmount = true;
-        this.removePopover();
-    }
+    
 
     public render() {
         const { content } = this.props;
-        const { popoverInfo } = this.state;
+        const { popoverInfo, isTransitioningToClosed } = this.state;
 
         let popoverContent = null;
-        if (this.props.isOpen && this.popoverDiv && popoverInfo) {
+        if ((this.props.isOpen || isTransitioningToClosed) && this.popoverDiv && popoverInfo) {
             const getContent = (args: PopoverInfo): JSX.Element =>
                 typeof content === 'function'
                     ? content(args)
                     : content;
 
             popoverContent = (
-                <Portal
+                <PopoverPortal
                     element={this.popoverDiv}
                     container={this.props.contentDestination || window.document.body}
                     children={getContent(popoverInfo)}
@@ -92,10 +109,10 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         }
 
         return (
-            <React.Fragment>
+            <>
                 {this.props.children}
                 {popoverContent}
-            </React.Fragment>
+            </>
         );
     }
 
@@ -117,7 +134,6 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     private renderPopover(positionIndex: number = 0) {
         if (positionIndex >= this.positionOrder.length) {
-            this.removePopover();
             return;
         }
 
@@ -168,7 +184,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
                     popoverRect: this.popoverDiv.getBoundingClientRect(),
                 }, () => {
                     this.startTargetPositionListener(10);
-                    if (this.popoverDiv.style.opacity !== '1') {
+                    if (this.popoverDiv.style.opacity !== '1' && !this.state.isTransitioningToClosed) {
                         this.popoverDiv.style.opacity = '1';
                     }
                 });
@@ -176,27 +192,16 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         });
     }
 
-    private startTargetPositionListener(checkInterval: number) {
-        if (this.targetPositionIntervalHandler === null) {
-            this.targetPositionIntervalHandler = window.setInterval(() => {
-                const newTargetRect = this.target.getBoundingClientRect();
-                if (targetPositionHasChanged(this.targetRect, newTargetRect)) {
-                    this.renderPopover();
-                }
-                this.targetRect = newTargetRect;
-            }, checkInterval);
-        }
-    }
-
     private renderWithPosition(
         { position, nudgedLeft = 0, nudgedTop = 0, targetRect = Constants.EMPTY_CLIENT_RECT, popoverRect = Constants.EMPTY_CLIENT_RECT }: Partial<PopoverInfo>,
         callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void,
     ) {
-        const { windowBorderPadding: padding, content, align } = this.props;
+        const { windowBorderPadding: padding, align } = this.props;
         const popoverInfo = { position, nudgedLeft, nudgedTop, targetRect, popoverRect, align };
 
         if (!popoverInfosAreEqual(this.state.popoverInfo, popoverInfo)) {
-            this.setState({ popoverInfo }, () => {
+            window.clearTimeout(this.removePopoverTimeout);
+            this.setState({ popoverInfo, isTransitioningToClosed: false, internalisOpen: true }, () => {
                 if (this.willUnmount) {
                     return;
                 }
@@ -217,6 +222,18 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         }
     }
 
+    private startTargetPositionListener(checkInterval: number) {
+        if (this.targetPositionIntervalHandler === null) {
+            this.targetPositionIntervalHandler = window.setInterval(() => {
+                const newTargetRect = this.target.getBoundingClientRect();
+                if (targetPositionHasChanged(this.targetRect, newTargetRect)) {
+                    this.renderPopover();
+                }
+                this.targetRect = newTargetRect;
+            }, checkInterval);
+        }
+    }
+
     private getNudgedPopoverPosition({ top, left, width, height }: Partial<ClientRect>): ContentLocation {
         const { windowBorderPadding: padding } = this.props;
         top = top < padding ? padding : top;
@@ -226,23 +243,26 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         return { top, left };
     }
 
-    private removePopover() {
-        if (this.popoverDiv) {
-            const { transitionDuration } = this.props;
+    private removePopover() { // this should now be a callback to handle event listening upon portal disappearance
+        const { transitionDuration } = this.props;
+
+        if (this.popoverDiv != null) {
             this.popoverDiv.style.opacity = '0';
-            const remove = () => {
-                if (this.willUnmount || !this.props.isOpen || !this.popoverDiv.parentNode) {
-                    window.clearInterval(this.targetPositionIntervalHandler);
-                    window.removeEventListener('resize', this.onResize);
-                    window.removeEventListener('click', this.onClick);
-                    this.targetPositionIntervalHandler = null;
-                }
-            };
-            if (!this.willUnmount) {
-                window.setTimeout(remove, (transitionDuration || Constants.FADE_TRANSITION) * 1000);
-            } else {
-                remove();
+        }
+
+        const remove = () => {
+            if (this.willUnmount || !this.props.isOpen || !this.popoverDiv.parentNode) {
+                window.clearInterval(this.targetPositionIntervalHandler);
+                window.removeEventListener('resize', this.onResize);
+                window.removeEventListener('click', this.onClick);
+                this.targetPositionIntervalHandler = null;
+                this.setState({ isTransitioningToClosed: false });
             }
+        };
+        if (!this.willUnmount) {
+            this.removePopoverTimeout = window.setTimeout(remove, (transitionDuration || Constants.FADE_TRANSITION) * 1000);
+        } else {
+            remove();
         }
     }
 

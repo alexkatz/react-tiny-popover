@@ -1,8 +1,12 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { PortalProps } from './index';
 
-class Portal extends React.PureComponent<PortalProps> {
+interface PopoverPortalProps {
+    container: Element;
+    element: Element;
+}
+
+class PopoverPortal extends React.PureComponent<PopoverPortalProps> {
     public componentDidMount () {
         this.props.container.appendChild(this.props.element);
     }
@@ -16,4 +20,4 @@ class Portal extends React.PureComponent<PortalProps> {
     }
 }
 
-export { Portal };
+export { PopoverPortal };
