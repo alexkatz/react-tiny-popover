@@ -21,6 +21,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         position: ['top', 'right', 'left', 'bottom'],
         align: 'center',
         containerClassName: Constants.POPOVER_CONTAINER_CLASS_NAME,
+        transitionDuration: Constants.FADE_TRANSITION,
     };
 
     public static getDerivedStateFromProps(props: PopoverProps, state: PopoverState): Partial<PopoverState> {
@@ -60,7 +61,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     public componentWillUnmount() {
         this.willUnmount = true;
-        window.clearTimeout(this.removePopoverTimeout)
+        window.clearTimeout(this.removePopoverTimeout);
         window.clearInterval(this.targetPositionIntervalHandler);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('click', this.onClick);
@@ -70,8 +71,8 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     public componentDidUpdate(prevProps: PopoverProps) {
         if (this.target == null) { this.target = findDOMNode(this) as Element; }
 
-        const { isOpen: prevIsOpen, position: prevPosition } = prevProps;
-        const { isOpen, position } = this.props;
+        const { isOpen: prevIsOpen, align: prevAlign, position: prevPosition, transitionDuration: prevTransitionDuration } = prevProps;
+        const { isOpen, position, transitionDuration, align } = this.props;
 
         this.positionOrder = this.getPositionPriorityOrder(this.props.position);
 
@@ -79,14 +80,17 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
         if (
             prevIsOpen !== isOpen ||
+            prevAlign !== align ||
             prevPosition !== position ||
             hasNewDestination
         ) {
             this.updatePopover(isOpen);
         }
-    }
 
-    
+        if (prevTransitionDuration !== transitionDuration) {
+            this.popoverDiv.style.transition = `opacity ${transitionDuration}s`;
+        }
+    }
 
     public render() {
         const { content } = this.props;
@@ -122,7 +126,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
                 const { transitionDuration } = this.props;
                 this.popoverDiv = this.createContainer();
                 this.popoverDiv.style.opacity = '0';
-                this.popoverDiv.style.transition = `opacity ${transitionDuration || Constants.FADE_TRANSITION}s`;
+                this.popoverDiv.style.transition = `opacity ${transitionDuration}s`;
             }
             window.addEventListener('resize', this.onResize);
             window.addEventListener('click', this.onClick);
