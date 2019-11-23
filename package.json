@@ -19,17 +19,16 @@
   "author": "Alex Katz",
   "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",
   "scripts": {
-    "build": "tsc -p .",
-    "watch": "tsc-watch -p . --onSuccess 'cp src/index.d.ts dist/index.d.ts'",
+    "build": "tsc -p . && yarn copy-types",
+    "watch": "tsc-watch -p . --onSuccess 'yarn copy-types'",
+    "copy-types": "cp src/index.d.ts dist/index.d.ts",
     "start-demo": "cd docs && yarn start"
   },
   "devDependencies": {
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
-    "awesome-typescript-loader": "^5.2.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "source-map-loader": "^0.2.2",
     "tsc-watch": "^4.0.0",
     "tslint": "^5.18.0",
     "tslint-react": "^4.0.0",
