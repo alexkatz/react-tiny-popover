@@ -70,8 +70,8 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     public componentDidUpdate(prevProps: PopoverProps) {
         if (this.target == null) { this.target = findDOMNode(this) as Element; }
 
-        const { isOpen: prevIsOpen, position: prevPosition, content: prevContent } = prevProps;
-        const { isOpen, content, position } = this.props;
+        const { isOpen: prevIsOpen, position: prevPosition } = prevProps;
+        const { isOpen, position } = this.props;
 
         this.positionOrder = this.getPositionPriorityOrder(this.props.position);
 

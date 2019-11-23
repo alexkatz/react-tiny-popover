@@ -15,6 +15,16 @@ class PopoverPortal extends React.PureComponent<PopoverPortalProps> {
         this.props.container.removeChild(this.props.element);
     }
 
+    public componentDidUpdate(prevProps: PopoverPortalProps) {
+        const { container: prevContainer } = prevProps;
+        const { container, element } = this.props;
+        
+        if (prevContainer !== container) {
+            prevContainer.removeChild(element);
+            container.appendChild(element);
+        }
+    }
+
     public render() {
         return createPortal(this.props.children, this.props.element);
     }
