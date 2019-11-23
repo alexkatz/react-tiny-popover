@@ -13,7 +13,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     private positionOrder: Position[] = null;
     private willUnmount = false;
     private willMount = false;
-    private removePopoverTimeout: number?;
+    private removePopoverTimeout: number;
 
     public static defaultProps: Partial<PopoverProps> = {
         padding: Constants.DEFAULT_PADDING,
