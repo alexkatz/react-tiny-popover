@@ -78,11 +78,15 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
         const hasNewDestination = prevProps.contentDestination !== this.props.contentDestination;
 
+        const hasNewLocation = prevProps.contentLocation().top !== this.props.contentLocation().top || 
+            prevProps.contentLocation().left !== this.props.contentLocation().left;
+
         if (
             prevIsOpen !== isOpen ||
             prevAlign !== align ||
             prevPosition !== position ||
-            hasNewDestination
+            hasNewDestination ||
+            hasNewLocation
         ) {
             this.updatePopover(isOpen);
         }
