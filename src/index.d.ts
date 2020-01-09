@@ -14,8 +14,8 @@ export interface PopoverInfo {
     popoverRect: ClientRect;
 }
 
-export type ContentRenderer = (args?: PopoverInfo) => JSX.Element;
-export type ContentLocationGetter = (args?: PopoverInfo) => ContentLocation;
+export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
+export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
 
 export declare type Position = 'left' | 'right' | 'top' | 'bottom';
 export declare type Align = 'start' | 'center' | 'end';

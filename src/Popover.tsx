@@ -71,22 +71,19 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     public componentDidUpdate(prevProps: PopoverProps) {
         if (this.target == null) { this.target = findDOMNode(this) as Element; }
 
-        const { isOpen: prevIsOpen, align: prevAlign, position: prevPosition, transitionDuration: prevTransitionDuration } = prevProps;
-        const { isOpen, position, transitionDuration, align } = this.props;
+        const { isOpen: prevIsOpen, align: prevAlign, position: prevPosition, transitionDuration: prevTransitionDuration, content: prevContent } = prevProps;
+        const { isOpen, position, transitionDuration, align, content } = this.props;
 
         this.positionOrder = this.getPositionPriorityOrder(this.props.position);
 
         const hasNewDestination = prevProps.contentDestination !== this.props.contentDestination;
 
-        const hasNewLocation = prevProps.contentLocation().top !== this.props.contentLocation().top || 
-            prevProps.contentLocation().left !== this.props.contentLocation().left;
-
         if (
             prevIsOpen !== isOpen ||
             prevAlign !== align ||
             prevPosition !== position ||
-            hasNewDestination ||
-            hasNewLocation
+            prevContent !== content ||
+            hasNewDestination
         ) {
             this.updatePopover(isOpen);
         }
