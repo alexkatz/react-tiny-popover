@@ -156,7 +156,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
                 if (contentLocation) {
                     const targetRect = this.target.getBoundingClientRect();
                     const popoverRect = this.popoverDiv.getBoundingClientRect();
-                    ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect, position, align, nudgedLeft, nudgedTop }) : contentLocation);
+                    ({ top, left } = typeof contentLocation === 'function' ? contentLocation({ targetRect, popoverRect, position, align, nudgedLeft, nudgedTop, disableReposition, rectLeft, rectTop }) : contentLocation);
                     this.popoverDiv.style.left = `${left.toFixed()}px`;
                     this.popoverDiv.style.top = `${top.toFixed()}px`;
                 } else {
