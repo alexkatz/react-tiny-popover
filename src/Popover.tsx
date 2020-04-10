@@ -234,6 +234,9 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
                     this.renderPopover();
                 }
                 this.targetRect = newTargetRect;
+                if (this.willUnmount || !this.props.isOpen || !this.popoverDiv.parentNode) {
+                    this.removePopover();
+                }
             }, checkInterval);
         }
     }
