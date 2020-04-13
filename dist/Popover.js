@@ -37,11 +37,14 @@ var Popover = /** @class */ (function (_super) {
         _this.positionOrder = null;
         _this.willUnmount = false;
         _this.willMount = false;
+        _this.stopPropagation = true;
         _this.onResize = function () {
             _this.renderPopover();
         };
         _this.onClick = function (e) {
             var _a = _this.props, onClickOutside = _a.onClickOutside, isOpen = _a.isOpen;
+            if (_this.stopPropagation)
+                e.stopPropagation();
             if (!_this.willUnmount && !_this.willMount && !_this.popoverDiv.contains(e.target) && !_this.target.contains(e.target) && onClickOutside && isOpen) {
                 onClickOutside(e);
             }
@@ -69,8 +72,9 @@ var Popover = /** @class */ (function (_super) {
     Popover.prototype.componentDidMount = function () {
         var _this = this;
         window.setTimeout(function () { return _this.willMount = false; });
-        var _a = this.props, position = _a.position, isOpen = _a.isOpen;
+        var _a = this.props, position = _a.position, isOpen = _a.isOpen, stopPropagation = _a.stopPropagation;
         this.target = react_dom_1.findDOMNode(this);
+        this.stopPropagation = stopPropagation;
         this.positionOrder = this.getPositionPriorityOrder(position);
         this.updatePopover(isOpen);
     };
