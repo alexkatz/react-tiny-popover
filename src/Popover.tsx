@@ -13,6 +13,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     private positionOrder: Position[] = null;
     private willUnmount = false;
     private willMount = false;
+    public stopPropagation = true;
     private removePopoverTimeout: number;
 
     public static defaultProps: Partial<PopoverProps> = {
@@ -53,8 +54,9 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     public componentDidMount() {
         window.setTimeout(() => this.willMount = false);
-        const { position, isOpen } = this.props;
+        const { position, isOpen, stopPropagation} = this.props;
         this.target = findDOMNode(this) as Element;
+        this.stopPropagation = stopPropagation;
         this.positionOrder = this.getPositionPriorityOrder(position);
         this.updatePopover(isOpen);
     }
@@ -279,6 +281,8 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     private onClick = (e: MouseEvent) => {
         const { onClickOutside, isOpen } = this.props;
+        if(this.stopPropagation)
+            e.stopPropagation();
         if (!this.willUnmount && !this.willMount && !this.popoverDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
             onClickOutside(e);
         }
