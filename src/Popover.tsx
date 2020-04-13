@@ -279,6 +279,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     private onClick = (e: MouseEvent) => {
         const { onClickOutside, isOpen } = this.props;
+        e.stopPropagation();
         if (!this.willUnmount && !this.willMount && !this.popoverDiv.contains(e.target as Node) && !this.target.contains(e.target as Node) && onClickOutside && isOpen) {
             onClickOutside(e);
         }
