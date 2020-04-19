@@ -160,21 +160,17 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
                     this.popoverDiv.style.left = `${left.toFixed()}px`;
                     this.popoverDiv.style.top = `${top.toFixed()}px`;
                 } else {
-                    let destinationTopOffset = 0;
-                    let destinationLeftOffset = 0;
-
                     if (this.props.contentDestination) {
                         const destRect = this.props.contentDestination.getBoundingClientRect();
-                        destinationTopOffset = -destRect.top;
-                        destinationLeftOffset = -destRect.left;
+                        top -= destRect.top;
+                        left -= destRect.left;
+                    } else {
+                        top += window.pageYOffset;
+                        left += window.pageXOffset;
                     }
 
-                    const [absoluteTop, absoluteLeft] = [top + window.pageYOffset, left + window.pageXOffset];
-                    const finalLeft = absoluteLeft + destinationLeftOffset;
-                    const finalTop = absoluteTop + destinationTopOffset;
-
-                    this.popoverDiv.style.left = `${finalLeft.toFixed()}px`;
-                    this.popoverDiv.style.top = `${finalTop.toFixed()}px`;
+                    this.popoverDiv.style.left = `${left.toFixed()}px`;
+                    this.popoverDiv.style.top = `${top.toFixed()}px`;
                 }
 
                 this.popoverDiv.style.width = null;
