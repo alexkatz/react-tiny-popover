@@ -67,7 +67,6 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     }
 
     public componentDidUpdate(prevProps: PopoverProps) {
-
         const { isOpen: prevIsOpen, align: prevAlign, position: prevPosition, transitionDuration: prevTransitionDuration } = prevProps;
         const { isOpen, position, transitionDuration, align } = this.props;
 
