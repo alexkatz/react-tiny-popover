@@ -5,8 +5,7 @@
             "es2015",
             "dom"
         ],
-        "sourceMap": true,
-        "sourceRoot": "",
+        "inlineSourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
         "target": "es5",
