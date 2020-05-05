@@ -3420,10 +3420,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-tiny-popover@3.5.0:
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-3.4.5.tgz#66efb7951b98637d25deff156c9e870a3618a966"
-  integrity sha512-vZHIMCsphBwgUcz6wnwq+BZnukNzZhSXYTpe5qqTYGr+mTyVKN6q8NXsNkokh5QGnTzO3FpB3P33J64F1oiTqg==
+react-tiny-popover@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-4.0.0.tgz#648455bd8803434e0dcf04acc65ab6e3a4c42e75"
+  integrity sha512-9eTzEughY47VRZ7nNGfvvTLaBZfAIb+VGd+F/tmOCZE8Hi839fGC2P7UbCs+oz/e7xPfQzvB+Myq43C4Af80fQ==
 
 react-virtualized@^9.10.1:
   version "9.21.2"
