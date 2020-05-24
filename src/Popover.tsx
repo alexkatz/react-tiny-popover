@@ -89,7 +89,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     }
 
     public render() {
-        const { content } = this.props;
+        const { content, children } = this.props;
         const { popoverInfo, isTransitioningToClosed } = this.state;
 
         let popoverContent = null;
@@ -110,9 +110,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
         return (
             <>
-                {React.cloneElement(this.props.children, {
-                    ref: this.target,
-                })}
+                {children(this.target)}
                 {popoverContent}
             </>
         );
