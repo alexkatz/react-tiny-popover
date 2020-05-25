@@ -107,7 +107,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 </Popover>;
 ```
 
-If you'd like to use a custom React element as `Popover`'s target, you'll have to pass the `ref` `Popover` provides to an inner DOM element of your component. The best way to accomplish this is with [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.html). Here's a simple Typescript example, as well:
+If you'd like to use a custom React element as `Popover`'s target, you'll have to pass the `ref` that `Popover` provides to an inner DOM element of your component. The best way to accomplish this is with [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.html). Here's a simple example, using Typescript:
 
 ```JSX
 import React, { useState } from 'react';
