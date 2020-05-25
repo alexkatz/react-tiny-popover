@@ -118,7 +118,7 @@ interface CustomComponentProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 const CustomComponent = React.forwardRef<HTMLDivElement, CustomComponentProps>((props, ref) => (
-  <div ref={ref} onClick={() => props.onClick()}>
+  <div ref={ref} onClick={props.onClick}>
     {props.children}
   </div>
 ));
