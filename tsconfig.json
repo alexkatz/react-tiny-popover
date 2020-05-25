@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "src",
     "lib": ["es2015", "dom"],
-
+    "inlineSourceMap": true,
+    "inlineSources": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",
-    "jsx": "react"
+    "jsx": "react",
+    "pretty": true
   },
-  "include": ["./src/**/*"]
+  "include": ["src"]
 }
