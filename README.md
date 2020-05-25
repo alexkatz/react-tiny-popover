@@ -124,12 +124,12 @@ const CustomComponent = React.forwardRef<HTMLDivElement, CustomComponentProps>((
 ));
 
 const App: React.FC = () => {
-  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   return (
     <div>
-      <Popover isOpen={popoverIsOpen} content={<div>hey from popover content</div>}>
+      <Popover isOpen={isPopoverOpen} content={<div>hey from popover content</div>}>
         {ref => (
-          <CustomComponent ref={ref} onClick={() => setPopoverIsOpen(!popoverIsOpen)}>
+          <CustomComponent ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
             hey from a custom target component
           </CustomComponent>
         )}
