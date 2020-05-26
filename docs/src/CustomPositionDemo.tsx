@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AutoSizer } from 'react-virtualized';
-import { FONT, NO_SELECT } from './DemoContainer';
 import Popover from 'react-tiny-popover';
+import { FONT, NO_SELECT } from './constants';
 
 const BACKGROUND_COLOR = 'rgba(100, 40, 20, 0.4)';
 const TARGET_COLOR = 'rgba(40, 20, 30, 0.4)';
@@ -22,7 +22,10 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
 
   public render() {
     const { isTargetActive, isPopoverOpen } = this.state;
-    const CONTENT_SIZE = Math.min(window.innerWidth - 2 * MODAL_PADDING, window.innerHeight - 2 * MODAL_PADDING);
+    const CONTENT_SIZE = Math.min(
+      window.innerWidth - 2 * MODAL_PADDING,
+      window.innerHeight - 2 * MODAL_PADDING,
+    );
     return (
       <AutoSizer>
         {({ width, height }) => (
@@ -51,7 +54,8 @@ class CustomPositionDemo extends React.Component<{}, CustomPositionDemoState> {
                   }}
                   onClick={() => this.setState({ isPopoverOpen: false })}
                 >
-                  I could be a modal or something! Also, try resizing your browser! Click anywhere to dismiss me.
+                  I could be a modal or something! Also, try resizing your browser! Click anywhere
+                  to dismiss me.
                 </div>
               }
               contentLocation={{

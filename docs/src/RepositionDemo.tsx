@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Popover, { Position, ArrowContainer, PopoverInfo, Align } from 'react-tiny-popover';
 import { AutoSizer } from 'react-virtualized';
-import { FONT, NO_SELECT } from './DemoContainer';
+import { FONT, NO_SELECT } from './constants';
 
 const BACKGROUND_COLOR = 'rgba(40, 200, 80, 0.4)';
 const TARGET_COLOR = 'rgba(30, 70, 240, 0.3)';
@@ -45,8 +45,8 @@ class RepositionDemo extends React.Component<{}, DemoState> {
   constructor(props: Readonly<{}>) {
     super(props);
     this.state = {
-      targetX: null,
-      targetY: null,
+      targetX: undefined,
+      targetY: undefined,
       isTogglePositionActive: false,
       isToggleRepositionActive: false,
       isToggleArrowActive: false,
@@ -195,9 +195,15 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                 position={currentPosition}
                 align={align}
                 windowBorderPadding={Number(windowPaddingText)}
-                padding={isNaN(Number(popoverPaddingText)) ? DEFAULT_POPOVER_PADDING : Number(popoverPaddingText)}
+                padding={
+                  isNaN(Number(popoverPaddingText))
+                    ? DEFAULT_POPOVER_PADDING
+                    : Number(popoverPaddingText)
+                }
                 transitionDuration={0.35}
-                contentDestination={isRenderedInDestinationActive ? document.getElementById('orangeBox') : null}
+                contentDestination={
+                  isRenderedInDestinationActive ? document.getElementById('orangeBox') : undefined
+                }
                 containerClassName={'reposition-demo-popover-container'}
               >
                 {(ref) => (
@@ -215,8 +221,8 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                       opacity: isTargetActive ? 0.9 : 0.7,
                       backgroundColor: isPopoverOpen ? TARGET_OPEN_COLOR : TARGET_COLOR,
                       position: 'absolute',
-                      left: targetX !== null ? targetX : width / 2 - TARGET_SIZE / 2,
-                      top: targetY !== null ? targetY : height / 2 - TARGET_SIZE / 2,
+                      left: targetX != null ? targetX : width / 2 - TARGET_SIZE / 2,
+                      top: targetY != null ? targetY : height / 2 - TARGET_SIZE / 2,
                     }}
                     onMouseDown={this.onTargetMouseDown}
                     onMouseUp={this.onTargetMouseUp}
@@ -243,7 +249,9 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                         ...commonButtonStyle,
                       }}
                     >
-                      {isRenderedInDestinationActive ? 'render popover in body' : 'render popover in that orange box'}
+                      {isRenderedInDestinationActive
+                        ? 'render popover in body'
+                        : 'render popover in that orange box'}
                     </div>
                     <div
                       style={{
@@ -367,26 +375,48 @@ class RepositionDemo extends React.Component<{}, DemoState> {
     );
   }
 
-  private isTogglingPosition: (x: number, y: number) => boolean = (x, y) => x > TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+  private isTogglingPosition: (x: number, y: number) => boolean = (x, y) =>
+    x > TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+
   private isTogglingAlign: (x: number, y: number) => boolean = (x, y) =>
-    x > TARGET_SIZE / 2 && y > TARGET_SIZE - 2 * TOGGLE_BUTTON_HEIGHT && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
-  private isTogglingDestination: (x: number, y: number) => boolean = (x, y) => y < TARGET_SIZE - 4 * TOGGLE_BUTTON_HEIGHT && y > TOGGLE_BUTTON_HEIGHT;
+    x > TARGET_SIZE / 2 &&
+    y > TARGET_SIZE - 2 * TOGGLE_BUTTON_HEIGHT &&
+    y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+
+  private isTogglingDestination: (x: number, y: number) => boolean = (x, y) =>
+    y < TARGET_SIZE - 4 * TOGGLE_BUTTON_HEIGHT && y > TOGGLE_BUTTON_HEIGHT;
+
   private isTogglingArrow: (x: number, y: number) => boolean = (x, y) =>
-    x < TARGET_SIZE / 2 && y > TARGET_SIZE - 2 * TOGGLE_BUTTON_HEIGHT && y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
-  private isTogglingReposition: (x: number, y: number) => boolean = (x, y) => x < TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+    x < TARGET_SIZE / 2 &&
+    y > TARGET_SIZE - 2 * TOGGLE_BUTTON_HEIGHT &&
+    y < TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
+
+  private isTogglingReposition: (x: number, y: number) => boolean = (x, y) =>
+    x < TARGET_SIZE / 2 && y > TARGET_SIZE - TOGGLE_BUTTON_HEIGHT;
 
   private onTargetMouseDown: React.MouseEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
     const targetClickOffsetX = e.clientX - target.offsetLeft;
     const targetClickOffsetY = e.clientY - target.offsetTop;
     const isTogglePositionActive = this.isTogglingPosition(targetClickOffsetX, targetClickOffsetY);
-    const isToggleRepositionActive = this.isTogglingReposition(targetClickOffsetX, targetClickOffsetY);
+    const isToggleRepositionActive = this.isTogglingReposition(
+      targetClickOffsetX,
+      targetClickOffsetY,
+    );
     const isToggleArrowActive = this.isTogglingArrow(targetClickOffsetX, targetClickOffsetY);
     const isToggleAlignActive = this.isTogglingAlign(targetClickOffsetX, targetClickOffsetY);
-    const isToggleDestinationActive = this.isTogglingDestination(targetClickOffsetX, targetClickOffsetY);
+    const isToggleDestinationActive = this.isTogglingDestination(
+      targetClickOffsetX,
+      targetClickOffsetY,
+    );
 
     this.setState({
-      isTargetActive: !isTogglePositionActive && !isToggleRepositionActive && !isToggleArrowActive && !isToggleAlignActive && !isToggleDestinationActive,
+      isTargetActive:
+        !isTogglePositionActive &&
+        !isToggleRepositionActive &&
+        !isToggleArrowActive &&
+        !isToggleAlignActive &&
+        !isToggleDestinationActive,
       isTogglePositionActive,
       isToggleDestinationActive,
       isToggleRepositionActive,
@@ -430,12 +460,16 @@ class RepositionDemo extends React.Component<{}, DemoState> {
       isToggleRepositionActive: false,
       isToggleDestinationActive: false,
       isMouseDown: false,
-      isRenderedInDestinationActive: shouldToggleDestination ? !isRenderedInDestinationActive : isRenderedInDestinationActive,
+      isRenderedInDestinationActive: shouldToggleDestination
+        ? !isRenderedInDestinationActive
+        : isRenderedInDestinationActive,
       isPopoverOpen: shouldPopoverToggle ? !isPopoverOpen : isPopoverOpen,
       positionIndex: shouldTogglePosition ? positionIndex + 1 : positionIndex,
       repositionEnabled: shouldToggleReposition ? !repositionEnabled : repositionEnabled,
       showArrow: shouldToggleArrow ? !showArrow : showArrow,
-      align: shouldToggleAlign ? alignOrder[(alignOrder.indexOf(align) + 1) % alignOrder.length] : align,
+      align: shouldToggleAlign
+        ? alignOrder[(alignOrder.indexOf(align) + 1) % alignOrder.length]
+        : align,
     });
   };
 

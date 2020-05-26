@@ -3,6 +3,7 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": false,
+    "esModuleInterop": true,
     "module": "commonjs",
     "target": "es5",
     "lib": ["es5", "es6", "dom"],

@@ -4,7 +4,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['react-hooks', 'prettier'],
-  extends: ['react-app', 'airbnb-typescript', 'plugin:prettier/recommended'],
+  extends: ['react-app', 'plugin:prettier/recommended'],
   rules: {
     'object-curly-spacing': ['warn', 'always'],
     '@typescript-eslint/indent': 0,
@@ -25,8 +25,7 @@ module.exports = {
     'class-methods-use-this': 0,
     'no-constant-condition': ['error'],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
-    'import/no-default-export': 1,
-    'import/no-default-export': 0,
+    'import/prefer-default-export': 0,
     'import/extensions': 0,
     'react/destructuring-assignment': 0,
     'react/prop-types': 0,
@@ -39,8 +38,7 @@ module.exports = {
       {
         selector:
           ":not(BinaryExpression:matches([operator='!=='], [operator='!='], [operator='==='])) > Literal[value=null]",
-        message:
-          'Usage of "null" is deprecated except when received from legacy APIs; use "undefined" instead',
+        message: 'Usage of "null" is deprecated; use "undefined" instead when possible.',
       },
     ],
   },
