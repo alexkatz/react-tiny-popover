@@ -107,7 +107,7 @@ import Popover from 'react-tiny-popover'
   )}
 >
   {ref => (
-    <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
+    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
   )}
 </Popover>;
 ```
