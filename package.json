@@ -1,6 +1,6 @@
 {
   "name": "react-tiny-popover",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",
   "keywords": [
     "react",
