@@ -34,20 +34,16 @@ import Popover from 'react-tiny-popover'
 ...
 
 <Popover
-    isOpen={isPopoverOpen}
-    position={'top'} // preferred position
-    content={(
-        <div>
-            Hi! I'm popover content.
-        </div>
-    )}
+  isOpen={isPopoverOpen}
+  position={'top'} // preferred position
+  content={<div>Hi! I'm popover content.</div>}
 >
-{ref => (
+  {ref => (
     <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-        Click me!
+      Click me!
     </div>
-)}
-</Popover>
+  )}
+</Popover>;
 ```
 
 ```JSX
@@ -56,25 +52,23 @@ import Popover from 'react-tiny-popover'
 ...
 
 <Popover
-    isOpen={isPopoverOpen}
-    position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
-    padding={10} // adjust padding here!
-    disableReposition // prevents automatic readjustment of content position that keeps your popover content within your window's bounds
-    onClickOutside={() => setIsPopoverOpen(false)} // handle click events outside of the popover/target here!
-    content={({ position, nudgedLeft, nudgedTop, targetRect, popoverRect }) => ( // you can also provide a render function that injects some useful stuff!
-        <div>
-            <div>Hi! I'm popover content. Here's my position: {position}.</div>
-            <div>I'm {` ${nudgedLeft} `} pixels beyond the window horizontally!</div>
-            <div>I'm {` ${nudgedTop} `} pixels beyond the window vertically!</div>
-        </div>
-    )}
->
-{ref => (
-    <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-        Click me!
+  isOpen={isPopoverOpen}
+  position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
+  padding={10} // adjust padding here!
+  disableReposition // prevents automatic readjustment of content position that keeps your popover content within your window's bounds
+  onClickOutside={() => setIsPopoverOpen(false)} // handle click events outside of the popover/target here!
+  content={({ position, nudgedLeft, nudgedTop, targetRect, popoverRect }) => ( // you can also provide a render function that injects some useful stuff!
+    <div>
+      <div>Hi! I'm popover content. Here's my position: {position}.</div>
+      <div>I'm {` ${nudgedLeft} `} pixels beyond the window horizontally!</div>
+      <div>I'm {` ${nudgedTop} `} pixels beyond the window vertically!</div>
     </div>
-)}
-</Popover>
+  )}
+>
+  {ref => (
+    <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
+  )}
+</Popover>;
 ```
 
 ```JSX
@@ -83,37 +77,37 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
 ...
 
 <Popover
-    isOpen={isPopoverOpen}
-    position={['top', 'right', 'left', 'bottom']}
-    padding={10}
-    onClickOutside={() => setIsPopoverOpen(false)}
-    content={({ position, targetRect, popoverRect }) => (
-        <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
-            position={position}
-            targetRect={targetRect}
-            popoverRect={popoverRect}
-            arrowColor={'blue'}
-            arrowSize={10}
-            arrowStyle={{ opacity: 0.7 }}
-        >
-            <div
-                style={{ backgroundColor: 'blue', opacity: 0.7 }}
-                onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-            >
-                Hi! I'm popover content. Here's my position: {position}.
-            </div>
-        </ArrowContainer>
-    )}
+  isOpen={isPopoverOpen}
+  position={['top', 'right', 'left', 'bottom']}
+  padding={10}
+  onClickOutside={() => setIsPopoverOpen(false)}
+  content={({ position, targetRect, popoverRect }) => (
+    <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
+      position={position}
+      targetRect={targetRect}
+      popoverRect={popoverRect}
+      arrowColor={'blue'}
+      arrowSize={10}
+      arrowStyle={{ opacity: 0.7 }}
+    >
+      <div
+        style={{ backgroundColor: 'blue', opacity: 0.7 }}
+        onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+      >
+        Hi! I'm popover content. Here's my position: {position}.
+      </div>
+    </ArrowContainer>
+  )}
 >
-{ref => (
+  {ref => (
     <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-        Click me!
+      Click me!
     </div>
-)}
-</Popover>
+  )}
+</Popover>;
 ```
 
-If you'd like to use a custom React element as `Popover`'s target, you'll have to pass the `ref` `Popover` provides to an inner DOM element of your component. The best way to accomplish this is with [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.html). Here's a simple Typescript example, as well:
+If you'd like to use a custom React element as `Popover`'s target, you'll have to pass the `ref` that `Popover` provides to an inner DOM element of your component. The best way to accomplish this is with [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.html). Here's a simple example, using Typescript:
 
 ```JSX
 import React, { useState } from 'react';
@@ -124,18 +118,18 @@ interface CustomComponentProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 const CustomComponent = React.forwardRef<HTMLDivElement, CustomComponentProps>((props, ref) => (
-  <div ref={ref} onClick={() => props.onClick()}>
+  <div ref={ref} onClick={props.onClick}>
     {props.children}
   </div>
 ));
 
 const App: React.FC = () => {
-  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   return (
     <div>
-      <Popover isOpen={popoverIsOpen} content={<div>hey from popover content</div>}>
+      <Popover isOpen={isPopoverOpen} content={<div>hey from popover content</div>}>
         {ref => (
-          <CustomComponent ref={ref} onClick={() => setPopoverIsOpen(!popoverIsOpen)}>
+          <CustomComponent ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
             hey from a custom target component
           </CustomComponent>
         )}
@@ -153,7 +147,7 @@ export default App;
 
 | <b>Property<b>      | Type                             | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| children            | `Function`                       | ✔️       | This function, of form `(ref: React.Ref) => JSX.Element`, will return the JSX.Element target that you'd like the popover content to track. In order to track that element, however, you must attach the provided `ref`. If you're using a custom React component, you'll have to employ React's ref forwarding. See the example above, or read more about that over at [React's ref forwarding docs](https://reactjs.org/docs/forwarding-refs.html).Sweet.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| children            | `Function`                       | ✔️       | This function, of form `(ref: React.Ref) => JSX.Element`, will return the JSX.Element target that you'd like the popover content to track. In order to track that element, however, you must attach the provided `ref`. If you're using a custom React component, you'll have to employ React's ref forwarding. See the examples above, or read more about that over at [React's ref forwarding docs](https://reactjs.org/docs/forwarding-refs.html). Sweet.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | isOpen              | `boolean`                        | ✔️       | When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | content             | `JSX.Element` or `Function`      | ✔️       | Here, you'll provide the content that will appear as the popover. Rather than a JSX element like a `<div>`, you may supply a function that returns a JSX.Element, which will look like this: `({ position, targetRect, popoverRect, align, nudgedLeft, nudgedTop }) => JSX.Element`. Here, `position` is of type `'top', 'bottom', 'left', 'right'`. `align` is of type `start`, `center`, or `end`. Both `targetRect` and `popoverRect` are `ClientRect` objects of format `{ height: number, width: number, top: number, left: number, right: number, bottom: number }`, and represent the popover content and target `div`'s coordinates within your browser's window. `nudgedLeft` and `nudgedTop` specify the X and Y offset the popover content is shifted by to keep it within the window's bounds during a boundary collision. You may want to use these values to adjust your content depending on its location in relation to the window and the target, especially if you have repositioning disabled. Sweet. |
 | padding             | `number`                         |          | This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
