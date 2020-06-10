@@ -1,8 +1,8 @@
 - [Intro](#react-tiny-popover)
 - [Installation](#install)
 - [Demo](#demo)
-- [Migrating from versions 3 and 4](#migrating-from-versions-3-and-4)
 - [Examples](#examples)
+- [Migrating from versions 3 and 4](#migrating-from-versions-3-and-4)
 - [API](#api)
 
 # react-tiny-popover
@@ -33,40 +33,6 @@ npm install react-tiny-popover --save
 
 :+1:
 
-## Migrating from versions 3 and 4
-
-`react-tiny-popover 5.x.x` has abandoned use of `findDOMNode` to gain a reference to `Popover`'s target DOM node, and now explicitly relies on a ref. Since React has deprecated `findDOMNode` in `StrictMode`, now seems like an appropriate time to shift away from this under-the-hood logic toward a clearer and more declarative API.
-
-If your code looked this way:
-
-```JSX
-<Popover
-  isOpen={isPopoverOpen}
-  content={<div>Hi! I'm popover content.</div>}
->
-  <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-    Click me!
-  </div>
-</Popover>;
-```
-
-...it will now look this way:
-
-```JSX
-<Popover
-  isOpen={isPopoverOpen}
-  content={<div>Hi! I'm popover content.</div>}
->
-  {ref => (
-    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-      Click me!
-    </div>
-  )}
-</Popover>;
-```
-
-See more examples below!
-
 ## Examples
 
 ```JSX
@@ -79,11 +45,9 @@ import Popover from 'react-tiny-popover'
   position={'top'} // preferred position
   content={<div>Hi! I'm popover content.</div>}
 >
-  {ref => (
-    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-      Click me!
-    </div>
-  )}
+  <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+    Click me!
+  </div>
 </Popover>;
 ```
 
@@ -106,9 +70,7 @@ import Popover from 'react-tiny-popover'
     </div>
   )}
 >
-  {ref => (
-    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
-  )}
+  <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
 </Popover>;
 ```
 
@@ -140,7 +102,7 @@ import Popover, { ArrowContainer } from 'react-tiny-popover'
     </ArrowContainer>
   )}
 >
-  {ref => (
+  {ref => ( // if you'd like access to the ref itself for some reason, you can provide a function as a child into which the ref will be injected
     <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
       Click me!
     </div>
@@ -169,11 +131,9 @@ const App: React.FC = () => {
   return (
     <div>
       <Popover isOpen={isPopoverOpen} content={<div>hey from popover content</div>}>
-        {ref => (
-          <CustomComponent ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-            hey from a custom target component
-          </CustomComponent>
-        )}
+        <CustomComponent onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+          hey from a custom target component
+        </CustomComponent>
       </Popover>
     </div>
   );
@@ -182,13 +142,55 @@ const App: React.FC = () => {
 export default App;
 ```
 
+## Migrating from versions 3 and 4
+
+`react-tiny-popover 5.x.x` has abandoned use of `findDOMNode` to gain a reference to `Popover`'s target DOM node, and now explicitly relies on a ref. Since React has deprecated `findDOMNode` in `StrictMode`, now seems like an appropriate time to shift away from this under-the-hood logic toward a clearer and more declarative API.
+
+If your code looked this way, it can stay this way. React elements handle refs out of the box with no issues:
+
+```JSX
+<Popover
+  isOpen={isPopoverOpen}
+  content={<div>Hi! I'm popover content.</div>}
+>
+  <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+    Click me!
+  </div>
+</Popover>;
+```
+However, if you use a custom component as a your `Popover`'s child, you'll have to implement ref forwarding. Without ref forwarding, `Popover` will not be able to inject a reference into you component and refer to it.
+
+For example:
+
+```JSX
+interface Props extends React.ComponentPropsWithoutRef<'div'> {
+  onClick(): void;
+}
+
+// this component will no longer work as a Popover child
+const CustomComponent: React.FC<Props> = props => (
+  <div onClick={props.onClick}>
+    {props.children}
+  </div>  
+)
+
+// instead, you'll simply implement ref forwarding, as so:
+const CustomComponent = React.forwardRef<HTMLDivElement, Props>((props, ref) => (
+  <div ref={ref} onClick={props.onClick}>
+    {props.children}
+  </div>
+));
+```
+
+Check out [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.html) for more info, and see the examples above.
+
 ## API
 
 ### Popover
 
 | <b>Property<b>      | Type                             | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ------------------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| children            | `Function`                       | ✔️       | This function, of form `(ref: React.Ref) => JSX.Element`, will return the JSX.Element target that you'd like the popover content to track. In order to track that element, however, you must attach the provided `ref`. If you're using a custom React component, you'll have to employ React's ref forwarding. See the examples above, or read more about that over at [React's ref forwarding docs](https://reactjs.org/docs/forwarding-refs.html). Sweet.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| children            | `JSX.Element` or `Function`                       | ✔️       | If the `JSX.Element` you provide is a custom component, it should [forward refs](https://reactjs.org/docs/forwarding-refs.html). If you provide a function of form `(ref: React.Ref) => JSX.Element`, it'll return from it the JSX.Element target that you'd like the popover content to track. Don't forget to attach that `ref` to  it, though.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | isOpen              | `boolean`                        | ✔️       | When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | content             | `JSX.Element` or `Function`      | ✔️       | Here, you'll provide the content that will appear as the popover. Rather than a JSX element like a `<div>`, you may supply a function that returns a JSX.Element, which will look like this: `({ position, targetRect, popoverRect, align, nudgedLeft, nudgedTop }) => JSX.Element`. Here, `position` is of type `'top', 'bottom', 'left', 'right'`. `align` is of type `start`, `center`, or `end`. Both `targetRect` and `popoverRect` are `ClientRect` objects of format `{ height: number, width: number, top: number, left: number, right: number, bottom: number }`, and represent the popover content and target `div`'s coordinates within your browser's window. `nudgedLeft` and `nudgedTop` specify the X and Y offset the popover content is shifted by to keep it within the window's bounds during a boundary collision. You may want to use these values to adjust your content depending on its location in relation to the window and the target, especially if you have repositioning disabled. Sweet. |
 | padding             | `number`                         |          | This number determines the gap, in pixels, between your target content and your popover content. Defaults to 6.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
