@@ -21,7 +21,7 @@ export declare type Position = 'left' | 'right' | 'top' | 'bottom';
 export declare type Align = 'start' | 'center' | 'end';
 
 export declare interface PopoverProps {
-  children(ref: React.Ref<any>): JSX.Element;
+  children: JSX.Element | ((ref: React.Ref<any>) => JSX.Element);
   isOpen: boolean;
   content: ContentRenderer | JSX.Element;
   contentDestination?: HTMLElement;

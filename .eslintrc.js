@@ -34,14 +34,5 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/static-property-placement': 0,
-    'no-restricted-syntax': [
-      'error',
-      {
-        selector:
-          ":not(BinaryExpression:matches([operator='!=='], [operator='!='], [operator='==='])) > Literal[value=null]",
-        message:
-          'Usage of "null" is deprecated except when received from legacy APIs; use "undefined" instead',
-      },
-    ],
   },
 };

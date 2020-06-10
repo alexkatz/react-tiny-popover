@@ -206,167 +206,164 @@ class RepositionDemo extends React.Component<{}, DemoState> {
                 }
                 containerClassName={'reposition-demo-popover-container'}
               >
-                {(ref) => (
+                <div
+                  style={{
+                    width: TARGET_SIZE,
+                    height: TARGET_SIZE,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    ...NO_SELECT,
+                    ...FONT,
+                    cursor: 'default',
+                    boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
+                    opacity: isTargetActive ? 0.9 : 0.7,
+                    backgroundColor: isPopoverOpen ? TARGET_OPEN_COLOR : TARGET_COLOR,
+                    position: 'absolute',
+                    left: targetX != null ? targetX : width / 2 - TARGET_SIZE / 2,
+                    top: targetY != null ? targetY : height / 2 - TARGET_SIZE / 2,
+                  }}
+                  onMouseDown={this.onTargetMouseDown}
+                  onMouseUp={this.onTargetMouseUp}
+                >
                   <div
-                    ref={ref}
+                    style={{
+                      ...commonButtonStyle,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      width: TARGET_SIZE,
+                      opacity: 0.7,
+                      boxSizing: 'border-box',
+                      padding: PADDING,
+                    }}
+                  >
+                    drag me around and click on me and stuff!
+                  </div>
+                  <div
                     style={{
                       width: TARGET_SIZE,
-                      height: TARGET_SIZE,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      ...NO_SELECT,
-                      ...FONT,
-                      cursor: 'default',
-                      boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 12px',
-                      opacity: isTargetActive ? 0.9 : 0.7,
-                      backgroundColor: isPopoverOpen ? TARGET_OPEN_COLOR : TARGET_COLOR,
-                      position: 'absolute',
-                      left: targetX != null ? targetX : width / 2 - TARGET_SIZE / 2,
-                      top: targetY != null ? targetY : height / 2 - TARGET_SIZE / 2,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      top: TOGGLE_BUTTON_HEIGHT,
+                      right: 0,
+                      opacity: isToggleDestinationActive ? 1 : BUTTON_OPACITY,
+                      ...commonButtonStyle,
                     }}
-                    onMouseDown={this.onTargetMouseDown}
-                    onMouseUp={this.onTargetMouseUp}
                   >
+                    {isRenderedInDestinationActive
+                      ? 'render popover in body'
+                      : 'render popover in that orange box'}
+                  </div>
+                  <div
+                    style={{
+                      ...commonButtonStyle,
+                      opacity: 0.7,
+                      pointerEvents: 'inherit',
+                      width: TARGET_SIZE,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      left: 0,
+                      top: TOGGLE_BUTTON_HEIGHT * 2,
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    <div style={{ paddingRight: 5 }}>popover padding:</div>
                     <div
                       style={{
-                        ...commonButtonStyle,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        width: TARGET_SIZE,
-                        opacity: 0.7,
-                        boxSizing: 'border-box',
-                        padding: PADDING,
+                        paddingRight: 5,
+                        width: 50,
+                        position: 'relative',
                       }}
                     >
-                      drag me around and click on me and stuff!
-                    </div>
-                    <div
-                      style={{
-                        width: TARGET_SIZE,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        top: TOGGLE_BUTTON_HEIGHT,
-                        right: 0,
-                        opacity: isToggleDestinationActive ? 1 : BUTTON_OPACITY,
-                        ...commonButtonStyle,
-                      }}
-                    >
-                      {isRenderedInDestinationActive
-                        ? 'render popover in body'
-                        : 'render popover in that orange box'}
-                    </div>
-                    <div
-                      style={{
-                        ...commonButtonStyle,
-                        opacity: 0.7,
-                        pointerEvents: 'inherit',
-                        width: TARGET_SIZE,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        left: 0,
-                        top: TOGGLE_BUTTON_HEIGHT * 2,
-                        justifyContent: 'space-around',
-                      }}
-                    >
-                      <div style={{ paddingRight: 5 }}>popover padding:</div>
-                      <div
+                      <input
                         style={{
-                          paddingRight: 5,
-                          width: 50,
-                          position: 'relative',
+                          width: '100%',
                         }}
-                      >
-                        <input
-                          style={{
-                            width: '100%',
-                          }}
-                          type='text'
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onMouseUp={(e) => e.stopPropagation()}
-                          value={popoverPaddingText}
-                          onChange={(e) => this.setState({ popoverPaddingText: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        ...commonButtonStyle,
-                        opacity: 0.7,
-                        pointerEvents: 'inherit',
-                        width: TARGET_SIZE,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        left: 0,
-                        bottom: TOGGLE_BUTTON_HEIGHT * 2,
-                        justifyContent: 'space-around',
-                      }}
-                    >
-                      <div style={{ paddingRight: 5 }}>window padding:</div>
-                      <div
-                        style={{
-                          paddingRight: 5,
-                          width: 50,
-                          position: 'relative',
-                        }}
-                      >
-                        <input
-                          style={{
-                            width: '100%',
-                          }}
-                          type='text'
-                          onMouseDown={(e) => e.stopPropagation()}
-                          onMouseUp={(e) => e.stopPropagation()}
-                          value={windowPaddingText}
-                          onChange={(e) => this.setState({ windowPaddingText: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        width: TARGET_SIZE / 2,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        bottom: 0,
-                        right: 0,
-                        opacity: isTogglePositionActive ? 1 : BUTTON_OPACITY,
-                        ...commonButtonStyle,
-                      }}
-                    >
-                      {currentPosition}
-                    </div>
-                    <div
-                      style={{
-                        width: TARGET_SIZE / 2,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        bottom: 0,
-                        left: 0,
-                        opacity: isToggleRepositionActive ? 1 : BUTTON_OPACITY,
-                        ...commonButtonStyle,
-                      }}
-                    >
-                      {repositionEnabled ? 'reposition' : 'no reposition'}
-                    </div>
-                    <div
-                      style={{
-                        width: TARGET_SIZE / 2,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        bottom: TOGGLE_BUTTON_HEIGHT,
-                        left: 0,
-                        opacity: isToggleArrowActive ? 1 : BUTTON_OPACITY,
-                        ...commonButtonStyle,
-                      }}
-                    >
-                      {showArrow ? 'arrow' : 'no arrow'}
-                    </div>
-                    <div
-                      style={{
-                        width: TARGET_SIZE / 2,
-                        height: TOGGLE_BUTTON_HEIGHT,
-                        bottom: TOGGLE_BUTTON_HEIGHT,
-                        right: 0,
-                        opacity: isToggleAlignActive ? 1 : BUTTON_OPACITY,
-                        ...commonButtonStyle,
-                      }}
-                    >
-                      {align}
+                        type='text'
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onMouseUp={(e) => e.stopPropagation()}
+                        value={popoverPaddingText}
+                        onChange={(e) => this.setState({ popoverPaddingText: e.target.value })}
+                      />
                     </div>
                   </div>
-                )}
+                  <div
+                    style={{
+                      ...commonButtonStyle,
+                      opacity: 0.7,
+                      pointerEvents: 'inherit',
+                      width: TARGET_SIZE,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      left: 0,
+                      bottom: TOGGLE_BUTTON_HEIGHT * 2,
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    <div style={{ paddingRight: 5 }}>window padding:</div>
+                    <div
+                      style={{
+                        paddingRight: 5,
+                        width: 50,
+                        position: 'relative',
+                      }}
+                    >
+                      <input
+                        style={{
+                          width: '100%',
+                        }}
+                        type='text'
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onMouseUp={(e) => e.stopPropagation()}
+                        value={windowPaddingText}
+                        onChange={(e) => this.setState({ windowPaddingText: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      width: TARGET_SIZE / 2,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      bottom: 0,
+                      right: 0,
+                      opacity: isTogglePositionActive ? 1 : BUTTON_OPACITY,
+                      ...commonButtonStyle,
+                    }}
+                  >
+                    {currentPosition}
+                  </div>
+                  <div
+                    style={{
+                      width: TARGET_SIZE / 2,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      bottom: 0,
+                      left: 0,
+                      opacity: isToggleRepositionActive ? 1 : BUTTON_OPACITY,
+                      ...commonButtonStyle,
+                    }}
+                  >
+                    {repositionEnabled ? 'reposition' : 'no reposition'}
+                  </div>
+                  <div
+                    style={{
+                      width: TARGET_SIZE / 2,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      bottom: TOGGLE_BUTTON_HEIGHT,
+                      left: 0,
+                      opacity: isToggleArrowActive ? 1 : BUTTON_OPACITY,
+                      ...commonButtonStyle,
+                    }}
+                  >
+                    {showArrow ? 'arrow' : 'no arrow'}
+                  </div>
+                  <div
+                    style={{
+                      width: TARGET_SIZE / 2,
+                      height: TOGGLE_BUTTON_HEIGHT,
+                      bottom: TOGGLE_BUTTON_HEIGHT,
+                      right: 0,
+                      opacity: isToggleAlignActive ? 1 : BUTTON_OPACITY,
+                      ...commonButtonStyle,
+                    }}
+                  >
+                    {align}
+                  </div>
+                </div>
               </Popover>
             </div>
           </div>
