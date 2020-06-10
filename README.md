@@ -1,3 +1,10 @@
+- [Intro](#react-tiny-popover)
+- [Installation](#install)
+- [Demo](#demo)
+- [Migrating from versions 3 and 4](#migrating-from-versions-3-and-4)
+- [Examples](#examples)
+- [API](#api)
+
 # react-tiny-popover
 
 A lightweight, highly customizable, and non-intrusive popover react HOC with no other dependencies! <b>Typescript friendly</b>, as well!
@@ -25,6 +32,40 @@ npm install react-tiny-popover --save
 ## [Demo](https://alexkatz.github.io/react-tiny-popover/)
 
 :+1:
+
+## Migrating from versions 3 and 4
+
+`react-tiny-popover 5.x.x` has abandoned use of `findDOMNode` to gain a reference to `Popover`'s target DOM node, and now explicitly relies on a ref. Since React has deprecated `findDOMNode` in `StrictMode`, now seems like an appropriate time to shift away from this under-the-hood logic toward a clearer and more declarative API.
+
+If your code looked this way:
+
+```JSX
+<Popover
+  isOpen={isPopoverOpen}
+  content={<div>Hi! I'm popover content.</div>}
+>
+  <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+    Click me!
+  </div>
+</Popover>;
+```
+
+...it will now look this way:
+
+```JSX
+<Popover
+  isOpen={isPopoverOpen}
+  content={<div>Hi! I'm popover content.</div>}
+>
+  {ref => (
+    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+      Click me!
+    </div>
+  )}
+</Popover>;
+```
+
+See more examples below!
 
 ## Examples
 
@@ -66,7 +107,7 @@ import Popover from 'react-tiny-popover'
   )}
 >
   {ref => (
-    <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
+    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>Click me!</div>
   )}
 </Popover>;
 ```
