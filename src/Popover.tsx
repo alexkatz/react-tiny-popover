@@ -253,6 +253,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
         const { transitionDuration } = this.props;
         this.popoverDiv = this.createContainer();
         this.popoverDiv.style.opacity = '0';
+        this.popoverDiv.style.pointerEvents = 'none';
         this.popoverDiv.style.transition = `opacity ${transitionDuration}s`;
       }
       window.addEventListener('resize', this.onResize);
@@ -281,6 +282,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
     if (this.popoverDiv) {
       this.popoverDiv.style.opacity = '0';
+      this.popoverDiv.style.pointerEvents = 'none';
     }
 
     const remove = () => {
@@ -376,6 +378,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
               this.startTargetPositionListener(10);
               if (this.popoverDiv.style.opacity !== '1' && !this.state.isTransitioningToClosed) {
                 this.popoverDiv.style.opacity = '1';
+                this.popoverDiv.style.pointerEvents = 'auto';
               }
             },
           );
