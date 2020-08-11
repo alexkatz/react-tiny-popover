@@ -6,18 +6,19 @@ export interface ContentLocation {
 }
 
 export interface PopoverInfo {
-  position: Position;
-  align: Align;
+  position: PopoverPosition;
   nudgedLeft: number;
   nudgedTop: number;
-  targetRect: ClientRect;
+  childRect: ClientRect;
   popoverRect: ClientRect;
+  padding?: number;
+  align: Align;
 }
 
 export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
 export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
 
-export declare type Position = 'left' | 'right' | 'top' | 'bottom';
+export declare type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
 export declare type Align = 'start' | 'center' | 'end';
 
 export declare interface PopoverProps {
@@ -27,7 +28,7 @@ export declare interface PopoverProps {
   contentDestination?: HTMLElement;
   contentLocation?: ContentLocationGetter | ContentLocation;
   padding?: number;
-  position?: Position | Position[];
+  position?: PopoverPosition | PopoverPosition[];
   onClickOutside?: (e: MouseEvent) => void;
   disableReposition?: boolean;
   containerClassName?: string;
@@ -39,7 +40,7 @@ export declare interface PopoverProps {
 
 export declare interface ArrowContainerProps {
   children: JSX.Element;
-  position: Position;
+  position: PopoverPosition;
   targetRect: ClientRect;
   popoverRect: ClientRect;
   style?: React.CSSProperties;
@@ -57,3 +58,19 @@ export declare interface PopoverState {
 }
 
 export default class Popover extends React.Component<PopoverProps, PopoverState> {}
+
+export interface BetterPopoverProps {
+  isOpen: boolean;
+  children: JSX.Element;
+  content: ContentRenderer | JSX.Element;
+  reposition?: boolean;
+  containerClassName?: string;
+  containerStyle?: Partial<CSSStyleDeclaration>;
+  containerParent?: HTMLElement;
+  positions?: PopoverPosition[];
+  align?: Align;
+  padding?: number;
+  windowPadding?: number;
+}
+
+export declare const BetterPopover: React.FC<BetterPopoverProps>;

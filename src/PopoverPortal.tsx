@@ -4,13 +4,21 @@ import { createPortal } from 'react-dom';
 interface PopoverPortalProps {
   container: Element;
   element: Element;
+  addElement(container: Element, element: Element): void;
+  removeElement(container: Element, element: Element): void;
 }
 
-const PopoverPortal: React.FC<PopoverPortalProps> = ({ container, element, children }) => {
+const PopoverPortal: React.FC<PopoverPortalProps> = ({
+  container,
+  element,
+  children,
+  addElement,
+  removeElement,
+}) => {
   useLayoutEffect(() => {
-    container.appendChild(element);
-    return () => container.removeChild(element);
-  }, [container]);
+    addElement(container, element);
+    return () => removeElement(container, element);
+  }, [addElement, container, element, removeElement]);
 
   return createPortal(children, element);
 };
