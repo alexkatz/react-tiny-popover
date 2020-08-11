@@ -15,7 +15,7 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
   positions = Constants.DEFAULT_POSITIONS,
   padding = 6,
   align = 'center',
-  windowPadding: windowBorderPadding = 0,
+  windowPadding = 0,
   reposition = true,
 }) => {
   const childRef = useRef<HTMLElement>();
@@ -60,7 +60,7 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
         align,
         padding,
       };
-      const { rect, boundaryViolation } = getNewPopoverRect(info, windowBorderPadding);
+      const { rect, boundaryViolation } = getNewPopoverRect(info, windowPadding);
 
       if (boundaryViolation && reposition) {
         updatePopoverInfo(positionIndex + 1);
@@ -68,7 +68,7 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
       }
 
       const { top: originalTop, left: originalLeft } = rect;
-      const { top: nudgedTop, left: nudgedLeft } = getNudgedPopoverRect(rect, windowBorderPadding);
+      const { top: nudgedTop, left: nudgedLeft } = getNudgedPopoverRect(rect, windowPadding);
 
       const top = reposition ? nudgedTop : originalTop;
       const left = reposition ? nudgedLeft : originalLeft;
@@ -93,7 +93,7 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
     };
 
     updatePopoverInfo();
-  }, [align, isOpen, padding, popoverRef, positions, reposition, trackerRef, windowBorderPadding]);
+  }, [align, isOpen, padding, popoverRef, positions, reposition, trackerRef, windowPadding]);
 
   const renderChild = () =>
     React.cloneElement(children as JSX.Element, {
