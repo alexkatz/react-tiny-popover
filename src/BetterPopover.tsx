@@ -2,7 +2,7 @@ import React, { useRef, useLayoutEffect, useState } from 'react';
 import { PopoverPortal } from './PopoverPortal';
 import { usePortalRef } from './usePortalElementRef';
 import { BetterPopoverProps, PopoverInfo } from '.';
-import { getNewPopoverRect, getNudgedPopoverRect, Constants, popoverRectForPosition } from './util';
+import { getNewPopoverRect, getNudgedPopoverRect, Constants } from './util';
 import { useElementCallbacks } from './useElementCallbacks';
 
 export const BetterPopover: React.FC<BetterPopoverProps> = ({
