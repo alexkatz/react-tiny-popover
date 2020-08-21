@@ -11,7 +11,7 @@ interface BoxOffsetInfo extends Position {
 
 export const useBoxBehavior = () => {
   const [boxOffsetInfo, setBoxOffsetInfo] = useState<BoxOffsetInfo | null>(null);
-  const [boxPosition, setBoxPosition] = useState<Position>({ left: 500, top: 300 });
+  const [boxPosition, setBoxPosition] = useState<Position>({ left: 800, top: 800 });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleOnMouseMove = ({ clientX, clientY }: React.MouseEvent) => {

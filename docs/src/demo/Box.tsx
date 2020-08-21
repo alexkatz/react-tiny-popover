@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-const Container = styled.div`
-  border: 1px solid white;
-`;
+const Container = styled.div``;
 
 interface BoxProps extends React.ComponentPropsWithRef<'div'> {}
 

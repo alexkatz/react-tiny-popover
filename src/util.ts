@@ -1,10 +1,15 @@
-import { PopoverPosition, PopoverInfo, Align } from './index';
+import { PopoverPosition, PopoverInfo, PopoverAlign } from './index';
 
 export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
   DEFAULT_PADDING: 6,
   DEFAULT_WINDOW_PADDING: 6,
   FADE_TRANSITION: 0.35,
+  TRACKER_PADDING: 0,
+  OBSERVER_THRESHOLDS: Array(1000)
+    .fill(null)
+    .map((_, i) => i / 1000)
+    .reverse(),
   DEFAULT_ARROW_COLOR: 'black',
   DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'] as PopoverPosition[],
   EMPTY_CLIENT_RECT: {
@@ -15,7 +20,7 @@ export const Constants = {
     right: 0,
     width: 0,
   } as ClientRect,
-};
+} as const;
 
 export const arrayUnique = <T>(array: T[]): T[] =>
   array.filter((value: any, index: number, self: T[]) => self.indexOf(value) === index);
@@ -45,12 +50,22 @@ export const targetPositionHasChanged = (oldRect: ClientRect, newRect: ClientRec
   oldRect.width !== newRect.width ||
   oldRect.height !== newRect.height;
 
+export const createContainer = (
+  containerStyle?: Partial<CSSStyleDeclaration>,
+  containerClassName?: string,
+) => {
+  const container = window.document.createElement('div');
+  if (containerClassName) container.className = containerClassName;
+  Object.assign(container.style, containerStyle);
+  return container;
+};
+
 export const popoverRectForPosition = (
   position: PopoverPosition,
   childRect: ClientRect,
   popoverRect: ClientRect,
   padding: number,
-  align: Align,
+  align: PopoverAlign,
 ): ClientRect => {
   const targetMidX = childRect.left + childRect.width / 2;
   const targetMidY = childRect.top + childRect.height / 2;
@@ -106,40 +121,92 @@ export const popoverRectForPosition = (
   return { top, left, width, height, right: left + width, bottom: top + height };
 };
 
+interface GetNewPopoverRectArgs {
+  position: PopoverPosition;
+  childRect: ClientRect;
+  popoverRect: ClientRect;
+  padding: number;
+  align: PopoverAlign;
+}
+
 export const getNewPopoverRect = (
-  { position, childRect, popoverRect, padding, align }: Partial<PopoverInfo>,
-  windowBorderPadding: number,
+  { position, childRect, popoverRect, padding, align }: GetNewPopoverRectArgs,
+  windowBorderPadding?: number,
 ) => {
   const rect = popoverRectForPosition(position, childRect, popoverRect, padding, align);
   const boundaryViolation =
-    (position === 'top' && rect.top < windowBorderPadding) ||
-    (position === 'left' && rect.left < windowBorderPadding) ||
-    (position === 'right' &&
-      rect.left + popoverRect.width > window.innerWidth - windowBorderPadding) ||
-    (position === 'bottom' &&
-      rect.top + popoverRect.height > window.innerHeight - windowBorderPadding);
+    windowBorderPadding != null &&
+    ((position === 'top' && rect.top < windowBorderPadding) ||
+      (position === 'left' && rect.left < windowBorderPadding) ||
+      (position === 'right' &&
+        rect.left + popoverRect.width > window.innerWidth - windowBorderPadding) ||
+      (position === 'bottom' &&
+        rect.top + popoverRect.height > window.innerHeight - windowBorderPadding));
   return {
     rect,
     boundaryViolation,
   };
 };
 
+export const positionTrackerElements = (
+  trackerTuples: [HTMLDivElement, PopoverPosition][],
+  {
+    childRect,
+    popoverRect,
+    position: currentPosition,
+    padding,
+    align,
+    nudgedLeft,
+    nudgedTop,
+  }: PopoverInfo,
+) => {
+  trackerTuples.forEach(([element, position]) => {
+    const { rect } = getNewPopoverRect({ padding, align, popoverRect, childRect, position });
+    const externalOffsetTop = window.pageYOffset - childRect.top;
+    const externalOffsetLeft = window.pageXOffset - childRect.left;
+
+    const top = rect.top + externalOffsetTop - Constants.TRACKER_PADDING;
+    let left = rect.left + externalOffsetLeft - Constants.TRACKER_PADDING;
+    let width = rect.width + Constants.TRACKER_PADDING * 2;
+    const height = rect.height + Constants.TRACKER_PADDING * 2;
+
+    if (currentPosition === position) {
+      if (position === 'top' || position === 'bottom') {
+        if (nudgedLeft < 0) {
+          left = popoverRect.left - Constants.TRACKER_PADDING;
+          width = rect.left + externalOffsetLeft - Constants.TRACKER_PADDING + width - left;
+        } else if (nudgedLeft > 0) {
+          width = popoverRect.right + Constants.TRACKER_PADDING - left;
+        }
+      }
+    }
+
+    Object.assign(element.style, {
+      top: `${top}px`,
+      left: `${left}px`,
+      width: `${width}px`,
+      height: `${height}px`,
+      'background-color': 'red',
+      opacity: '0.2',
+    });
+  });
+};
+
 export const getNudgedPopoverRect = (
-  { top, left, width, height }: ClientRect,
+  { top: rectTop, left: rectLeft, width, height }: ClientRect,
   windowPadding: number,
 ): ClientRect => {
-  top = top < windowPadding ? windowPadding : top;
-
+  let top = rectTop < windowPadding ? windowPadding : rectTop;
   top =
     top + height > window.innerHeight - windowPadding
       ? window.innerHeight - windowPadding - height
       : top;
 
-  left = left < windowPadding ? windowPadding : left;
-
+  let left = rectLeft < windowPadding ? windowPadding : rectLeft;
   left =
     left + width > window.innerWidth - windowPadding
       ? window.innerWidth - windowPadding - width
       : left;
+
   return { top, left, width, height, right: left + width, bottom: top + height };
 };

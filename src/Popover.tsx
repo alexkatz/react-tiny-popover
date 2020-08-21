@@ -421,13 +421,20 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
       position,
       nudgedLeft = 0,
       nudgedTop = 0,
-      childRect: targetRect = Constants.EMPTY_CLIENT_RECT,
+      childRect = Constants.EMPTY_CLIENT_RECT,
       popoverRect = Constants.EMPTY_CLIENT_RECT,
     }: Partial<PopoverInfo>,
     callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void,
   ) {
     const { windowBorderPadding: padding, align } = this.props;
-    const popoverInfo = { position, nudgedLeft, nudgedTop, targetRect, popoverRect, align };
+    const popoverInfo: PopoverInfo = {
+      position,
+      nudgedLeft,
+      nudgedTop,
+      childRect,
+      popoverRect,
+      align,
+    };
 
     if (!popoverInfosAreEqual(this.state.popoverInfo, popoverInfo)) {
       window.clearTimeout(this.removePopoverTimeout);
@@ -436,10 +443,10 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
           return;
         }
 
-        targetRect = this.targetRef.current.getBoundingClientRect();
+        childRect = this.targetRef.current.getBoundingClientRect();
         popoverRect = this.popoverDiv.getBoundingClientRect();
 
-        const { top, left } = this.getLocationForPosition(position, targetRect, popoverRect);
+        const { top, left } = this.getLocationForPosition(position, childRect, popoverRect);
 
         callback(
           (position === 'top' && top < padding) ||

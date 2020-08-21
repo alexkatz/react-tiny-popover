@@ -14,6 +14,7 @@ export const GlobalStyle: React.FC = () => (
 
       #root {
         display: flex;
+        background-color: black;
 
         & > * {
           flex: 1;

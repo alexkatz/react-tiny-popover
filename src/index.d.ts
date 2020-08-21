@@ -6,20 +6,20 @@ export interface ContentLocation {
 }
 
 export interface PopoverInfo {
-  position: PopoverPosition;
+  position: PopoverPosition | undefined;
   nudgedLeft: number;
   nudgedTop: number;
   childRect: ClientRect;
   popoverRect: ClientRect;
   padding?: number;
-  align: Align;
+  align: PopoverAlign;
 }
 
 export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
 export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
 
 export declare type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
-export declare type Align = 'start' | 'center' | 'end';
+export declare type PopoverAlign = 'start' | 'center' | 'end';
 
 export declare interface PopoverProps {
   children: JSX.Element | ((ref: React.Ref<any>) => JSX.Element);
@@ -33,7 +33,7 @@ export declare interface PopoverProps {
   disableReposition?: boolean;
   containerClassName?: string;
   containerStyle?: Partial<CSSStyleDeclaration>;
-  align?: Align;
+  align?: PopoverAlign;
   transitionDuration?: number;
   windowBorderPadding?: number;
 }
@@ -68,7 +68,7 @@ export interface BetterPopoverProps {
   containerStyle?: Partial<CSSStyleDeclaration>;
   containerParent?: HTMLElement;
   positions?: PopoverPosition[];
-  align?: Align;
+  align?: PopoverAlign;
   padding?: number;
   windowPadding?: number;
 }
