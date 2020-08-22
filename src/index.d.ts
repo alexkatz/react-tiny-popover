@@ -5,7 +5,7 @@ export interface ContentLocation {
   left: number;
 }
 
-export interface PopoverInfo {
+export interface PopoverState {
   position: PopoverPosition | undefined;
   nudgedLeft: number;
   nudgedTop: number;
@@ -15,8 +15,8 @@ export interface PopoverInfo {
   align: PopoverAlign;
 }
 
-export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
-export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
+export type ContentRenderer = (args: PopoverState) => JSX.Element;
+export type ContentLocationGetter = (args: PopoverState) => ContentLocation;
 
 export declare type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
 export declare type PopoverAlign = 'start' | 'center' | 'end';
@@ -51,13 +51,13 @@ export declare interface ArrowContainerProps {
 
 export declare const ArrowContainer: React.StatelessComponent<ArrowContainerProps>;
 
-export declare interface PopoverState {
-  popoverInfo: PopoverInfo;
+export declare interface PopoverComponentState {
+  popoverState: PopoverState;
   isTransitioningToClosed: boolean;
   internalisOpen: boolean;
 }
 
-export default class Popover extends React.Component<PopoverProps, PopoverState> {}
+export default class Popover extends React.Component<PopoverProps, PopoverComponentState> {}
 
 export interface BetterPopoverProps {
   isOpen: boolean;

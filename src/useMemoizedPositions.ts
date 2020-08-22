@@ -4,6 +4,8 @@ import { PopoverPosition } from '.';
 export const useMemoizedPositions = (externalPositions: PopoverPosition[]) => {
   const prevPositionsRef = useRef(externalPositions);
   const positions = useMemo(() => {
+    if (prevPositionsRef.current === externalPositions) return prevPositionsRef.current;
+
     if (prevPositionsRef.current.length !== externalPositions.length) {
       prevPositionsRef.current = externalPositions;
       return externalPositions;

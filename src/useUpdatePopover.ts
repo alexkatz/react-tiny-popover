@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { PopoverInfo, PopoverPosition, PopoverAlign } from '.';
+import { PopoverState, PopoverPosition, PopoverAlign } from '.';
 import { getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
@@ -12,7 +12,7 @@ interface UseUpdatePopoverArg {
   padding: number;
   windowPadding: number;
   reposition: boolean;
-  onUpdatePopover(popoverInfo: PopoverInfo): void;
+  onUpdatePopover(popoverState: PopoverState): void;
 }
 
 export const usePopover = ({
@@ -33,7 +33,7 @@ export const usePopover = ({
 
   const hasInitialPosition = useRef(false);
 
-  const updatePopover = useCallback(
+  const positionPopover = useCallback(
     (
       positionIndex = 0,
       childRect: ClientRect = childRef.current.getBoundingClientRect(),
@@ -56,7 +56,9 @@ export const usePopover = ({
       );
 
       if (boundaryViolation && reposition) {
-        updatePopover(positionIndex + 1, childRect, popoverRect);
+        window.requestAnimationFrame(() =>
+          positionPopover(positionIndex + 1, childRect, popoverRect),
+        );
         return;
       }
 
@@ -100,6 +102,10 @@ export const usePopover = ({
     },
     [align, childRef, onUpdatePopover, padding, popoverRef, positions, reposition, windowPadding],
   );
+
+  const updatePopover = useCallback(() => window.requestAnimationFrame(() => positionPopover()), [
+    positionPopover,
+  ]);
 
   return [updatePopover, popoverRef] as const;
 };

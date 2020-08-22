@@ -1,12 +1,18 @@
 import React from 'react';
 import { ArrowContainer } from './ArrowContainer';
 import { PopoverPortal } from './PopoverPortal';
-import { PopoverProps, PopoverState, PopoverInfo, PopoverPosition, ContentLocation } from './index';
-import { Constants, arrayUnique, targetPositionHasChanged, popoverInfosAreEqual } from './util';
+import {
+  PopoverProps,
+  PopoverComponentState,
+  PopoverState,
+  PopoverPosition,
+  ContentLocation,
+} from './index';
+import { Constants, arrayUnique, targetPositionHasChanged, popoverStatesAreEqual } from './util';
 
 const DEFAULT_POSITION_ORDER: PopoverPosition[] = ['top', 'right', 'left', 'bottom'];
 
-class Popover extends React.Component<PopoverProps, PopoverState> {
+class Popover extends React.Component<PopoverProps, PopoverComponentState> {
   private targetRef = React.createRef<Element>();
   private targetRect: ClientRect = undefined;
   private targetPositionIntervalHandler: number = undefined;
@@ -26,8 +32,8 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
   public static getDerivedStateFromProps(
     props: PopoverProps,
-    state: PopoverState,
-  ): Partial<PopoverState> {
+    state: PopoverComponentState,
+  ): Partial<PopoverComponentState> {
     const { internalisOpen, isTransitioningToClosed } = state;
     const { isOpen } = props;
 
@@ -38,7 +44,6 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
       };
     }
 
-    // eslint-disable-next-line no-restricted-syntax
     return null;
   }
 
@@ -46,7 +51,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
     super(props);
 
     this.state = {
-      popoverInfo: undefined,
+      popoverState: undefined,
       isTransitioningToClosed: false,
       internalisOpen: false,
     };
@@ -388,10 +393,10 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
 
   private renderPopoverContent() {
     const { content, isOpen, contentDestination } = this.props;
-    const { popoverInfo, isTransitioningToClosed } = this.state;
+    const { popoverState, isTransitioningToClosed } = this.state;
 
-    if ((isOpen || isTransitioningToClosed) && this.popoverDiv && popoverInfo) {
-      const getContent = (args: PopoverInfo): JSX.Element =>
+    if ((isOpen || isTransitioningToClosed) && this.popoverDiv && popoverState) {
+      const getContent = (args: PopoverState): JSX.Element =>
         typeof content === 'function' ? content(args) : content;
 
       return (
@@ -399,7 +404,7 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
           element={this.popoverDiv}
           container={contentDestination || window.document.body}
         >
-          {getContent(popoverInfo)}
+          {getContent(popoverState)}
         </PopoverPortal>
       );
     }
@@ -423,11 +428,11 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
       nudgedTop = 0,
       childRect = Constants.EMPTY_CLIENT_RECT,
       popoverRect = Constants.EMPTY_CLIENT_RECT,
-    }: Partial<PopoverInfo>,
+    }: Partial<PopoverState>,
     callback?: (boundaryViolation: boolean, resultingRect: Partial<ClientRect>) => void,
   ) {
     const { windowBorderPadding: padding, align } = this.props;
-    const popoverInfo: PopoverInfo = {
+    const popoverState: PopoverState = {
       position,
       nudgedLeft,
       nudgedTop,
@@ -436,9 +441,9 @@ class Popover extends React.Component<PopoverProps, PopoverState> {
       align,
     };
 
-    if (!popoverInfosAreEqual(this.state.popoverInfo, popoverInfo)) {
+    if (!popoverStatesAreEqual(this.state.popoverState, popoverState)) {
       window.clearTimeout(this.removePopoverTimeout);
-      this.setState({ popoverInfo, isTransitioningToClosed: false, internalisOpen: true }, () => {
+      this.setState({ popoverState, isTransitioningToClosed: false, internalisOpen: true }, () => {
         if (this.willUnmount) {
           return;
         }

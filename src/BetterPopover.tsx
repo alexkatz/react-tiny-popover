@@ -1,10 +1,10 @@
-import React, { useRef, useLayoutEffect, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useLayoutEffect, useState, useCallback } from 'react';
 import { PopoverPortal } from './PopoverPortal';
-import { BetterPopoverProps, PopoverInfo } from '.';
+import { BetterPopoverProps, PopoverState } from '.';
 import { Constants, positionTrackerElements } from './util';
 import { usePopover } from './useUpdatePopover';
 import { useTrackerElements } from './useTrackers';
-import { useMemoizedPositions } from './useInternalMemo';
+import { useMemoizedPositions } from './useMemoizedPositions';
 
 export const BetterPopover: React.FC<BetterPopoverProps> = ({
   isOpen,
@@ -12,7 +12,6 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
   content,
   containerClassName = 'react-tiny-popover-container',
   containerStyle,
-  containerParent = window.document.body,
   positions: externalPositions = Constants.DEFAULT_POSITIONS,
   padding = Constants.DEFAULT_PADDING,
   align = 'center',
@@ -21,7 +20,7 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
 }) => {
   const positions = useMemoizedPositions(externalPositions);
   const childRef = useRef<HTMLElement>();
-  const [popoverInfo, setPopoverInfo] = useState<PopoverInfo>({
+  const [popoverState, setPopoverState] = useState<PopoverState>({
     align,
     nudgedLeft: 0,
     nudgedTop: 0,
@@ -31,10 +30,14 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
     popoverRect: null,
   });
 
-  const [isAltered, setIsAltered] = useState(false);
+  const isAltered =
+    popoverState.position !== positions[0] ||
+    popoverState.nudgedLeft !== 0 ||
+    popoverState.nudgedTop ||
+    0;
 
   const onUpdatePopover = useCallback(
-    (popoverInfo: PopoverInfo) => setPopoverInfo(popoverInfo),
+    (popoverState: PopoverState) => setPopoverState(popoverState),
     [],
   );
 
@@ -50,7 +53,7 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
     onUpdatePopover,
   });
 
-  const trackerTuples = useTrackerElements(positions);
+  const activeTrackers = useTrackerElements(positions, popoverState.position);
 
   const createPopoverObserver = useCallback(
     () =>
@@ -58,7 +61,6 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
         ([entry]) => {
           if (entry.intersectionRatio < 1) {
             updatePopover();
-            setIsAltered(true);
           }
         },
         {
@@ -73,78 +75,60 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
   const createTrackerObserver = useCallback(
     () =>
       new IntersectionObserver(
-        ([entry]) => {
-          updatePopover();
-          console.log('tracker intersection ratio:', entry.intersectionRatio);
-          if (entry.intersectionRatio === 1 && popoverInfo.position === positions[0]) {
-            setIsAltered(false);
-          } else if (entry.intersectionRatio === 0) {
-            // positionTrackerElements(trackerTuples, popoverInfo);
-          }
-        },
+        (entries) =>
+          entries.forEach((entry) => {
+            const isCurrentPosition = entry.target === activeTrackers[activeTrackers.length - 1][0];
+            if (isCurrentPosition || entry.intersectionRatio === 1) {
+              updatePopover();
+            }
+          }),
         {
           root: document.body,
           threshold: Constants.OBSERVER_THRESHOLDS,
           rootMargin: `${-windowPadding}px`,
         },
       ),
-    [popoverInfo.position, positions, updatePopover, windowPadding],
+    [activeTrackers, updatePopover, windowPadding],
   );
 
   const popoverObserverRef = useRef(createPopoverObserver());
   const trackerObserverRef = useRef(createTrackerObserver());
 
-  // update popover
-  useLayoutEffect(() => {
-    console.log('useLayoutEffect: update popver');
-    if (isOpen) {
-      console.log('useLayoutEffect: update popver: updating popover');
-      updatePopover();
-    }
-  }, [align, isOpen, padding, popoverRef, positions, reposition, updatePopover, windowPadding]);
-
   // recreate popover observer
-  useEffect(() => {
-    console.log('useEffect: recreate popover observer');
+  useLayoutEffect(() => {
     popoverObserverRef.current.disconnect();
     if (isOpen) {
-      console.log('useEffect: recreate popover observer: creating popover observer');
       popoverObserverRef.current = createPopoverObserver();
       popoverObserverRef.current.observe(popoverRef.current);
     }
   }, [createPopoverObserver, isOpen, popoverRef]);
 
   // recreate tracker observer
-  useEffect(() => {
-    console.log('useEffect: recreate tracker observer');
+  useLayoutEffect(() => {
     trackerObserverRef.current.disconnect();
-    if (isAltered) {
-      console.log('useEffect: recreate tracker observer: creating tracker observers');
+    if (isAltered && isOpen) {
       trackerObserverRef.current = createTrackerObserver();
-      const tuples = trackerTuples.filter(
-        ([, position]) => positions.indexOf(position) <= positions.indexOf(popoverInfo.position),
-      );
-      tuples.forEach(([element]) => trackerObserverRef.current.observe(element));
+      activeTrackers.forEach(([element]) => trackerObserverRef.current.observe(element));
     }
-  }, [isAltered, trackerTuples, popoverInfo.position, positions, createTrackerObserver]);
+  }, [isAltered, activeTrackers, popoverState.position, positions, createTrackerObserver, isOpen]);
+
+  // update popover
+  useLayoutEffect(() => {
+    if (isOpen) {
+      updatePopover();
+    }
+  }, [align, isOpen, padding, popoverRef, positions, reposition, updatePopover, windowPadding]);
 
   // update trackers
   const hasInitialPosition = useRef(false);
-  useEffect(() => {
-    console.log('useEffect: update trackers');
-    if (
-      isAltered &&
-      (!hasInitialPosition.current || popoverInfo.nudgedTop !== 0 || popoverInfo.nudgedLeft !== 0)
-    ) {
-      console.log('useEffect: update trackers: positioning trackers');
-      positionTrackerElements(trackerTuples, popoverInfo);
-      console.log('setting initial position true');
+  useLayoutEffect(() => {
+    if (isAltered) {
+      positionTrackerElements(activeTrackers, popoverState);
       hasInitialPosition.current = true;
-    } else {
-      console.log('setting initial position false');
+    } else if (!isAltered) {
       hasInitialPosition.current = false;
     }
-  }, [isAltered, popoverInfo, trackerTuples]);
+  }, [isAltered, popoverState, activeTrackers]);
 
   const renderChild = () =>
     React.cloneElement(children as JSX.Element, {
@@ -155,14 +139,14 @@ export const BetterPopover: React.FC<BetterPopoverProps> = ({
     if (!isOpen) return null;
     return (
       <PopoverPortal element={popoverRef.current} container={childRef.current}>
-        {typeof content === 'function' ? content(popoverInfo) : content}
+        {typeof content === 'function' ? content(popoverState) : content}
       </PopoverPortal>
     );
   };
 
   const renderTrackers = () => {
     if (!isOpen || !isAltered) return null;
-    return trackerTuples.map(([element]) => (
+    return activeTrackers.map(([element]) => (
       <PopoverPortal key={element.className} element={element} container={childRef.current} />
     ));
   };

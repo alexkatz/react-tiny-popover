@@ -1,4 +1,4 @@
-import { PopoverPosition, PopoverInfo, PopoverAlign } from './index';
+import { PopoverPosition, PopoverState, PopoverAlign } from './index';
 
 export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
@@ -34,14 +34,15 @@ export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
     rectA?.top === rectB?.top &&
     rectA?.width === rectB?.width);
 
-export const popoverInfosAreEqual = (infoA: PopoverInfo, infoB: PopoverInfo): boolean =>
-  infoA === infoB ||
-  (infoA?.align === infoB?.align &&
-    infoA?.nudgedLeft === infoB?.nudgedLeft &&
-    infoA?.nudgedTop === infoB?.nudgedTop &&
-    rectsAreEqual(infoA?.popoverRect, infoB?.popoverRect) &&
-    rectsAreEqual(infoA?.childRect, infoB?.childRect) &&
-    infoA?.position === infoB?.position);
+export const popoverStatesAreEqual = (stateA: PopoverState, stateB: PopoverState): boolean =>
+  stateA === stateB ||
+  (stateA?.align === stateB?.align &&
+    stateA?.nudgedLeft === stateB?.nudgedLeft &&
+    stateA?.nudgedTop === stateB?.nudgedTop &&
+    stateA.padding === stateB.padding &&
+    rectsAreEqual(stateA?.popoverRect, stateB?.popoverRect) &&
+    rectsAreEqual(stateA?.childRect, stateB?.childRect) &&
+    stateA?.position === stateB?.position);
 
 export const targetPositionHasChanged = (oldRect: ClientRect, newRect: ClientRect): boolean =>
   oldRect === undefined ||
@@ -158,39 +159,46 @@ export const positionTrackerElements = (
     align,
     nudgedLeft,
     nudgedTop,
-  }: PopoverInfo,
-) => {
-  trackerTuples.forEach(([element, position]) => {
-    const { rect } = getNewPopoverRect({ padding, align, popoverRect, childRect, position });
-    const externalOffsetTop = window.pageYOffset - childRect.top;
-    const externalOffsetLeft = window.pageXOffset - childRect.left;
+  }: PopoverState,
+) =>
+  window.requestAnimationFrame(() => {
+    trackerTuples.forEach(([element, position]) => {
+      const { rect } = getNewPopoverRect({ padding, align, popoverRect, childRect, position });
+      const externalOffsetTop = window.pageYOffset - childRect.top;
+      const externalOffsetLeft = window.pageXOffset - childRect.left;
 
-    const top = rect.top + externalOffsetTop - Constants.TRACKER_PADDING;
-    let left = rect.left + externalOffsetLeft - Constants.TRACKER_PADDING;
-    let width = rect.width + Constants.TRACKER_PADDING * 2;
-    const height = rect.height + Constants.TRACKER_PADDING * 2;
+      let top = rect.top + externalOffsetTop - Constants.TRACKER_PADDING;
+      let left = rect.left + externalOffsetLeft - Constants.TRACKER_PADDING;
+      let width = rect.width + Constants.TRACKER_PADDING * 2;
+      let height = rect.height + Constants.TRACKER_PADDING * 2;
 
-    if (currentPosition === position) {
-      if (position === 'top' || position === 'bottom') {
+      if (currentPosition === position) {
         if (nudgedLeft < 0) {
           left = popoverRect.left - Constants.TRACKER_PADDING;
           width = rect.left + externalOffsetLeft - Constants.TRACKER_PADDING + width - left;
-        } else if (nudgedLeft > 0) {
+        }
+        if (nudgedLeft > 0) {
           width = popoverRect.right + Constants.TRACKER_PADDING - left;
         }
+        if (nudgedTop < 0) {
+          top = popoverRect.top - Constants.TRACKER_PADDING;
+          height = rect.top + externalOffsetTop - Constants.TRACKER_PADDING + height - top;
+        }
+        if (nudgedTop > 0) {
+          height = popoverRect.bottom + Constants.TRACKER_PADDING - top;
+        }
       }
-    }
 
-    Object.assign(element.style, {
-      top: `${top}px`,
-      left: `${left}px`,
-      width: `${width}px`,
-      height: `${height}px`,
-      'background-color': 'red',
-      opacity: '0.2',
+      Object.assign(element.style, {
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+        'background-color': 'red',
+        opacity: '0.2',
+      });
     });
   });
-};
 
 export const getNudgedPopoverRect = (
   { top: rectTop, left: rectLeft, width, height }: ClientRect,

@@ -55,7 +55,7 @@ export const Demo: React.FC = () => {
         isOpen={isPopoverOpen}
         padding={50}
         align='center'
-        positions={['bottom', 'right', 'left', 'bottom']}
+        positions={['top', 'left', 'right', 'bottom']}
         windowPadding={500}
         // reposition={false}
         content={() => <div style={{ backgroundColor: 'salmon', width: 50, height: 50 }}></div>}
