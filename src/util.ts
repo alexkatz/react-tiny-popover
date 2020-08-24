@@ -4,6 +4,7 @@ export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
   DEFAULT_PADDING: 6,
   DEFAULT_WINDOW_PADDING: 6,
+  DEFAULT_ALIGN: 'center' as PopoverAlign,
   FADE_TRANSITION: 0.35,
   TRACKER_PADDING: 0,
   OBSERVER_THRESHOLDS: Array(1000)

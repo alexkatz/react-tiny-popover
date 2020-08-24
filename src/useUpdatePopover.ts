@@ -103,9 +103,10 @@ export const usePopover = ({
     [align, childRef, onUpdatePopover, padding, popoverRef, positions, reposition, windowPadding],
   );
 
-  const updatePopover = useCallback(() => window.requestAnimationFrame(() => positionPopover()), [
-    positionPopover,
-  ]);
+  const updatePopover: () => void = useCallback(
+    () => window.requestAnimationFrame(() => positionPopover()),
+    [positionPopover],
+  );
 
   return [updatePopover, popoverRef] as const;
 };

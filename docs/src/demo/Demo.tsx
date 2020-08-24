@@ -49,18 +49,23 @@ export const Demo: React.FC = () => {
   } = useBoxBehavior();
 
   return (
-    <Container onMouseMove={handleOnMouseMove} onMouseUp={handleOnMouseUp}>
+    <Container onMouseMove={handleOnMouseMove}>
       <ContainerBackground />
       <BetterPopover
         isOpen={isPopoverOpen}
         padding={50}
-        align='center'
+        align='start'
         positions={['top', 'left', 'right', 'bottom']}
         windowPadding={500}
         // reposition={false}
         content={() => <div style={{ backgroundColor: 'salmon', width: 50, height: 50 }}></div>}
       >
-        <Box style={boxPosition} onMouseDown={handleBoxOnMouseDown} isSelected={isSelected} />
+        <Box
+          style={boxPosition}
+          onMouseDown={handleBoxOnMouseDown}
+          onMouseUp={handleOnMouseUp}
+          isSelected={isSelected}
+        />
       </BetterPopover>
     </Container>
   );
