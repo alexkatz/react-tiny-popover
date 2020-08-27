@@ -5,6 +5,9 @@ export const Constants = {
   DEFAULT_PADDING: 6,
   DEFAULT_WINDOW_PADDING: 6,
   DEFAULT_ALIGN: 'center' as PopoverAlign,
+  DEFAULT_CONTAINER_STYLE: {
+    transition: 'transform 0.04s ease-in',
+  } as Partial<CSSStyleDeclaration>,
   FADE_TRANSITION: 0.35,
   TRACKER_PADDING: 0,
   OBSERVER_THRESHOLDS: Array(1000)

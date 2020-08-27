@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback, MouseEventHandler } from 'react';
 import styled from '@emotion/styled';
 import { Box as _Box } from './Box';
 import { useBoxBehavior } from './useBoxPositioning';
 import { css } from '@emotion/core';
-import { BetterPopover } from 'react-tiny-popover';
+import { Popover } from 'react-tiny-popover';
 
 const BOX_SIZE = 200;
 
 const Container = styled.div`
   background-color: black;
+  height: ${window.innerHeight * 2}px;
+  width: ${window.innerWidth * 2}px;
+  overflow: scroll;
 `;
 
 const ContainerBackground = styled.div`
@@ -17,7 +20,7 @@ const ContainerBackground = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  margin: 500px;
+  margin: 20px;
   border: 1px solid white;
 `;
 
@@ -43,22 +46,45 @@ export const Demo: React.FC = () => {
     boxPosition,
     isSelected,
     isPopoverOpen,
+    setIsPopoverOpen,
     handleBoxOnMouseDown,
     handleOnMouseMove,
     handleOnMouseUp,
   } = useBoxBehavior();
 
+  const handleOnClickOutside = useCallback(() => setIsPopoverOpen(false), []);
+
   return (
     <Container onMouseMove={handleOnMouseMove}>
       <ContainerBackground />
-      <BetterPopover
+      <Popover
         isOpen={isPopoverOpen}
         padding={50}
-        align='start'
+        align='center'
         positions={['top', 'left', 'right', 'bottom']}
-        windowPadding={500}
-        // reposition={false}
-        content={() => <div style={{ backgroundColor: 'salmon', width: 50, height: 50 }}></div>}
+        windowPadding={20}
+        onClickOutside={handleOnClickOutside}
+        content={({
+          position,
+          nudgedLeft,
+          nudgedTop,
+          align,
+          childRect,
+          popoverRect,
+          padding,
+          isPositioned,
+        }) => {
+          console.log('rendering popover content', isPositioned);
+          return (
+            <div
+              style={{
+                backgroundColor: 'salmon',
+                width: position !== 'top' ? 900 : 500,
+                height: position !== 'top' ? 900 : 500,
+              }}
+            />
+          );
+        }}
       >
         <Box
           style={boxPosition}
@@ -66,7 +92,7 @@ export const Demo: React.FC = () => {
           onMouseUp={handleOnMouseUp}
           isSelected={isSelected}
         />
-      </BetterPopover>
+      </Popover>
     </Container>
   );
 };
