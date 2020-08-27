@@ -36,8 +36,8 @@ export const useBoxBehavior = () => {
 
   const handleBoxOnMouseDown = ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
     const boxRect = currentTarget.getBoundingClientRect();
-    const left = clientX - boxRect.left;
-    const top = clientY - boxRect.top;
+    const left = clientX - boxRect.left - window.pageXOffset;
+    const top = clientY - boxRect.top - window.pageYOffset;
     setBoxOffsetInfo({ left, top });
   };
 
@@ -45,6 +45,7 @@ export const useBoxBehavior = () => {
     boxPosition,
     isSelected: boxOffsetInfo != null,
     isPopoverOpen,
+    setIsPopoverOpen,
     handleOnMouseMove,
     handleOnMouseUp,
     handleBoxOnMouseDown,
