@@ -5,23 +5,22 @@ export interface ContentLocation {
   left: number;
 }
 
-export interface PopoverState {
-  isOpen?: boolean;
-  position: PopoverPosition | undefined;
+export interface PopoverInfo {
+  position: Position;
+  align: Align;
   nudgedLeft: number;
   nudgedTop: number;
   targetRect: ClientRect;
   popoverRect: ClientRect;
-  align: PopoverAlign;
 }
 
-export type ContentRenderer = (args: PopoverState) => JSX.Element;
-export type ContentLocationGetter = (args: PopoverState) => ContentLocation;
+export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
+export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
 
-export declare type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
-export declare type PopoverAlign = 'start' | 'center' | 'end';
+export declare type Position = 'left' | 'right' | 'top' | 'bottom';
+export declare type Align = 'start' | 'center' | 'end';
 
-export declare interface DepricatedPopoverProps {
+export declare interface PopoverProps {
   children: JSX.Element | ((ref: React.Ref<any>) => JSX.Element);
   isOpen: boolean;
   content: ContentRenderer | JSX.Element;
@@ -33,7 +32,7 @@ export declare interface DepricatedPopoverProps {
   disableReposition?: boolean;
   containerClassName?: string;
   containerStyle?: Partial<CSSStyleDeclaration>;
-  align?: PopoverAlign;
+  align?: Align;
   transitionDuration?: number;
   windowBorderPadding?: number;
 }
@@ -51,29 +50,10 @@ export declare interface ArrowContainerProps {
 
 export declare const ArrowContainer: React.StatelessComponent<ArrowContainerProps>;
 
-export declare interface DepricatedPopoverComponentState {
-  popoverState: PopoverState;
+export declare interface PopoverState {
+  popoverInfo: PopoverInfo;
   isTransitioningToClosed: boolean;
   internalisOpen: boolean;
 }
 
-export default class DepricatedPopover extends React.Component<
-  DepricatedPopoverProps,
-  DepricatedPopoverComponentState
-> {}
-
-export interface PopoverProps {
-  isOpen: boolean;
-  children: JSX.Element;
-  content: ContentRenderer | JSX.Element;
-  reposition?: boolean;
-  containerClassName?: string;
-  containerStyle?: Partial<CSSStyleDeclaration>;
-  containerParent?: HTMLElement;
-  positions?: PopoverPosition[];
-  align?: PopoverAlign;
-  padding?: number;
-  windowPadding?: number;
-}
-
-export declare const BetterPopover: React.FC<PopoverProps>;
+export default class Popover extends React.Component<PopoverProps, PopoverState> {}

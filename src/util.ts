@@ -1,16 +1,12 @@
-import { PopoverPosition, PopoverAlign, PopoverState } from './index';
+import { Position, PopoverInfo } from './index';
 
 export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
   DEFAULT_PADDING: 6,
   DEFAULT_WINDOW_PADDING: 6,
-  DEFAULT_ALIGN: 'center' as PopoverAlign,
-  DEFAULT_CONTAINER_STYLE: {
-    transition: 'transform 0.04s ease-in',
-  } as Partial<CSSStyleDeclaration>,
   FADE_TRANSITION: 0.35,
   DEFAULT_ARROW_COLOR: 'black',
-  DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'] as PopoverPosition[],
+  DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'] as Position[],
   EMPTY_CLIENT_RECT: {
     top: 0,
     left: 0,
@@ -33,7 +29,7 @@ export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
     rectA?.top === rectB?.top &&
     rectA?.width === rectB?.width);
 
-export const popoverInfosAreEqual = (infoA: PopoverState, infoB: PopoverState): boolean =>
+export const popoverInfosAreEqual = (infoA: PopoverInfo, infoB: PopoverInfo): boolean =>
   infoA === infoB ||
   (infoA?.align === infoB?.align &&
     infoA?.nudgedLeft === infoB?.nudgedLeft &&

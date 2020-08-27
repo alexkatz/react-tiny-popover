@@ -2,8 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "src",
-    "sourceMap": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["es2015", "dom"],
     "esModuleInterop": true,
     "noImplicitAny": true,
     "module": "commonjs",
