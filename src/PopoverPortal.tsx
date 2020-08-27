@@ -10,7 +10,7 @@ const PopoverPortal: React.FC<PopoverPortalProps> = ({ container, element, child
   useLayoutEffect(() => {
     container.appendChild(element);
     return () => container.removeChild(element);
-  }, [container]);
+  }, [container, element]);
 
   return createPortal(children, element);
 };

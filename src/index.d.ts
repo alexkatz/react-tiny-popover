@@ -5,20 +5,21 @@ export interface ContentLocation {
   left: number;
 }
 
-export interface PopoverInfo {
-  position: Position;
-  align: Align;
+export interface PopoverState {
+  position: PopoverPosition | undefined;
   nudgedLeft: number;
   nudgedTop: number;
-  targetRect: ClientRect;
+  childRect: ClientRect;
   popoverRect: ClientRect;
+  padding?: number;
+  align: PopoverAlign;
 }
 
-export type ContentRenderer = (args: PopoverInfo) => JSX.Element;
-export type ContentLocationGetter = (args: PopoverInfo) => ContentLocation;
+export type ContentRenderer = (args: PopoverState) => JSX.Element;
+export type ContentLocationGetter = (args: PopoverState) => ContentLocation;
 
-export declare type Position = 'left' | 'right' | 'top' | 'bottom';
-export declare type Align = 'start' | 'center' | 'end';
+export declare type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
+export declare type PopoverAlign = 'start' | 'center' | 'end';
 
 export declare interface PopoverProps {
   children: JSX.Element | ((ref: React.Ref<any>) => JSX.Element);
@@ -27,19 +28,19 @@ export declare interface PopoverProps {
   contentDestination?: HTMLElement;
   contentLocation?: ContentLocationGetter | ContentLocation;
   padding?: number;
-  position?: Position | Position[];
+  position?: PopoverPosition | PopoverPosition[];
   onClickOutside?: (e: MouseEvent) => void;
   disableReposition?: boolean;
   containerClassName?: string;
   containerStyle?: Partial<CSSStyleDeclaration>;
-  align?: Align;
+  align?: PopoverAlign;
   transitionDuration?: number;
   windowBorderPadding?: number;
 }
 
 export declare interface ArrowContainerProps {
   children: JSX.Element;
-  position: Position;
+  position: PopoverPosition;
   targetRect: ClientRect;
   popoverRect: ClientRect;
   style?: React.CSSProperties;
@@ -50,10 +51,26 @@ export declare interface ArrowContainerProps {
 
 export declare const ArrowContainer: React.StatelessComponent<ArrowContainerProps>;
 
-export declare interface PopoverState {
-  popoverInfo: PopoverInfo;
+export declare interface PopoverComponentState {
+  popoverState: PopoverState;
   isTransitioningToClosed: boolean;
   internalisOpen: boolean;
 }
 
-export default class Popover extends React.Component<PopoverProps, PopoverState> {}
+export default class Popover extends React.Component<PopoverProps, PopoverComponentState> {}
+
+export interface BetterPopoverProps {
+  isOpen: boolean;
+  children: JSX.Element;
+  content: ContentRenderer | JSX.Element;
+  reposition?: boolean;
+  containerClassName?: string;
+  containerStyle?: Partial<CSSStyleDeclaration>;
+  containerParent?: HTMLElement;
+  positions?: PopoverPosition[];
+  align?: PopoverAlign;
+  padding?: number;
+  windowPadding?: number;
+}
+
+export declare const BetterPopover: React.FC<BetterPopoverProps>;
