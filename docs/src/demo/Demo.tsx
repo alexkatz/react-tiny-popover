@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useCallback, MouseEventHandler } from 'react';
+import React, { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Box as _Box } from './Box';
 import { useBoxBehavior } from './useBoxPositioning';
 import { css } from '@emotion/core';
-import { Popover } from 'react-tiny-popover';
+import { Popover, ArrowContainer } from 'react-tiny-popover';
+import { PopoverState } from '../../../dist';
 
 const BOX_SIZE = 200;
 
@@ -20,12 +21,12 @@ const ContainerBackground = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  margin: 20px;
+  margin: 100px;
   border: 1px solid white;
 `;
 
 interface BoxStyleProps {
-  isSelected: boolean;
+  $isSelected: boolean;
 }
 
 const Box = styled(_Box)<BoxStyleProps>`
@@ -35,7 +36,7 @@ const Box = styled(_Box)<BoxStyleProps>`
   outline: 1px solid white;
 
   ${(props) =>
-    props.isSelected &&
+    props.$isSelected &&
     css`
       outline-width: 5px;
     `}
@@ -59,38 +60,35 @@ export const Demo: React.FC = () => {
       <ContainerBackground />
       <Popover
         isOpen={isPopoverOpen}
-        padding={50}
+        padding={30}
         align='center'
-        positions={['top', 'left', 'right', 'bottom']}
-        windowPadding={20}
+        positions={['left', 'top', 'right', 'bottom']}
+        boundaryInset={100}
+        boundaryTolerance={30}
         onClickOutside={handleOnClickOutside}
-        content={({
-          position,
-          nudgedLeft,
-          nudgedTop,
-          align,
-          childRect,
-          popoverRect,
-          padding,
-          isPositioned,
-        }) => {
-          console.log('rendering popover content', isPositioned);
-          return (
+        content={({ position, childRect, popoverRect }) => (
+          <ArrowContainer
+            popoverRect={popoverRect}
+            childRect={childRect}
+            position={position}
+            arrowColor={'salmon'}
+            arrowSize={30}
+          >
             <div
               style={{
                 backgroundColor: 'salmon',
-                width: position !== 'top' ? 900 : 500,
-                height: position !== 'top' ? 900 : 500,
+                width: position !== 'top' ? 400 : 400,
+                height: position !== 'top' ? 400 : 400,
               }}
             />
-          );
-        }}
+          </ArrowContainer>
+        )}
       >
         <Box
           style={boxPosition}
           onMouseDown={handleBoxOnMouseDown}
           onMouseUp={handleOnMouseUp}
-          isSelected={isSelected}
+          $isSelected={isSelected}
         />
       </Popover>
     </Container>

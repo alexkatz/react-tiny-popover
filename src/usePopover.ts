@@ -1,56 +1,52 @@
 import { useCallback } from 'react';
-import { PopoverState, PopoverPosition, PopoverAlign } from '.';
+import { UsePopoverProps } from '.';
 import { getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
-
-interface UsePopoverArgs {
-  childRef: React.MutableRefObject<HTMLElement>;
-  containerClassName?: string;
-  containerStyle?: Partial<CSSStyleDeclaration>;
-  positions: PopoverPosition[];
-  align: PopoverAlign;
-  padding: number;
-  windowPadding: number;
-  reposition: boolean;
-  onPositionPopover(popoverState: PopoverState): void;
-}
 
 export const usePopover = ({
   childRef,
   positions,
   containerClassName,
+  containerParent,
   align,
   padding,
-  windowPadding,
+  boundaryTolerance,
   reposition,
+  boundaryInset,
   onPositionPopover,
-}: UsePopoverArgs) => {
+}: UsePopoverProps) => {
   const popoverRef = useElementRef(containerClassName, {
     position: 'fixed',
+    overflow: 'visible',
     top: '0px',
     left: '0px',
   });
 
   const positionPopover = useCallback(
     (
-      positionIndex = 0,
+      positionIndex: number = 0,
       childRect: ClientRect = childRef.current.getBoundingClientRect(),
       popoverRect: ClientRect = popoverRef.current.getBoundingClientRect(),
+      parentRect: ClientRect = containerParent.getBoundingClientRect(),
     ) => {
-      const position = positions[positionIndex];
+      const isExhausted = positionIndex === positions.length;
+      const position = isExhausted ? positions[positionIndex - 1] : positions[positionIndex];
       const { rect, boundaryViolation } = getNewPopoverRect(
         {
           position,
           childRect,
           popoverRect,
+          parentRect,
           align,
           padding,
+          reposition,
         },
-        windowPadding,
+        boundaryInset,
+        boundaryTolerance,
       );
 
-      if (boundaryViolation && reposition) {
-        positionPopover(positionIndex + 1, childRect, popoverRect);
+      if (boundaryViolation && reposition && !isExhausted) {
+        positionPopover(positionIndex + 1, childRect, popoverRect, parentRect);
         return;
       }
 
@@ -58,8 +54,13 @@ export const usePopover = ({
       let finalTop = top;
       let finalLeft = left;
 
-      if (reposition) {
-        ({ top: finalTop, left: finalLeft } = getNudgedPopoverRect(rect, windowPadding));
+      if (reposition && !isExhausted) {
+        ({ top: finalTop, left: finalLeft } = getNudgedPopoverRect(
+          rect,
+          parentRect,
+          boundaryInset,
+          boundaryTolerance,
+        ));
       }
 
       popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
@@ -80,9 +81,22 @@ export const usePopover = ({
         position,
         childRect,
         padding,
+        boundaryInset,
+        boundaryTolerance,
       });
     },
-    [align, childRef, onPositionPopover, padding, popoverRef, positions, reposition, windowPadding],
+    [
+      childRef,
+      popoverRef,
+      positions,
+      align,
+      padding,
+      reposition,
+      boundaryInset,
+      boundaryTolerance,
+      onPositionPopover,
+      containerParent,
+    ],
   );
 
   return [positionPopover, popoverRef] as const;
