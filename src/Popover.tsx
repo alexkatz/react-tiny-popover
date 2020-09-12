@@ -26,6 +26,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       containerStyle,
       containerParent = window.document.body,
       containerClassName = 'react-tiny-popover-container',
+      contentLocation,
       positions: externalPositions = Constants.DEFAULT_POSITIONS,
       padding = 0,
       align = Constants.DEFAULT_ALIGN,
@@ -47,6 +48,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       padding,
       childRect: Constants.EMPTY_CLIENT_RECT,
       popoverRect: Constants.EMPTY_CLIENT_RECT,
+      parentRect: Constants.EMPTY_CLIENT_RECT,
       boundaryInset,
       boundaryTolerance,
     });
@@ -60,6 +62,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       childRef,
       containerClassName,
       containerParent,
+      contentLocation,
       positions,
       align,
       padding,
@@ -151,12 +154,18 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       [isOpen, onClickOutside, popoverRef],
     );
 
+    const handleWindowResize = useCallback(() => {
+      window.requestAnimationFrame(positionPopover);
+    }, [positionPopover]);
+
     useEffect(() => {
       window.addEventListener('click', handleOnClickOutside);
+      window.addEventListener('resize', handleWindowResize);
       return () => {
         window.removeEventListener('click', handleOnClickOutside);
+        window.removeEventListener('resize', handleWindowResize);
       };
-    }, [handleOnClickOutside]);
+    }, [handleOnClickOutside, handleWindowResize]);
 
     const handleRef = useCallback(
       (node: HTMLElement) => {

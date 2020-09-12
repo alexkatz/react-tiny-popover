@@ -5,13 +5,14 @@ export interface ContentLocation {
 
 export interface PopoverState {
   isPositioned: boolean;
-  position: PopoverPosition;
-  nudgedLeft: number;
-  nudgedTop: number;
   childRect: ClientRect;
   popoverRect: ClientRect;
-  padding: number;
+  parentRect: ClientRect;
+  position: PopoverPosition;
   align: PopoverAlign;
+  padding: number;
+  nudgedLeft: number;
+  nudgedTop: number;
   boundaryInset: number;
   boundaryTolerance: number;
 }
@@ -19,13 +20,13 @@ export interface PopoverState {
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
 export type ContentLocationGetter = (popoverState: PopoverState) => ContentLocation;
 
-export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
-export type PopoverAlign = 'start' | 'center' | 'end';
+export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom' | 'custom';
+export type PopoverAlign = 'start' | 'center' | 'end' | 'custom';
 
 export interface UseArrowContainerProps {
-  position: PopoverPosition;
   childRect: ClientRect;
   popoverRect: ClientRect;
+  position: PopoverPosition;
   arrowSize: number;
   arrowColor: string;
 }
@@ -40,14 +41,15 @@ export interface ArrowContainerProps extends UseArrowContainerProps {
 
 export interface UsePopoverProps {
   childRef: React.MutableRefObject<HTMLElement>;
+  positions?: PopoverPosition[];
+  align?: PopoverAlign;
+  padding: number;
+  reposition: boolean;
+  boundaryInset: number;
+  boundaryTolerance: number;
   containerParent?: HTMLElement;
   containerClassName?: string;
-  positions: PopoverPosition[];
-  align: PopoverAlign;
-  padding: number;
-  boundaryTolerance: number;
-  boundaryInset: number;
-  reposition: boolean;
+  contentLocation?: ContentLocationGetter | ContentLocation;
   onPositionPopover(popoverState: PopoverState): void;
 }
 
@@ -55,17 +57,17 @@ export interface PopoverProps {
   isOpen: boolean;
   children: JSX.Element;
   content: ContentRenderer | JSX.Element;
-  contentLocation?: ContentLocationGetter | ContentLocation;
-  reposition?: boolean;
-  containerClassName?: string;
-  containerStyle?: Partial<CSSStyleDeclaration>;
-  containerParent?: HTMLElement;
-  positions?: PopoverPosition[];
-  align?: PopoverAlign;
+  positions: Exclude<PopoverPosition, 'custom'>[];
+  align: Exclude<PopoverAlign, 'custom'>;
   padding?: number;
+  reposition?: boolean;
+  ref?: React.Ref<HTMLElement>;
+  containerClassName?: string;
+  contentLocation?: ContentLocationGetter | ContentLocation;
+  containerParent?: HTMLElement;
+  containerStyle?: Partial<CSSStyleDeclaration>;
   boundaryInset?: number;
   boundaryTolerance?: number;
-  ref?: React.Ref<HTMLElement>;
   onClickOutside?: (e: MouseEvent) => void;
 }
 
@@ -73,13 +75,14 @@ export type PositionPopover = (
   positionIndex?: number,
   childRect?: ClientRect,
   popoverRect?: ClientRect,
+  parentRect?: ClientRect,
 ) => void;
 
 export type UsePopoverResult = readonly [PositionPopover, React.MutableRefObject<HTMLDivElement>];
 
 export interface UseArrowContainerResult {
-  arrowContainerStyle: React.CSSProperties;
   arrowStyle: React.CSSProperties;
+  arrowContainerStyle: React.CSSProperties;
 }
 
 export const usePopover: (props: UsePopoverProps) => UsePopoverResult;
