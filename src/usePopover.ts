@@ -21,6 +21,7 @@ export const usePopover = ({
     overflow: 'visible',
     top: '0px',
     left: '0px',
+    opacity: '0',
   });
 
   const positionPopover = useCallback<PositionPopover>(
@@ -49,6 +50,7 @@ export const usePopover = ({
             : contentLocation;
 
         popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
+        popoverRef.current.style.opacity = '1';
 
         onPositionPopover({
           isPositioned: true,
@@ -102,6 +104,7 @@ export const usePopover = ({
       }
 
       popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
+      popoverRef.current.style.opacity = '1';
 
       onPositionPopover({
         isPositioned: true,
