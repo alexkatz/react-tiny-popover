@@ -174,6 +174,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       window.addEventListener('click', handleOnClickOutside);
       window.addEventListener('resize', handleWindowResize);
       popoverRef.current.addEventListener('mousedown', handleMouseDown);
+      window.addEventListener('mouseup', handleMouseUp);
       return () => {
         window.removeEventListener('click', handleOnClickOutside);
         window.removeEventListener('resize', handleWindowResize);
