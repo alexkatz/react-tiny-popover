@@ -159,6 +159,13 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       console.log(window.clickStartedInPopover)
     }, [popoverRef]);
 
+    const handleMouseUp = useCallback((e: MouseEvent) => {
+      window.preventPopoverClose =
+        !popoverRef.current.contains(e.target as Node) &&
+        !childRef.current.contains(e.target as Node) &&
+        window.clickStartedInPopover;
+    }, [popoverRef]);
+
     const handleWindowResize = useCallback(() => {
       window.requestAnimationFrame(positionPopover);
     }, [positionPopover]);
