@@ -149,7 +149,12 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
           !popoverRef.current.contains(e.target as Node) &&
           !childRef.current.contains(e.target as Node)
         ) {
-          onClickOutside?.(e);
+          if(window.preventPopoverClose && haveSelection){
+            window.clickStartedInPopover = false
+            window.preventPopoverClose = false
+          } else {
+            onClickOutside?.(e);
+          }
         }
       },
       [isOpen, onClickOutside, popoverRef],
