@@ -143,6 +143,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
 
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {
+        let haveSelection = window.getSelection().toString().length > 0;
         if (
           isOpen &&
           !popoverRef.current.contains(e.target as Node) &&
