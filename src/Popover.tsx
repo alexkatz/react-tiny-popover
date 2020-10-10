@@ -162,7 +162,6 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
 
     const handleMouseDown = useCallback((e: MouseEvent) => {
       window.clickStartedInPopover = popoverRef.current.contains(e.target as Node) || childRef.current.contains(e.target as Node);
-      console.log(window.clickStartedInPopover)
     }, [popoverRef]);
 
     const handleMouseUp = useCallback((e: MouseEvent) => {
