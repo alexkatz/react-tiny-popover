@@ -57,15 +57,15 @@ export interface PopoverProps {
   isOpen: boolean;
   children: JSX.Element;
   content: ContentRenderer | JSX.Element;
-  positions: Exclude<PopoverPosition, 'custom'>[];
-  align: Exclude<PopoverAlign, 'custom'>;
+  positions?: Exclude<PopoverPosition, 'custom'>[];
+  align?: Exclude<PopoverAlign, 'custom'>;
   padding?: number;
   reposition?: boolean;
   ref?: React.Ref<HTMLElement>;
   containerClassName?: string;
-  contentLocation?: ContentLocationGetter | ContentLocation;
   containerParent?: HTMLElement;
   containerStyle?: Partial<CSSStyleDeclaration>;
+  contentLocation?: ContentLocationGetter | ContentLocation;
   boundaryInset?: number;
   boundaryTolerance?: number;
   onClickOutside?: (e: MouseEvent) => void;

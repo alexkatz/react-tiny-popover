@@ -34,6 +34,9 @@ export const useArrowContainer = ({
           top = top < lowerBound ? lowerBound : top;
           top = top + arrowWidth > topUpperBound ? topUpperBound - arrowWidth : top;
 
+          top = Number.isNaN(top) ? 0 : top;
+          left = Number.isNaN(left) ? 0 : left;
+
           switch (position) {
             case 'right':
               return {

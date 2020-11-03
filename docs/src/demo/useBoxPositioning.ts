@@ -5,17 +5,26 @@ interface Position {
   top: number;
 }
 
-interface BoxOffsetInfo extends Position {
+interface BoxInfo {
   isDragging?: boolean;
+  mouseLeft: number;
+  mouseTop: number;
+  width: number;
+  height: number;
+  parentLeft: number;
+  parentTop: number;
 }
 
 export const useBoxBehavior = () => {
-  const [boxOffsetInfo, setBoxOffsetInfo] = useState<BoxOffsetInfo | null>(null);
-  const [boxPosition, setBoxPosition] = useState<Position>({ left: 800, top: 800 });
+  const [boxOffsetInfo, setBoxOffsetInfo] = useState<BoxInfo | null>(null);
+  const [boxPosition, setBoxPosition] = useState<Position>({ left: 0, top: 0 });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleOnMouseMove = ({ clientX, clientY }: React.MouseEvent) => {
     if (!boxOffsetInfo) return;
+
+    const { parentLeft, parentTop, mouseLeft, mouseTop, width, height } = boxOffsetInfo;
+
     if (!boxOffsetInfo.isDragging) {
       setBoxOffsetInfo({
         ...boxOffsetInfo,
@@ -24,8 +33,8 @@ export const useBoxBehavior = () => {
     }
 
     setBoxPosition({
-      left: clientX - boxOffsetInfo.left,
-      top: clientY - boxOffsetInfo.top,
+      left: clientX - parentLeft - mouseLeft,
+      top: clientY - parentTop - mouseTop,
     });
   };
 
@@ -34,11 +43,24 @@ export const useBoxBehavior = () => {
     setBoxOffsetInfo(null);
   };
 
-  const handleBoxOnMouseDown = ({ clientX, clientY, currentTarget }: React.MouseEvent) => {
-    const boxRect = currentTarget.getBoundingClientRect();
-    const left = clientX - boxRect.left - window.pageXOffset;
-    const top = clientY - boxRect.top - window.pageYOffset;
-    setBoxOffsetInfo({ left, top });
+  const handleBoxOnMouseDown = (e: React.MouseEvent) => {
+    const { currentTarget, clientX, clientY } = e;
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    const {
+      left: parentLeft,
+      top: parentTop,
+    } = currentTarget.parentElement.getBoundingClientRect();
+    const mouseLeft = clientX - left;
+    const mouseTop = clientY - top;
+
+    setBoxOffsetInfo({
+      width,
+      height,
+      parentLeft,
+      parentTop,
+      mouseLeft,
+      mouseTop,
+    });
   };
 
   return {

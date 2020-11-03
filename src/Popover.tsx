@@ -22,14 +22,14 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       isOpen,
       children,
       content,
+      positions: externalPositions = Constants.DEFAULT_POSITIONS,
+      align = Constants.DEFAULT_ALIGN,
+      padding = 0,
       reposition = true,
-      containerStyle,
       containerParent = window.document.body,
       containerClassName = 'react-tiny-popover-container',
+      containerStyle,
       contentLocation,
-      positions: externalPositions = Constants.DEFAULT_POSITIONS,
-      padding = 0,
-      align = Constants.DEFAULT_ALIGN,
       boundaryInset = 0,
       boundaryTolerance = 0,
       onClickOutside,
@@ -73,11 +73,13 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     });
 
     useLayoutEffect(() => {
-      let shouldUpdatePopover = true;
+      let shouldUpdate = true;
+      console.log('props.padding', padding);
+      console.log('popoverState.padding:', popoverState.padding);
       const updatePopover = () => {
-        if (isOpen) {
-          const childRect = childRef.current.getBoundingClientRect();
-          const popoverRect = popoverRef.current.getBoundingClientRect();
+        if (isOpen && shouldUpdate && childRef.current && popoverRef.current) {
+          const childRect = childRef.current?.getBoundingClientRect();
+          const popoverRect = popoverRef.current?.getBoundingClientRect();
           if (
             !rectsAreEqual(childRect, {
               top: popoverState.childRect.top,
@@ -88,23 +90,22 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
               right: popoverState.childRect.left + popoverState.childRect.width,
             }) ||
             popoverRect.width !== popoverState.popoverRect.width ||
-            popoverRect.height !== popoverState.popoverRect.height
+            popoverRect.height !== popoverState.popoverRect.height ||
+            popoverState.padding !== padding
           ) {
             positionPopover();
           }
 
-          if (shouldUpdatePopover) {
+          if (shouldUpdate) {
             window.requestAnimationFrame(updatePopover);
           }
-        } else {
-          setPopoverState((prev) => ({ ...prev, isPositioned: false }));
         }
       };
 
       window.requestAnimationFrame(updatePopover);
 
       return () => {
-        shouldUpdatePopover = false;
+        shouldUpdate = false;
       };
     }, [
       isOpen,
@@ -115,6 +116,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       popoverState.childRect.left,
       popoverState.popoverRect.width,
       popoverState.popoverRect.height,
+      popoverState.padding,
       positionPopover,
       align,
       padding,
@@ -122,6 +124,10 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       reposition,
       boundaryInset,
     ]);
+
+    useLayoutEffect(() => {
+      if (!isOpen) setPopoverState((prev) => ({ ...prev, isPositioned: false }));
+    }, [isOpen]);
 
     useEffect(() => {
       const popoverElement = popoverRef.current;
@@ -145,8 +151,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       (e: MouseEvent) => {
         if (
           isOpen &&
-          !popoverRef.current.contains(e.target as Node) &&
-          !childRef.current.contains(e.target as Node)
+          !popoverRef?.current?.contains(e.target as Node) &&
+          !childRef?.current?.contains(e.target as Node)
         ) {
           onClickOutside?.(e);
         }

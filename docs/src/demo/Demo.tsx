@@ -1,28 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { FC, Reducer, useCallback, useReducer, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Box as _Box } from './Box';
 import { useBoxBehavior } from './useBoxPositioning';
 import { css } from '@emotion/core';
-import { Popover, ArrowContainer } from 'react-tiny-popover';
+import { Popover, ArrowContainer, PopoverProps } from 'react-tiny-popover';
 import { PopoverState } from '../../../dist';
+import { Controls as _Controls } from './Controls';
+import { reducer } from './shared';
 
 const BOX_SIZE = 200;
 
 const Container = styled.div`
-  background-color: black;
-  height: ${window.innerHeight * 2}px;
-  width: ${window.innerWidth * 2}px;
-  overflow: scroll;
-`;
-
-const ContainerBackground = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 100px;
-  border: 1px solid white;
+  position: relative;
 `;
 
 interface BoxStyleProps {
@@ -42,7 +31,19 @@ const Box = styled(_Box)<BoxStyleProps>`
     `}
 `;
 
-export const Demo: React.FC = () => {
+const Controls = styled(_Controls)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+`;
+
+interface Props {
+  className?: string;
+}
+
+const ARROW_SIZE = 16;
+
+export const Demo: FC<Props> = ({ className }) => {
   const {
     boxPosition,
     isSelected,
@@ -52,33 +53,34 @@ export const Demo: React.FC = () => {
     handleOnMouseMove,
     handleOnMouseUp,
   } = useBoxBehavior();
-
+  const [state, dispatch] = useReducer(reducer, { padding: 10 });
+  console.log(state);
   const handleOnClickOutside = useCallback(() => setIsPopoverOpen(false), []);
+  const containerRef = useRef<HTMLDivElement | undefined>();
 
   return (
-    <Container onMouseMove={handleOnMouseMove}>
-      <ContainerBackground />
+    <Container ref={containerRef} className={className} onMouseMove={handleOnMouseMove}>
       <Popover
         isOpen={isPopoverOpen}
-        padding={30}
+        containerParent={containerRef.current}
+        padding={state.padding}
         align='center'
-        positions={['left', 'top', 'right', 'bottom']}
-        boundaryInset={100}
-        boundaryTolerance={30}
-        onClickOutside={handleOnClickOutside}
+        positions={['top', 'left', 'right', 'bottom']}
+        boundaryInset={0}
+        boundaryTolerance={ARROW_SIZE}
         content={({ position, childRect, popoverRect }) => (
           <ArrowContainer
             popoverRect={popoverRect}
             childRect={childRect}
             position={position}
             arrowColor={'salmon'}
-            arrowSize={30}
+            arrowSize={ARROW_SIZE}
           >
             <div
               style={{
                 backgroundColor: 'salmon',
-                width: position !== 'top' ? 400 : 400,
-                height: position !== 'top' ? 400 : 400,
+                width: 150,
+                height: 150,
               }}
             />
           </ArrowContainer>
@@ -91,6 +93,7 @@ export const Demo: React.FC = () => {
           $isSelected={isSelected}
         />
       </Popover>
+      <Controls values={state} dispatch={dispatch} />
     </Container>
   );
 };
