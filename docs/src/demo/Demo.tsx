@@ -1,10 +1,9 @@
-import React, { FC, Reducer, useCallback, useReducer, useRef } from 'react';
+import React, { FC, useReducer, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Box as _Box } from './Box';
 import { useBoxBehavior } from './useBoxPositioning';
 import { css } from '@emotion/core';
-import { Popover, ArrowContainer, PopoverProps } from 'react-tiny-popover';
-import { PopoverState } from '../../../dist';
+import { Popover, ArrowContainer } from 'react-tiny-popover';
 import { Controls as _Controls } from './Controls';
 import { reducer } from './shared';
 
@@ -48,13 +47,11 @@ export const Demo: FC<Props> = ({ className }) => {
     boxPosition,
     isSelected,
     isPopoverOpen,
-    setIsPopoverOpen,
     handleBoxOnMouseDown,
     handleOnMouseMove,
     handleOnMouseUp,
   } = useBoxBehavior();
-  const [state, dispatch] = useReducer(reducer, { padding: 10 });
-  const handleOnClickOutside = useCallback(() => setIsPopoverOpen(false), []);
+  const [state, dispatch] = useReducer(reducer, { padding: 10, align: 'center' });
   const containerRef = useRef<HTMLDivElement | undefined>();
 
   return (
@@ -63,7 +60,7 @@ export const Demo: FC<Props> = ({ className }) => {
         isOpen={isPopoverOpen}
         containerParent={containerRef.current}
         padding={state.padding}
-        align='center'
+        align={state.align}
         positions={['top', 'left', 'right', 'bottom']}
         boundaryInset={50}
         boundaryTolerance={ARROW_SIZE}
@@ -73,7 +70,7 @@ export const Demo: FC<Props> = ({ className }) => {
             childRect={childRect}
             position={position}
             arrowColor={'salmon'}
-            arrowSize={ARROW_SIZE}
+            arrowSize={0}
           >
             <div
               style={{

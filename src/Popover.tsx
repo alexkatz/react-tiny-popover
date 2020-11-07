@@ -89,7 +89,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
             }) ||
             popoverRect.width !== popoverState.popoverRect.width ||
             popoverRect.height !== popoverState.popoverRect.height ||
-            popoverState.padding !== padding
+            popoverState.padding !== padding ||
+            popoverState.align !== align
           ) {
             positionPopover();
           }
@@ -115,6 +116,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       popoverState.popoverRect.width,
       popoverState.popoverRect.height,
       popoverState.padding,
+      popoverState.align,
       positionPopover,
       align,
       padding,
