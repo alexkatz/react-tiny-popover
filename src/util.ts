@@ -165,11 +165,10 @@ export const getNudgedPopoverRect = (
   boundaryInset: number,
   boundaryTolerance: number,
 ): ClientRect => {
-  const boundary = boundaryInset - boundaryTolerance;
-  const topBoundary = parentRect.top + boundary;
-  const leftBoundary = parentRect.left + boundary;
-  const rightBoundary = parentRect.right + boundary;
-  const bottomBoundary = parentRect.bottom - boundary;
+  const topBoundary = parentRect.top + boundaryInset - boundaryTolerance;
+  const leftBoundary = parentRect.left + boundaryInset - boundaryTolerance;
+  const rightBoundary = parentRect.right - boundaryInset + boundaryTolerance;
+  const bottomBoundary = parentRect.bottom - boundaryInset + boundaryTolerance;
 
   let top = popoverRect.top < topBoundary ? topBoundary : popoverRect.top;
   top = top + popoverRect.height > bottomBoundary ? bottomBoundary - popoverRect.height : top;

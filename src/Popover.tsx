@@ -74,8 +74,6 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
 
     useLayoutEffect(() => {
       let shouldUpdate = true;
-      console.log('props.padding', padding);
-      console.log('popoverState.padding:', popoverState.padding);
       const updatePopover = () => {
         if (isOpen && shouldUpdate && childRef.current && popoverRef.current) {
           const childRect = childRef.current?.getBoundingClientRect();

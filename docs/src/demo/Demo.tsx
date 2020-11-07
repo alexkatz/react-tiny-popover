@@ -54,7 +54,6 @@ export const Demo: FC<Props> = ({ className }) => {
     handleOnMouseUp,
   } = useBoxBehavior();
   const [state, dispatch] = useReducer(reducer, { padding: 10 });
-  console.log(state);
   const handleOnClickOutside = useCallback(() => setIsPopoverOpen(false), []);
   const containerRef = useRef<HTMLDivElement | undefined>();
 
@@ -66,7 +65,7 @@ export const Demo: FC<Props> = ({ className }) => {
         padding={state.padding}
         align='center'
         positions={['top', 'left', 'right', 'bottom']}
-        boundaryInset={0}
+        boundaryInset={50}
         boundaryTolerance={ARROW_SIZE}
         content={({ position, childRect, popoverRect }) => (
           <ArrowContainer
