@@ -75,29 +75,32 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     useLayoutEffect(() => {
       let shouldUpdatePopover = true;
       const updatePopover = () => {
-        if (isOpen) {
-          const childRect = childRef.current.getBoundingClientRect();
-          const popoverRect = popoverRef.current.getBoundingClientRect();
-          if (
-            !rectsAreEqual(childRect, {
-              top: popoverState.childRect.top,
-              left: popoverState.childRect.left,
-              width: popoverState.childRect.width,
-              height: popoverState.childRect.height,
-              bottom: popoverState.childRect.top + popoverState.childRect.height,
-              right: popoverState.childRect.left + popoverState.childRect.width,
-            }) ||
-            popoverRect.width !== popoverState.popoverRect.width ||
-            popoverRect.height !== popoverState.popoverRect.height
-          ) {
-            positionPopover();
-          }
-
-          if (shouldUpdatePopover) {
-            window.requestAnimationFrame(updatePopover);
-          }
-        } else {
+        if (!childRef.current) return;
+        if (!popoverRef.current) return;
+        if (!isOpen) {
           setPopoverState((prev) => ({ ...prev, isPositioned: false }));
+          return;
+        }
+
+        const childRect = childRef.current.getBoundingClientRect();
+        const popoverRect = popoverRef.current.getBoundingClientRect();
+        if (
+          !rectsAreEqual(childRect, {
+            top: popoverState.childRect.top,
+            left: popoverState.childRect.left,
+            width: popoverState.childRect.width,
+            height: popoverState.childRect.height,
+            bottom: popoverState.childRect.top + popoverState.childRect.height,
+            right: popoverState.childRect.left + popoverState.childRect.width,
+          }) ||
+          popoverRect.width !== popoverState.popoverRect.width ||
+          popoverRect.height !== popoverState.popoverRect.height
+        ) {
+          positionPopover();
+        }
+
+        if (shouldUpdatePopover) {
+          window.requestAnimationFrame(updatePopover);
         }
       };
 
