@@ -31,7 +31,7 @@ export const usePopover = ({
       parentRect: ClientRect = containerParent.getBoundingClientRect(),
     ) => {
       if (contentLocation) {
-        const { top, left } =
+        const { top: inputTop, left: inputLeft } =
           typeof contentLocation === 'function'
             ? contentLocation({
                 isPositioned: true,
@@ -47,6 +47,9 @@ export const usePopover = ({
                 boundaryTolerance,
               })
             : contentLocation;
+
+        const left = parentRect.left + inputLeft;
+        const top = parentRect.top + inputTop;
 
         popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
 

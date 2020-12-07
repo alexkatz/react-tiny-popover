@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { Dispatch, FC, memo, useState } from 'react';
-import { PopoverPosition } from '../../../dist';
+import { PopoverPosition } from 'react-tiny-popover';
 import { ControlsField } from './ControlsField';
 import { ControlsState, Action } from './shared';
 
@@ -111,6 +111,52 @@ export const Controls: FC<Props> = memo(({ values, dispatch, className, disabled
             dispatch({
               type: 'popoverSize',
               payload: { ...values.popoverSize, height: Number(e.target.value) },
+            })
+          }
+        />
+      </ControlsField>
+      <ControlsField label={'Repositioning enabled'}>
+        <input
+          type='checkbox'
+          checked={values.reposition ? true : false}
+          onChange={() => {
+            dispatch({
+              type: 'reposition',
+              payload: values.reposition ? false : true,
+            });
+          }}
+        />
+      </ControlsField>
+      <ControlsField label={'Fixed content location'}>
+        <input
+          type='checkbox'
+          checked={values.contentLocationEnabled ? true : false}
+          onChange={() => {
+            dispatch({
+              type: 'contentLocationEnabled',
+              payload: values.contentLocationEnabled ? false : true,
+            });
+          }}
+        />
+      </ControlsField>
+      <ControlsField label={'Fixed content location top'}>
+        <Input
+          value={values.contentLocation.top}
+          onChange={(e) =>
+            dispatch({
+              type: 'contentLocation',
+              payload: { ...values.contentLocation, top: Number(e.target.value) },
+            })
+          }
+        />
+      </ControlsField>
+      <ControlsField label={'Fixed content location left'}>
+        <Input
+          value={values.contentLocation.left}
+          onChange={(e) =>
+            dispatch({
+              type: 'contentLocation',
+              payload: { ...values.contentLocation, left: Number(e.target.value) },
             })
           }
         />

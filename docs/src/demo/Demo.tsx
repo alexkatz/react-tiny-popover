@@ -71,6 +71,11 @@ export const Demo: FC<Props> = ({ className }) => {
     align: 'center',
     positions: ['top', 'left', 'bottom', 'right'],
     boundaryInset: 0,
+    reposition: true,
+    contentLocation: {
+      left: 20,
+      top: 20,
+    },
     boundaryTolerance: 0,
     arrowSize: 0,
     popoverSize: {
@@ -88,8 +93,10 @@ export const Demo: FC<Props> = ({ className }) => {
           padding={state.padding}
           align={state.align}
           positions={state.positions}
+          contentLocation={state.contentLocationEnabled ? state.contentLocation : undefined}
           boundaryInset={state.boundaryInset}
           boundaryTolerance={state.boundaryTolerance}
+          reposition={state.reposition}
           content={({ position, childRect, popoverRect, ...rest }) => (
             <ArrowContainer
               popoverRect={popoverRect}

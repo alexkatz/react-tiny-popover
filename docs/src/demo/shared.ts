@@ -1,12 +1,19 @@
 import { Reducer } from 'react';
-import { PopoverProps } from '../../../dist';
+import { ContentLocation, PopoverProps } from '../../../dist';
 
 export interface PopoverSize {
   width: number;
   height: number;
 }
 
-export type ControlsState = Partial<PopoverProps & { arrowSize: number; popoverSize: PopoverSize }>;
+export type ControlsState = Partial<
+  PopoverProps & {
+    arrowSize: number;
+    popoverSize: PopoverSize;
+    contentLocation: ContentLocation;
+    contentLocationEnabled: boolean;
+  }
+>;
 export type Keys = { [K in keyof ControlsState]: K };
 
 export type Action<K extends keyof ControlsState> = K extends Keys['padding']
@@ -23,6 +30,12 @@ export type Action<K extends keyof ControlsState> = K extends Keys['padding']
   ? { type: Keys['arrowSize']; payload: ControlsState['arrowSize'] }
   : K extends Keys['popoverSize']
   ? { type: Keys['popoverSize']; payload: ControlsState['popoverSize'] }
+  : K extends Keys['contentLocation']
+  ? { type: Keys['contentLocation']; payload: ControlsState['contentLocation'] }
+  : K extends Keys['reposition']
+  ? { type: Keys['reposition']; payload: ControlsState['reposition'] }
+  : K extends Keys['contentLocationEnabled']
+  ? { type: Keys['contentLocationEnabled']; payload: ControlsState['contentLocationEnabled'] }
   : never;
 
 export const reducer: Reducer<ControlsState, Action<keyof ControlsState>> = (state, action) => {

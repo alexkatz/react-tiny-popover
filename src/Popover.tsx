@@ -7,7 +7,13 @@ import React, {
   forwardRef,
 } from 'react';
 import { PopoverPortal } from './PopoverPortal';
-import { PopoverPosition, PopoverProps, PopoverState } from '.';
+import {
+  ContentLocation,
+  ContentLocationGetter,
+  PopoverPosition,
+  PopoverProps,
+  PopoverState,
+} from '.';
 import { Constants, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
@@ -37,7 +43,12 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     externalRef,
   ) => {
     const positions = useMemoizedArray(externalPositions);
+
+    // TODO: factor prevs out into a custom prevs hook
     const prevPositions = useRef<PopoverPosition[] | undefined>();
+    const prevContentLocation = useRef<ContentLocation | ContentLocationGetter | undefined>();
+    const prevReposition = useRef(reposition);
+
     const childRef = useRef<HTMLElement>();
 
     const [popoverState, setPopoverState] = useState<PopoverState>({
@@ -92,13 +103,22 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
             popoverRect.height !== popoverState.popoverRect.height ||
             popoverState.padding !== padding ||
             popoverState.align !== align ||
-            positions !== prevPositions.current
+            positions !== prevPositions.current ||
+            contentLocation !== prevContentLocation.current ||
+            reposition !== prevReposition.current
           ) {
             positionPopover();
           }
 
+          // TODO: factor prev checks out into the custom prevs hook
           if (positions !== prevPositions.current) {
             prevPositions.current = positions;
+          }
+          if (contentLocation !== prevContentLocation.current) {
+            prevContentLocation.current = contentLocation;
+          }
+          if (reposition !== prevReposition.current) {
+            prevReposition.current = reposition;
           }
 
           if (shouldUpdate) {
@@ -129,6 +149,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       positions,
       reposition,
       boundaryInset,
+      contentLocation,
     ]);
 
     useLayoutEffect(() => {
