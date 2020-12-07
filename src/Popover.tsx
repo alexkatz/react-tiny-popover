@@ -7,7 +7,7 @@ import React, {
   forwardRef,
 } from 'react';
 import { PopoverPortal } from './PopoverPortal';
-import { PopoverProps, PopoverState } from '.';
+import { PopoverPosition, PopoverProps, PopoverState } from '.';
 import { Constants, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
@@ -37,6 +37,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     externalRef,
   ) => {
     const positions = useMemoizedArray(externalPositions);
+    const prevPositions = useRef<PopoverPosition[] | undefined>();
     const childRef = useRef<HTMLElement>();
 
     const [popoverState, setPopoverState] = useState<PopoverState>({
@@ -90,9 +91,14 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
             popoverRect.width !== popoverState.popoverRect.width ||
             popoverRect.height !== popoverState.popoverRect.height ||
             popoverState.padding !== padding ||
-            popoverState.align !== align
+            popoverState.align !== align ||
+            positions !== prevPositions.current
           ) {
             positionPopover();
+          }
+
+          if (positions !== prevPositions.current) {
+            prevPositions.current = positions;
           }
 
           if (shouldUpdate) {
@@ -136,9 +142,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
         ...containerStyle,
       } as Omit<CSSStyleDeclaration, 'length' | 'parentRule'>;
 
-      if (popoverState.isPositioned) {
-        Object.assign(popoverElement.style, style);
-      }
+      Object.assign(popoverElement.style, style);
 
       return () => {
         Object.keys(style).forEach(

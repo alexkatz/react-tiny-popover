@@ -10,10 +10,11 @@ const Container = styled.main`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 128px;
 `;
 
 const Demo = styled(_Demo)`
-  width: 800px;
+  width: 100%;
   height: 800px;
   background-color: black;
   border: 1px solid white;

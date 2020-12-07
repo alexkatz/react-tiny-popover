@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MutableRefObject, useState } from 'react';
 
 interface Position {
   left: number;
@@ -15,10 +15,10 @@ interface BoxInfo {
   parentTop: number;
 }
 
-export const useBoxBehavior = () => {
+export const useBoxBehavior = (boxContainerRef: MutableRefObject<HTMLElement>) => {
   const [boxOffsetInfo, setBoxOffsetInfo] = useState<BoxInfo | null>(null);
-  const [boxPosition, setBoxPosition] = useState<Position>({ left: 0, top: 0 });
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [boxPosition, setBoxPosition] = useState<Position>({ left: 200, top: 300 });
+  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
 
   const handleOnMouseMove = ({ clientX, clientY }: React.MouseEvent) => {
     if (!boxOffsetInfo) return;
@@ -49,7 +49,10 @@ export const useBoxBehavior = () => {
     const {
       left: parentLeft,
       top: parentTop,
-    } = currentTarget.parentElement.getBoundingClientRect();
+    } = boxContainerRef.current?.getBoundingClientRect() ?? {
+      left: 0,
+      top: 0,
+    };
     const mouseLeft = clientX - left;
     const mouseTop = clientY - top;
 
@@ -71,5 +74,6 @@ export const useBoxBehavior = () => {
     handleOnMouseMove,
     handleOnMouseUp,
     handleBoxOnMouseDown,
+    isDragging: boxOffsetInfo?.isDragging ?? false,
   };
 };
