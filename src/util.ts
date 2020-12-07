@@ -142,16 +142,14 @@ export const getNewPopoverRect = (
     reposition,
   }: GetNewPopoverRectProps,
   boundaryInset: number,
-  boundaryTolerance: number,
 ) => {
-  const boundary = boundaryInset - boundaryTolerance;
   const rect = popoverRectForPosition(position, childRect, popoverRect, padding, align);
   const boundaryViolation =
     reposition &&
-    ((position === 'top' && rect.top < parentRect.top + boundary) ||
-      (position === 'left' && rect.left < parentRect.left + boundary) ||
-      (position === 'right' && rect.right > parentRect.right - boundary) ||
-      (position === 'bottom' && rect.bottom > parentRect.bottom - boundary));
+    ((position === 'top' && rect.top < parentRect.top + boundaryInset) ||
+      (position === 'left' && rect.left < parentRect.left + boundaryInset) ||
+      (position === 'right' && rect.right > parentRect.right - boundaryInset) ||
+      (position === 'bottom' && rect.bottom > parentRect.bottom - boundaryInset));
 
   return {
     rect,
@@ -163,12 +161,11 @@ export const getNudgedPopoverRect = (
   popoverRect: ClientRect,
   parentRect: ClientRect,
   boundaryInset: number,
-  boundaryTolerance: number,
 ): ClientRect => {
-  const topBoundary = parentRect.top + boundaryInset - boundaryTolerance;
-  const leftBoundary = parentRect.left + boundaryInset - boundaryTolerance;
-  const rightBoundary = parentRect.right - boundaryInset + boundaryTolerance;
-  const bottomBoundary = parentRect.bottom - boundaryInset + boundaryTolerance;
+  const topBoundary = parentRect.top + boundaryInset;
+  const leftBoundary = parentRect.left + boundaryInset;
+  const rightBoundary = parentRect.right - boundaryInset;
+  const bottomBoundary = parentRect.bottom - boundaryInset;
 
   let top = popoverRect.top < topBoundary ? topBoundary : popoverRect.top;
   top = top + popoverRect.height > bottomBoundary ? bottomBoundary - popoverRect.height : top;

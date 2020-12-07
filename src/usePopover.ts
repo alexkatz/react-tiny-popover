@@ -11,7 +11,6 @@ export const usePopover = ({
   contentLocation,
   align,
   padding,
-  boundaryTolerance,
   reposition,
   boundaryInset,
   onPositionPopover,
@@ -44,7 +43,6 @@ export const usePopover = ({
                 nudgedTop: 0,
                 nudgedLeft: 0,
                 boundaryInset,
-                boundaryTolerance,
               })
             : contentLocation;
 
@@ -64,7 +62,6 @@ export const usePopover = ({
           nudgedTop: 0,
           nudgedLeft: 0,
           boundaryInset,
-          boundaryTolerance,
         });
 
         return;
@@ -83,7 +80,6 @@ export const usePopover = ({
           reposition,
         },
         boundaryInset,
-        boundaryTolerance,
       );
 
       if (boundaryViolation && reposition && !isExhausted) {
@@ -100,7 +96,6 @@ export const usePopover = ({
           rect,
           parentRect,
           boundaryInset,
-          boundaryTolerance,
         ));
       }
 
@@ -124,7 +119,6 @@ export const usePopover = ({
         nudgedTop: finalTop - top,
         nudgedLeft: finalLeft - left,
         boundaryInset,
-        boundaryTolerance,
       });
     },
     [
@@ -135,7 +129,6 @@ export const usePopover = ({
       padding,
       reposition,
       boundaryInset,
-      boundaryTolerance,
       containerParent,
       contentLocation,
       onPositionPopover,

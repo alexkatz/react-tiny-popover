@@ -37,7 +37,6 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       containerStyle,
       contentLocation,
       boundaryInset = 0,
-      boundaryTolerance = 0,
       onClickOutside,
     },
     externalRef,
@@ -62,7 +61,6 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       popoverRect: Constants.EMPTY_CLIENT_RECT,
       parentRect: Constants.EMPTY_CLIENT_RECT,
       boundaryInset,
-      boundaryTolerance,
     });
 
     const onPositionPopover = useCallback(
@@ -78,7 +76,6 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       positions,
       align,
       padding,
-      boundaryTolerance,
       boundaryInset,
       reposition,
       onPositionPopover,
@@ -170,7 +167,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
           (key) => (popoverElement.style[key as keyof typeof style] = null),
         );
       };
-    }, [popoverState.isPositioned, containerStyle, popoverRef]);
+    }, [containerStyle, popoverRef]);
 
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {

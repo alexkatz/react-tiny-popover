@@ -14,7 +14,6 @@ export interface PopoverState {
   nudgedLeft: number;
   nudgedTop: number;
   boundaryInset: number;
-  boundaryTolerance: number;
 }
 
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
@@ -46,7 +45,6 @@ export interface UsePopoverProps {
   padding: number;
   reposition: boolean;
   boundaryInset: number;
-  boundaryTolerance: number;
   containerParent?: HTMLElement;
   containerClassName?: string;
   contentLocation?: ContentLocationGetter | ContentLocation;

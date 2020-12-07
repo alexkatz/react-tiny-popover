@@ -81,12 +81,6 @@ export const Controls: FC<Props> = memo(({ values, dispatch, className, disabled
           onChange={(e) => dispatch({ type: 'boundaryInset', payload: Number(e.target.value) })}
         />
       </ControlsField>
-      <ControlsField label={'Boundary tolerance'}>
-        <Input
-          value={values.boundaryTolerance}
-          onChange={(e) => dispatch({ type: 'boundaryTolerance', payload: Number(e.target.value) })}
-        />
-      </ControlsField>
       <ControlsField label={'Arrow size'}>
         <Input
           value={values.arrowSize}

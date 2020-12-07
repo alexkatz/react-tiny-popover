@@ -1,5 +1,5 @@
 import { Reducer } from 'react';
-import { ContentLocation, PopoverProps } from '../../../dist';
+import { ContentLocation, PopoverProps } from 'react-tiny-popover';
 
 export interface PopoverSize {
   width: number;
@@ -24,8 +24,6 @@ export type Action<K extends keyof ControlsState> = K extends Keys['padding']
   ? { type: Keys['positions']; payload: ControlsState['positions'] }
   : K extends Keys['boundaryInset']
   ? { type: Keys['boundaryInset']; payload: ControlsState['boundaryInset'] }
-  : K extends Keys['boundaryTolerance']
-  ? { type: Keys['boundaryTolerance']; payload: ControlsState['boundaryTolerance'] }
   : K extends Keys['arrowSize']
   ? { type: Keys['arrowSize']; payload: ControlsState['arrowSize'] }
   : K extends Keys['popoverSize']
