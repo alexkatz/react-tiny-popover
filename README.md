@@ -37,7 +37,7 @@ npm install react-tiny-popover --save
 ## Examples
 
 ```JSX
-import Popover from 'react-tiny-popover'
+import { Popover } from 'react-tiny-popover'
 
 ...
 
@@ -53,7 +53,7 @@ import Popover from 'react-tiny-popover'
 ```
 
 ```JSX
-import Popover from 'react-tiny-popover'
+import { Popover } from 'react-tiny-popover'
 
 ...
 
@@ -76,7 +76,7 @@ import Popover from 'react-tiny-popover'
 ```
 
 ```JSX
-import Popover, { ArrowContainer } from 'react-tiny-popover'
+import { Popover, ArrowContainer } from 'react-tiny-popover'
 
 ...
 
@@ -115,7 +115,7 @@ If you'd like to use a custom React element as `Popover`'s target, you'll have t
 
 ```JSX
 import React, { useState } from 'react';
-import Popover from 'react-tiny-popover';
+import { Popover } from 'react-tiny-popover';
 
 interface CustomComponentProps extends React.ComponentPropsWithoutRef<'div'> {
   onClick(): void;
