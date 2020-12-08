@@ -43,7 +43,7 @@ import { Popover } from 'react-tiny-popover'
 
 <Popover
   isOpen={isPopoverOpen}
-  position={'top'} // preferred position
+  positions={['top', 'bottom', 'left', 'right']} // preferred positions by priority
   content={<div>Hi! I'm popover content.</div>}
 >
   <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
@@ -59,15 +59,15 @@ import { Popover } from 'react-tiny-popover'
 
 <Popover
   isOpen={isPopoverOpen}
-  position={['top', 'right', 'left', 'bottom']} // if you'd like, supply an array of preferred positions ordered by priority
+  position={['top', 'left']} // if you'd like, you can limit the positions
   padding={10} // adjust padding here!
-  disableReposition // prevents automatic readjustment of content position that keeps your popover content within your window's bounds
+  reposition={false} // prevents automatic readjustment of content position that keeps your popover content within its parent's bounds
   onClickOutside={() => setIsPopoverOpen(false)} // handle click events outside of the popover/target here!
-  content={({ position, nudgedLeft, nudgedTop, targetRect, popoverRect }) => ( // you can also provide a render function that injects some useful stuff!
+  content={({ position, nudgedLeft, nudgedTop }) => ( // you can also provide a render function that injects some useful stuff!
     <div>
-      <div>Hi! I'm popover content. Here's my position: {position}.</div>
-      <div>I'm {` ${nudgedLeft} `} pixels beyond the window horizontally!</div>
-      <div>I'm {` ${nudgedTop} `} pixels beyond the window vertically!</div>
+      <div>Hi! I'm popover content. Here's my current position: {position}.</div>
+      <div>I'm {` ${nudgedLeft} `} pixels beyond my boundary horizontally!</div>
+      <div>I'm {` ${nudgedTop} `} pixels beyond my boundary vertically!</div>
     </div>
   )}
 >
@@ -76,23 +76,27 @@ import { Popover } from 'react-tiny-popover'
 ```
 
 ```JSX
+import { useRef } from 'react';
 import { Popover, ArrowContainer } from 'react-tiny-popover'
 
-...
+const clickMeButtonRef = useRef<HTMLButtonElement | undefined>();
 
 <Popover
   isOpen={isPopoverOpen}
-  position={['top', 'right', 'left', 'bottom']}
+  positions={['top', 'right', 'left', 'bottom']}
   padding={10}
   onClickOutside={() => setIsPopoverOpen(false)}
-  content={({ position, targetRect, popoverRect }) => (
+  ref={clickMeButtonRef} // if you'd like a ref to your popover's child, you can grab one here
+  content={({ position, childRect, popoverRect }) => (
     <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
       position={position}
-      targetRect={targetRect}
+      childRect={targetRect}
       popoverRect={popoverRect}
       arrowColor={'blue'}
       arrowSize={10}
       arrowStyle={{ opacity: 0.7 }}
+      className='popover-arrow-container'
+      arrowClassName='popover-arrow'
     >
       <div
         style={{ backgroundColor: 'blue', opacity: 0.7 }}
@@ -103,11 +107,9 @@ import { Popover, ArrowContainer } from 'react-tiny-popover'
     </ArrowContainer>
   )}
 >
-  {ref => ( // if you'd like access to the ref itself for some reason, you can provide a function as a child into which the ref will be injected
-    <div ref={ref} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-      Click me!
-    </div>
-  )}
+  <button onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+    Click me!
+  </button>
 </Popover>;
 ```
 
