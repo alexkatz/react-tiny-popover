@@ -155,6 +155,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
 
     useEffect(() => {
       const popoverElement = popoverRef.current;
+
       const style = {
         ...Constants.DEFAULT_CONTAINER_STYLE,
         ...containerStyle,
@@ -168,6 +169,10 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
         );
       };
     }, [containerStyle, popoverRef]);
+
+    useEffect(() => {
+      popoverRef.current.className = containerClassName;
+    }, [containerClassName, popoverRef]);
 
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {

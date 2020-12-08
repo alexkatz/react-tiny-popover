@@ -1,4 +1,4 @@
-import { Reducer } from 'react';
+import { Key, Reducer } from 'react';
 import { ContentLocation, PopoverProps } from 'react-tiny-popover';
 
 export interface PopoverSize {
@@ -34,6 +34,8 @@ export type Action<K extends keyof ControlsState> = K extends Keys['padding']
   ? { type: Keys['reposition']; payload: ControlsState['reposition'] }
   : K extends Keys['contentLocationEnabled']
   ? { type: Keys['contentLocationEnabled']; payload: ControlsState['contentLocationEnabled'] }
+  : K extends Keys['containerClassName']
+  ? { type: Keys['containerClassName']; payload: ControlsState['containerClassName'] }
   : never;
 
 export const reducer: Reducer<ControlsState, Action<keyof ControlsState>> = (state, action) => {

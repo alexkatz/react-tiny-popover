@@ -155,6 +155,17 @@ export const Controls: FC<Props> = memo(({ values, dispatch, className, disabled
           }
         />
       </ControlsField>
+      <ControlsField label={'Container class name'}>
+        <Input
+          value={values.containerClassName ?? ''}
+          onChange={(e) =>
+            dispatch({
+              type: 'containerClassName',
+              payload: e.target.value,
+            })
+          }
+        />
+      </ControlsField>
     </Container>
   );
 });
