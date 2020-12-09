@@ -155,22 +155,21 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
 
     useEffect(() => {
       const popoverElement = popoverRef.current;
-
-      const style = {
-        ...Constants.DEFAULT_CONTAINER_STYLE,
-        ...containerStyle,
-      } as Omit<CSSStyleDeclaration, 'length' | 'parentRule'>;
-
-      Object.assign(popoverElement.style, style);
+      if (popoverState.isPositioned) {
+        Object.assign(popoverElement.style, containerStyle);
+      }
 
       return () => {
-        Object.keys(style).forEach(
-          (key) => (popoverElement.style[key as keyof typeof style] = null),
+        Object.keys(containerStyle ?? {}).forEach(
+          (key) =>
+            (popoverElement.style[
+              key as keyof Omit<typeof containerStyle, 'length' | 'parentRule'>
+            ] = null),
         );
       };
-    }, [containerStyle, popoverRef]);
+    }, [containerStyle, isOpen, popoverRef, popoverState.isPositioned]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       popoverRef.current.className = containerClassName;
     }, [containerClassName, popoverRef]);
 

@@ -3,9 +3,6 @@ import { PopoverPosition, PopoverState, PopoverAlign } from './index';
 export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
   DEFAULT_ALIGN: 'center' as PopoverAlign,
-  DEFAULT_CONTAINER_STYLE: {
-    transition: 'transform 0.04s ease-in',
-  } as Partial<CSSStyleDeclaration>,
   OBSERVER_THRESHOLDS: Array(1000)
     .fill(null)
     .map((_, i) => i / 1000)
