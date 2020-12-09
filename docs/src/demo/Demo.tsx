@@ -91,6 +91,9 @@ export const Demo: FC<Props> = ({ className }) => {
         <Popover
           isOpen={isPopoverOpen}
           containerParent={boxContainerRef.current}
+          containerStyle={{
+            transition: 'transform 0.04s ease-in',
+          }}
           padding={state.padding}
           align={state.align}
           positions={state.positions}
