@@ -90,7 +90,7 @@ const clickMeButtonRef = useRef<HTMLButtonElement | undefined>();
   content={({ position, childRect, popoverRect }) => (
     <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
       position={position}
-      childRect={targetRect}
+      childRect={childRect}
       popoverRect={popoverRect}
       arrowColor={'blue'}
       arrowSize={10}
