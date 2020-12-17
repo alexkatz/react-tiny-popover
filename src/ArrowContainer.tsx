@@ -8,9 +8,10 @@ export const ArrowContainer: React.FC<ArrowContainerProps> = ({
   position,
   arrowColor,
   arrowSize,
+  arrowStyle: externalArrowStyle,
   className,
   children,
-  style: containerStyle,
+  style: externalArrowContainerStyle,
 }) => {
   const { arrowContainerStyle, arrowStyle } = useArrowContainer({
     childRect,
@@ -20,17 +21,25 @@ export const ArrowContainer: React.FC<ArrowContainerProps> = ({
     arrowSize,
   });
 
-  const mergedStyle = useMemo(
+  const mergedContainerStyle = useMemo(
     () => ({
-      ...containerStyle,
       ...arrowContainerStyle,
+      ...externalArrowContainerStyle,
     }),
-    [arrowContainerStyle, containerStyle],
+    [arrowContainerStyle, externalArrowContainerStyle],
+  );
+
+  const mergedArrowStyle = useMemo(
+    () => ({
+      ...arrowStyle,
+      ...externalArrowStyle,
+    }),
+    [arrowStyle, externalArrowStyle],
   );
 
   return (
-    <div className={className} style={mergedStyle}>
-      <div style={arrowStyle} />
+    <div className={className} style={mergedContainerStyle}>
+      <div style={mergedArrowStyle} />
       {children}
     </div>
   );
