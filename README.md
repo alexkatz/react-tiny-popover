@@ -120,14 +120,16 @@ import React, { useState } from 'react';
 import { Popover } from 'react-tiny-popover';
 
 interface CustomComponentProps extends React.ComponentPropsWithoutRef<'div'> {
-  onClick(): void;
+  onClick: () => void;
 }
 
-const CustomComponent = React.forwardRef<HTMLDivElement, CustomComponentProps>((props, ref) => (
+const CustomComponent = React.forwardRef<HTMLDivElement, CustomComponentProps>((props: { onClick: () => void; children?: React.ReactNode }, ref) => (
   <div ref={ref} onClick={props.onClick}>
     {props.children}
   </div>
 ));
+
+CustomComponent.displayName = "CustomComponent";
 
 const App: React.FC = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
