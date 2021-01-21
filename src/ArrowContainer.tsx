@@ -8,6 +8,7 @@ export const ArrowContainer: React.FC<ArrowContainerProps> = ({
   position,
   arrowColor,
   arrowSize,
+  arrowClassName,
   arrowStyle: externalArrowStyle,
   className,
   children,
@@ -39,7 +40,7 @@ export const ArrowContainer: React.FC<ArrowContainerProps> = ({
 
   return (
     <div className={className} style={mergedContainerStyle}>
-      <div style={mergedArrowStyle} />
+      <div style={mergedArrowStyle} className={arrowClassName} />
       {children}
     </div>
   );
