@@ -187,7 +187,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     );
 
     const handleWindowResize = useCallback(() => {
-      window.requestAnimationFrame(positionPopover);
+      window.requestAnimationFrame(() => positionPopover());
     }, [positionPopover]);
 
     useEffect(() => {
