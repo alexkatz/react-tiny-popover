@@ -86,15 +86,19 @@ export const usePopover = ({
       }
 
       const { top, left, width, height } = rect;
+      const shouldNudge = reposition && !isExhausted;
+      const { left: nudgedLeft, top: nudgedTop } = getNudgedPopoverRect(
+        rect,
+        parentRect,
+        boundaryInset,
+      );
+
       let finalTop = top;
       let finalLeft = left;
 
-      if (reposition && !isExhausted) {
-        ({ top: finalTop, left: finalLeft } = getNudgedPopoverRect(
-          rect,
-          parentRect,
-          boundaryInset,
-        ));
+      if (shouldNudge) {
+        finalTop = nudgedTop;
+        finalLeft = nudgedLeft;
       }
 
       popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
@@ -113,8 +117,8 @@ export const usePopover = ({
         position,
         align,
         padding,
-        nudgedTop: finalTop - top,
-        nudgedLeft: finalLeft - left,
+        nudgedTop: nudgedTop - top,
+        nudgedLeft: nudgedLeft - left,
         boundaryInset,
       });
     },
