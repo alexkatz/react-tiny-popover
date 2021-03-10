@@ -33,7 +33,6 @@ export const usePopover = ({
         const { top: inputTop, left: inputLeft } =
           typeof contentLocation === 'function'
             ? contentLocation({
-                isPositioned: true,
                 childRect,
                 popoverRect,
                 parentRect,
@@ -52,7 +51,6 @@ export const usePopover = ({
         popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
 
         onPositionPopover({
-          isPositioned: true,
           childRect,
           popoverRect,
           parentRect,
@@ -102,7 +100,6 @@ export const usePopover = ({
       popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
 
       onPositionPopover({
-        isPositioned: true,
         childRect,
         popoverRect: {
           top: finalTop,

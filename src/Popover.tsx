@@ -44,6 +44,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     const positions = useMemoizedArray(externalPositions);
 
     // TODO: factor prevs out into a custom prevs hook
+    const prevIsOpen = useRef(false);
     const prevPositions = useRef<PopoverPosition[] | undefined>();
     const prevContentLocation = useRef<ContentLocation | ContentLocationGetter | undefined>();
     const prevReposition = useRef(reposition);
@@ -51,7 +52,6 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     const childRef = useRef<HTMLElement>();
 
     const [popoverState, setPopoverState] = useState<PopoverState>({
-      isPositioned: false,
       align,
       nudgedLeft: 0,
       nudgedTop: 0,
@@ -122,6 +122,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
             window.requestAnimationFrame(updatePopover);
           }
         }
+
+        prevIsOpen.current = isOpen;
       };
 
       window.requestAnimationFrame(updatePopover);
@@ -130,34 +132,28 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
         shouldUpdate = false;
       };
     }, [
-      isOpen,
-      popoverRef,
-      popoverState.childRect.width,
-      popoverState.childRect.height,
-      popoverState.childRect.top,
-      popoverState.childRect.left,
-      popoverState.popoverRect.width,
-      popoverState.popoverRect.height,
-      popoverState.padding,
-      popoverState.align,
-      positionPopover,
       align,
+      contentLocation,
+      isOpen,
       padding,
+      popoverRef,
+      popoverState.align,
+      popoverState.childRect.height,
+      popoverState.childRect.left,
+      popoverState.childRect.top,
+      popoverState.childRect.width,
+      popoverState.padding,
+      popoverState.popoverRect.height,
+      popoverState.popoverRect.width,
+      positionPopover,
       positions,
       reposition,
-      boundaryInset,
-      contentLocation,
     ]);
-
-    useLayoutEffect(() => {
-      if (!isOpen) setPopoverState((prev) => ({ ...prev, isPositioned: false }));
-    }, [isOpen]);
 
     useEffect(() => {
       const popoverElement = popoverRef.current;
-      if (popoverState.isPositioned) {
-        Object.assign(popoverElement.style, containerStyle);
-      }
+
+      Object.assign(popoverElement.style, containerStyle);
 
       return () => {
         Object.keys(containerStyle ?? {}).forEach(
@@ -167,11 +163,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
             ] = null),
         );
       };
-    }, [containerStyle, isOpen, popoverRef, popoverState.isPositioned]);
-
-    useLayoutEffect(() => {
-      popoverRef.current.className = containerClassName;
-    }, [containerClassName, popoverRef]);
+    }, [containerStyle, isOpen, popoverRef]);
 
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {

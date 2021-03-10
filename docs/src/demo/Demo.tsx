@@ -1,4 +1,4 @@
-import React, { FC, useReducer, useRef } from 'react';
+import React, { FC, useMemo, useReducer, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Box as _Box } from './Box';
 import { useBoxBehavior } from './useBoxPositioning';
@@ -85,15 +85,21 @@ export const Demo: FC<Props> = ({ className }) => {
     },
   });
 
+  const containerStyle = useMemo(
+    () =>
+      ({
+        // transition: 'transform 0.04s ease-in',
+      } as Partial<CSSStyleDeclaration>),
+    [],
+  );
+
   return (
     <Container className={className}>
       <InnerContainer ref={boxContainerRef} onMouseMove={handleOnMouseMove}>
         <Popover
           isOpen={isPopoverOpen}
           containerParent={boxContainerRef.current}
-          containerStyle={{
-            transition: 'transform 0.04s ease-in',
-          }}
+          containerStyle={containerStyle}
           padding={state.padding}
           align={state.align}
           positions={state.positions}

@@ -4,7 +4,6 @@ export interface ContentLocation {
 }
 
 export interface PopoverState {
-  isPositioned: boolean;
   childRect: ClientRect;
   popoverRect: ClientRect;
   parentRect: ClientRect;
