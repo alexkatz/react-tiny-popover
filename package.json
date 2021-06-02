@@ -15,7 +15,8 @@
     "url": "https://github.com/alexkatz/react-tiny-popover.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "license": "MIT",
   "author": "Alex Katz",
