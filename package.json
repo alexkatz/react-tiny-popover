@@ -1,6 +1,6 @@
 {
-  "name": "react-tiny-popover",
-  "version": "6.0.6",
+  "name": "@chargepoint/react-tiny-popover",
+  "version": "6.0.8",
   "description": "A simple and highly customizable popover react higher order component with no other dependencies! Typescript friendly.",
   "keywords": [
     "react",
@@ -10,15 +10,13 @@
     "pop",
     "out"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alexkatz/react-tiny-popover.git"
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "files": [
     "dist"
   ],
-  "license": "MIT",
-  "author": "Alex Katz",
+  "license": "UNLICENSED",
   "main": "dist/Popover.js",
   "types": "dist/index.d.ts",
   "scripts": {
