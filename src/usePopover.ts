@@ -25,10 +25,13 @@ export const usePopover = ({
   const positionPopover = useCallback<PositionPopover>(
     (
       positionIndex: number = 0,
-      childRect: ClientRect = childRef.current.getBoundingClientRect(),
+      childRect: ClientRect = childRef.current ? childRef.current.getBoundingClientRect() : null,
       popoverRect: ClientRect = popoverRef.current.getBoundingClientRect(),
       parentRect: ClientRect = containerParent.getBoundingClientRect(),
     ) => {
+      if (!childRect) {
+        return;
+      }
       if (contentLocation) {
         const { top: inputTop, left: inputLeft } =
           typeof contentLocation === 'function'
