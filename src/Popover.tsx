@@ -49,7 +49,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     const prevContentLocation = useRef<ContentLocation | ContentLocationGetter | undefined>();
     const prevReposition = useRef(reposition);
 
-    const childRef = useRef<HTMLElement>();
+    const childRef = useRef<HTMLElement | undefined>();
 
     const [popoverState, setPopoverState] = useState<PopoverState>({
       align,
@@ -169,8 +169,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       (e: MouseEvent) => {
         if (
           isOpen &&
-          !popoverRef?.current?.contains(e.target as Node) &&
-          !childRef?.current?.contains(e.target as Node)
+          !popoverRef.current?.contains(e.target as Node) &&
+          !childRef.current?.contains(e.target as Node)
         ) {
           onClickOutside?.(e);
         }
@@ -179,7 +179,9 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     );
 
     const handleWindowResize = useCallback(() => {
-      window.requestAnimationFrame(() => positionPopover());
+      if (childRef.current) {
+        window.requestAnimationFrame(() => positionPopover());
+      }
     }, [positionPopover]);
 
     useEffect(() => {
