@@ -18,7 +18,7 @@ export interface PopoverState {
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
 export type ContentLocationGetter = (popoverState: PopoverState) => ContentLocation;
 
-export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom' | 'custom';
+export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom' | 'custom' | 'origin';
 export type PopoverAlign = 'start' | 'center' | 'end' | 'custom';
 
 export interface UseArrowContainerProps {

@@ -111,6 +111,10 @@ export const popoverRectForPosition = (
         top = childRect.bottom - height;
       }
       break;
+    case 'origin':
+      top = 0;
+      left = 0;
+      break;
     default:
       break;
   }
