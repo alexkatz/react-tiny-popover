@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
 import { PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import { getNewPopoverRect, getNudgedPopoverRect } from './util';
+import { Constants, getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
 export const usePopover = ({
   childRef,
-  positions,
+  positions = Constants.DEFAULT_POSITIONS,
   containerClassName,
   containerParent,
   contentLocation,
-  align,
+  align = Constants.DEFAULT_ALIGN,
   padding,
   reposition,
   boundaryInset,
@@ -25,10 +25,13 @@ export const usePopover = ({
   const positionPopover = useCallback<PositionPopover>(
     (
       positionIndex: number = 0,
-      childRect: ClientRect = childRef.current.getBoundingClientRect(),
+      childRect: ClientRect | undefined = childRef?.current?.getBoundingClientRect(),
       popoverRect: ClientRect = popoverRef.current.getBoundingClientRect(),
-      parentRect: ClientRect = containerParent.getBoundingClientRect(),
+      parentRect: ClientRect | undefined = containerParent?.getBoundingClientRect()
     ) => {
+      if (!childRect || !parentRect) {
+        return;
+      }
       if (contentLocation) {
         const { top: inputTop, left: inputLeft } =
           typeof contentLocation === 'function'
@@ -67,6 +70,11 @@ export const usePopover = ({
 
       const isExhausted = positionIndex === positions.length;
       const position = isExhausted ? positions[0] : positions[positionIndex];
+
+      if (position === 'custom') {
+        throw new Error('Custom position not supported without contentLocation being provided.');
+      }
+
       const { rect, boundaryViolation } = getNewPopoverRect(
         {
           childRect,
@@ -77,7 +85,7 @@ export const usePopover = ({
           padding,
           reposition,
         },
-        boundaryInset,
+        boundaryInset
       );
 
       if (boundaryViolation && reposition && !isExhausted) {
@@ -87,11 +95,7 @@ export const usePopover = ({
 
       const { top, left, width, height } = rect;
       const shouldNudge = reposition && !isExhausted;
-      const { left: nudgedLeft, top: nudgedTop } = getNudgedPopoverRect(
-        rect,
-        parentRect,
-        boundaryInset,
-      );
+      const { left: nudgedLeft, top: nudgedTop } = getNudgedPopoverRect(rect, parentRect, boundaryInset);
 
       let finalTop = top;
       let finalLeft = left;
@@ -122,18 +126,7 @@ export const usePopover = ({
         boundaryInset,
       });
     },
-    [
-      childRef,
-      popoverRef,
-      positions,
-      align,
-      padding,
-      reposition,
-      boundaryInset,
-      containerParent,
-      contentLocation,
-      onPositionPopover,
-    ],
+    [childRef, popoverRef, positions, align, padding, reposition, boundaryInset, containerParent, contentLocation, onPositionPopover]
   );
 
   return [positionPopover, popoverRef];

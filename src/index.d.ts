@@ -18,6 +18,7 @@ export interface PopoverState {
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
 export type ContentLocationGetter = (popoverState: PopoverState) => ContentLocation;
 
+export type PopoverPositionBase = 'left' | 'right' | 'top' | 'bottom';
 export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom' | 'custom';
 export type PopoverAlign = 'start' | 'center' | 'end' | 'custom';
 
@@ -38,7 +39,7 @@ export interface ArrowContainerProps extends UseArrowContainerProps {
 }
 
 export interface UsePopoverProps {
-  childRef: React.MutableRefObject<HTMLElement>;
+  childRef: React.MutableRefObject<HTMLElement | undefined>;
   positions?: PopoverPosition[];
   align?: PopoverAlign;
   padding: number;
@@ -68,12 +69,7 @@ export interface PopoverProps {
   onClickOutside?: (e: MouseEvent) => void;
 }
 
-export type PositionPopover = (
-  positionIndex?: number,
-  childRect?: ClientRect,
-  popoverRect?: ClientRect,
-  parentRect?: ClientRect,
-) => void;
+export type PositionPopover = (positionIndex?: number, childRect?: ClientRect, popoverRect?: ClientRect, parentRect?: ClientRect) => void;
 
 export type UsePopoverResult = readonly [PositionPopover, React.MutableRefObject<HTMLDivElement>];
 

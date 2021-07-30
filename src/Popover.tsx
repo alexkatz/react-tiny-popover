@@ -1,19 +1,6 @@
-import React, {
-  useRef,
-  useLayoutEffect,
-  useState,
-  useCallback,
-  useEffect,
-  forwardRef,
-} from 'react';
+import React, { useRef, useLayoutEffect, useState, useCallback, useEffect, forwardRef } from 'react';
 import { PopoverPortal } from './PopoverPortal';
-import {
-  ContentLocation,
-  ContentLocationGetter,
-  PopoverPosition,
-  PopoverProps,
-  PopoverState,
-} from '.';
+import { ContentLocation, ContentLocationGetter, PopoverPosition, PopoverProps, PopoverState } from '.';
 import { Constants, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
@@ -39,7 +26,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       boundaryInset = 0,
       onClickOutside,
     },
-    externalRef,
+    externalRef
   ) => {
     const positions = useMemoizedArray(externalPositions);
 
@@ -63,10 +50,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       boundaryInset,
     });
 
-    const onPositionPopover = useCallback(
-      (popoverState: PopoverState) => setPopoverState(popoverState),
-      [],
-    );
+    const onPositionPopover = useCallback((popoverState: PopoverState) => setPopoverState(popoverState), []);
 
     const [positionPopover, popoverRef] = usePopover({
       childRef,
@@ -157,25 +141,18 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
 
       return () => {
         Object.keys(containerStyle ?? {}).forEach(
-          (key) =>
-            (popoverElement.style[
-              key as keyof Omit<typeof containerStyle, 'length' | 'parentRule'>
-            ] = null),
+          key => delete popoverElement.style[key as keyof Omit<typeof containerStyle, 'length' | 'parentRule'>]
         );
       };
     }, [containerStyle, isOpen, popoverRef]);
 
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {
-        if (
-          isOpen &&
-          !popoverRef.current?.contains(e.target as Node) &&
-          !childRef.current?.contains(e.target as Node)
-        ) {
+        if (isOpen && !popoverRef.current?.contains(e.target as Node) && !childRef.current?.contains(e.target as Node)) {
           onClickOutside?.(e);
         }
       },
-      [isOpen, onClickOutside, popoverRef],
+      [isOpen, onClickOutside, popoverRef]
     );
 
     const handleWindowResize = useCallback(() => {
@@ -204,7 +181,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
           }
         }
       },
-      [externalRef],
+      [externalRef]
     );
 
     const renderChild = () =>
@@ -227,5 +204,5 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
         {renderPopover()}
       </>
     );
-  },
+  }
 );

@@ -1,4 +1,4 @@
-import { PopoverPosition, PopoverState, PopoverAlign } from './index';
+import { PopoverPosition, PopoverState, PopoverAlign, PopoverPositionBase } from './index';
 
 export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
@@ -18,8 +18,7 @@ export const Constants = {
   } as ClientRect,
 } as const;
 
-export const arrayUnique = <T>(array: T[]): T[] =>
-  array.filter((value: any, index: number, self: T[]) => self.indexOf(value) === index);
+export const arrayUnique = <T>(array: T[]): T[] => array.filter((value: any, index: number, self: T[]) => self.indexOf(value) === index);
 
 export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
   rectA === rectB ||
@@ -47,10 +46,7 @@ export const targetPositionHasChanged = (oldRect: ClientRect, newRect: ClientRec
   oldRect.width !== newRect.width ||
   oldRect.height !== newRect.height;
 
-export const createContainer = (
-  containerStyle?: Partial<CSSStyleDeclaration>,
-  containerClassName?: string,
-) => {
+export const createContainer = (containerStyle?: Partial<CSSStyleDeclaration>, containerClassName?: string) => {
   const container = window.document.createElement('div');
   if (containerClassName) container.className = containerClassName;
   Object.assign(container.style, containerStyle);
@@ -58,11 +54,11 @@ export const createContainer = (
 };
 
 export const popoverRectForPosition = (
-  position: PopoverPosition,
+  position: PopoverPositionBase,
   childRect: ClientRect,
   popoverRect: ClientRect,
   padding: number,
-  align: PopoverAlign,
+  align: PopoverAlign
 ): ClientRect => {
   const targetMidX = childRect.left + childRect.width / 2;
   const targetMidY = childRect.top + childRect.height / 2;
@@ -71,16 +67,6 @@ export const popoverRectForPosition = (
   let left: number;
 
   switch (position) {
-    case 'top':
-      top = childRect.top - height - padding;
-      left = targetMidX - width / 2;
-      if (align === 'start') {
-        left = childRect.left;
-      }
-      if (align === 'end') {
-        left = childRect.right - width;
-      }
-      break;
     case 'left':
       top = targetMidY - height / 2;
       left = childRect.left - padding - width;
@@ -112,6 +98,14 @@ export const popoverRectForPosition = (
       }
       break;
     default:
+      top = childRect.top - height - padding;
+      left = targetMidX - width / 2;
+      if (align === 'start') {
+        left = childRect.left;
+      }
+      if (align === 'end') {
+        left = childRect.right - width;
+      }
       break;
   }
 
@@ -119,7 +113,7 @@ export const popoverRectForPosition = (
 };
 
 interface GetNewPopoverRectProps {
-  position: PopoverPosition;
+  position: PopoverPositionBase;
   reposition: boolean;
   align: PopoverAlign;
   childRect: ClientRect;
@@ -129,16 +123,8 @@ interface GetNewPopoverRectProps {
 }
 
 export const getNewPopoverRect = (
-  {
-    position,
-    align,
-    childRect,
-    popoverRect,
-    parentRect,
-    padding,
-    reposition,
-  }: GetNewPopoverRectProps,
-  boundaryInset: number,
+  { position, align, childRect, popoverRect, parentRect, padding, reposition }: GetNewPopoverRectProps,
+  boundaryInset: number
 ) => {
   const rect = popoverRectForPosition(position, childRect, popoverRect, padding, align);
   const boundaryViolation =
@@ -154,11 +140,7 @@ export const getNewPopoverRect = (
   };
 };
 
-export const getNudgedPopoverRect = (
-  popoverRect: ClientRect,
-  parentRect: ClientRect,
-  boundaryInset: number,
-): ClientRect => {
+export const getNudgedPopoverRect = (popoverRect: ClientRect, parentRect: ClientRect, boundaryInset: number): ClientRect => {
   const topBoundary = parentRect.top + boundaryInset;
   const leftBoundary = parentRect.left + boundaryInset;
   const rightBoundary = parentRect.right - boundaryInset;
