@@ -27,7 +27,7 @@ export const usePopover = ({
       positionIndex: number = 0,
       childRect: ClientRect | undefined = childRef?.current?.getBoundingClientRect(),
       popoverRect: ClientRect = popoverRef.current.getBoundingClientRect(),
-      parentRect: ClientRect | undefined = containerParent?.getBoundingClientRect()
+      parentRect: ClientRect | undefined = containerParent?.getBoundingClientRect(),
     ) => {
       if (!childRect || !parentRect) {
         return;
@@ -85,7 +85,7 @@ export const usePopover = ({
           padding,
           reposition,
         },
-        boundaryInset
+        boundaryInset,
       );
 
       if (boundaryViolation && reposition && !isExhausted) {
@@ -95,7 +95,11 @@ export const usePopover = ({
 
       const { top, left, width, height } = rect;
       const shouldNudge = reposition && !isExhausted;
-      const { left: nudgedLeft, top: nudgedTop } = getNudgedPopoverRect(rect, parentRect, boundaryInset);
+      const { left: nudgedLeft, top: nudgedTop } = getNudgedPopoverRect(
+        rect,
+        parentRect,
+        boundaryInset,
+      );
 
       let finalTop = top;
       let finalLeft = left;
@@ -126,7 +130,18 @@ export const usePopover = ({
         boundaryInset,
       });
     },
-    [childRef, popoverRef, positions, align, padding, reposition, boundaryInset, containerParent, contentLocation, onPositionPopover]
+    [
+      childRef,
+      popoverRef,
+      positions,
+      align,
+      padding,
+      reposition,
+      boundaryInset,
+      containerParent,
+      contentLocation,
+      onPositionPopover,
+    ],
   );
 
   return [positionPopover, popoverRef];

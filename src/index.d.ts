@@ -69,7 +69,12 @@ export interface PopoverProps {
   onClickOutside?: (e: MouseEvent) => void;
 }
 
-export type PositionPopover = (positionIndex?: number, childRect?: ClientRect, popoverRect?: ClientRect, parentRect?: ClientRect) => void;
+export type PositionPopover = (
+  positionIndex?: number,
+  childRect?: ClientRect,
+  popoverRect?: ClientRect,
+  parentRect?: ClientRect,
+) => void;
 
 export type UsePopoverResult = readonly [PositionPopover, React.MutableRefObject<HTMLDivElement>];
 

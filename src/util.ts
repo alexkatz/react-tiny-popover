@@ -18,7 +18,8 @@ export const Constants = {
   } as ClientRect,
 } as const;
 
-export const arrayUnique = <T>(array: T[]): T[] => array.filter((value: any, index: number, self: T[]) => self.indexOf(value) === index);
+export const arrayUnique = <T>(array: T[]): T[] =>
+  array.filter((value: any, index: number, self: T[]) => self.indexOf(value) === index);
 
 export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
   rectA === rectB ||
@@ -46,7 +47,10 @@ export const targetPositionHasChanged = (oldRect: ClientRect, newRect: ClientRec
   oldRect.width !== newRect.width ||
   oldRect.height !== newRect.height;
 
-export const createContainer = (containerStyle?: Partial<CSSStyleDeclaration>, containerClassName?: string) => {
+export const createContainer = (
+  containerStyle?: Partial<CSSStyleDeclaration>,
+  containerClassName?: string,
+) => {
   const container = window.document.createElement('div');
   if (containerClassName) container.className = containerClassName;
   Object.assign(container.style, containerStyle);
@@ -58,7 +62,7 @@ export const popoverRectForPosition = (
   childRect: ClientRect,
   popoverRect: ClientRect,
   padding: number,
-  align: PopoverAlign
+  align: PopoverAlign,
 ): ClientRect => {
   const targetMidX = childRect.left + childRect.width / 2;
   const targetMidY = childRect.top + childRect.height / 2;
@@ -123,8 +127,16 @@ interface GetNewPopoverRectProps {
 }
 
 export const getNewPopoverRect = (
-  { position, align, childRect, popoverRect, parentRect, padding, reposition }: GetNewPopoverRectProps,
-  boundaryInset: number
+  {
+    position,
+    align,
+    childRect,
+    popoverRect,
+    parentRect,
+    padding,
+    reposition,
+  }: GetNewPopoverRectProps,
+  boundaryInset: number,
 ) => {
   const rect = popoverRectForPosition(position, childRect, popoverRect, padding, align);
   const boundaryViolation =
@@ -140,7 +152,11 @@ export const getNewPopoverRect = (
   };
 };
 
-export const getNudgedPopoverRect = (popoverRect: ClientRect, parentRect: ClientRect, boundaryInset: number): ClientRect => {
+export const getNudgedPopoverRect = (
+  popoverRect: ClientRect,
+  parentRect: ClientRect,
+  boundaryInset: number,
+): ClientRect => {
   const topBoundary = parentRect.top + boundaryInset;
   const leftBoundary = parentRect.left + boundaryInset;
   const rightBoundary = parentRect.right - boundaryInset;
