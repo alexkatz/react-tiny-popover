@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
 import { PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import { Constants, getNewPopoverRect, getNudgedPopoverRect } from './util';
+import { getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
 export const usePopover = ({
   childRef,
-  positions = Constants.DEFAULT_POSITIONS,
+  positions,
   containerClassName,
   containerParent,
   contentLocation,
-  align = Constants.DEFAULT_ALIGN,
+  align,
   padding,
   reposition,
   boundaryInset,
@@ -70,10 +70,6 @@ export const usePopover = ({
 
       const isExhausted = positionIndex === positions.length;
       const position = isExhausted ? positions[0] : positions[positionIndex];
-
-      if (position === 'custom') {
-        throw new Error('Custom position not supported without contentLocation being provided.');
-      }
 
       const { rect, boundaryViolation } = getNewPopoverRect(
         {

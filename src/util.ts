@@ -1,4 +1,4 @@
-import { PopoverPosition, PopoverState, PopoverAlign, PopoverPositionBase } from './index';
+import { PopoverPosition, PopoverState, PopoverAlign } from './index';
 
 export const Constants = {
   POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
@@ -58,7 +58,7 @@ export const createContainer = (
 };
 
 export const popoverRectForPosition = (
-  position: PopoverPositionBase,
+  position: PopoverPosition,
   childRect: ClientRect,
   popoverRect: ClientRect,
   padding: number,
@@ -117,7 +117,7 @@ export const popoverRectForPosition = (
 };
 
 interface GetNewPopoverRectProps {
-  position: PopoverPositionBase;
+  position: PopoverPosition;
   reposition: boolean;
   align: PopoverAlign;
   childRect: ClientRect;
