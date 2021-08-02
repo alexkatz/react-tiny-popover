@@ -71,16 +71,6 @@ export const popoverRectForPosition = (
   let left: number;
 
   switch (position) {
-    case 'top':
-      top = childRect.top - height - padding;
-      left = targetMidX - width / 2;
-      if (align === 'start') {
-        left = childRect.left;
-      }
-      if (align === 'end') {
-        left = childRect.right - width;
-      }
-      break;
     case 'left':
       top = targetMidY - height / 2;
       left = childRect.left - padding - width;
@@ -112,6 +102,14 @@ export const popoverRectForPosition = (
       }
       break;
     default:
+      top = childRect.top - height - padding;
+      left = targetMidX - width / 2;
+      if (align === 'start') {
+        left = childRect.left;
+      }
+      if (align === 'end') {
+        left = childRect.right - width;
+      }
       break;
   }
 

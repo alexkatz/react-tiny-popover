@@ -7,8 +7,8 @@ export interface PopoverState {
   childRect: ClientRect;
   popoverRect: ClientRect;
   parentRect: ClientRect;
-  position: PopoverPosition;
-  align: PopoverAlign;
+  position: PopoverPosition | 'custom';
+  align: PopoverAlign | 'custom';
   padding: number;
   nudgedLeft: number;
   nudgedTop: number;
@@ -18,8 +18,8 @@ export interface PopoverState {
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
 export type ContentLocationGetter = (popoverState: PopoverState) => ContentLocation;
 
-export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom' | 'custom';
-export type PopoverAlign = 'start' | 'center' | 'end' | 'custom';
+export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
+export type PopoverAlign = 'start' | 'center' | 'end';
 
 export interface UseArrowContainerProps {
   childRect: ClientRect;
@@ -38,9 +38,9 @@ export interface ArrowContainerProps extends UseArrowContainerProps {
 }
 
 export interface UsePopoverProps {
-  childRef: React.MutableRefObject<HTMLElement>;
-  positions?: PopoverPosition[];
-  align?: PopoverAlign;
+  childRef: React.MutableRefObject<HTMLElement | undefined>;
+  positions: PopoverPosition[];
+  align: PopoverAlign;
   padding: number;
   reposition: boolean;
   boundaryInset: number;

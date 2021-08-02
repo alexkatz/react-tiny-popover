@@ -158,9 +158,9 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       return () => {
         Object.keys(containerStyle ?? {}).forEach(
           (key) =>
-            (popoverElement.style[
+            delete popoverElement.style[
               key as keyof Omit<typeof containerStyle, 'length' | 'parentRule'>
-            ] = null),
+            ],
         );
       };
     }, [containerStyle, isOpen, popoverRef]);

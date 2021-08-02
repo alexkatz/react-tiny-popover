@@ -25,10 +25,13 @@ export const usePopover = ({
   const positionPopover = useCallback<PositionPopover>(
     (
       positionIndex: number = 0,
-      childRect: ClientRect = childRef.current.getBoundingClientRect(),
+      childRect: ClientRect | undefined = childRef?.current?.getBoundingClientRect(),
       popoverRect: ClientRect = popoverRef.current.getBoundingClientRect(),
-      parentRect: ClientRect = containerParent.getBoundingClientRect(),
+      parentRect: ClientRect | undefined = containerParent?.getBoundingClientRect(),
     ) => {
+      if (!childRect || !parentRect) {
+        return;
+      }
       if (contentLocation) {
         const { top: inputTop, left: inputLeft } =
           typeof contentLocation === 'function'
@@ -67,6 +70,7 @@ export const usePopover = ({
 
       const isExhausted = positionIndex === positions.length;
       const position = isExhausted ? positions[0] : positions[positionIndex];
+
       const { rect, boundaryViolation } = getNewPopoverRect(
         {
           childRect,
