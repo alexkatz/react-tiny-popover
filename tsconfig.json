@@ -8,7 +8,7 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "pretty": true
   },
   "include": ["src"]

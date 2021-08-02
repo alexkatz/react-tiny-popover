@@ -1,10 +1,11 @@
-import React, {
+import {
   useRef,
   useLayoutEffect,
   useState,
   useCallback,
   useEffect,
   forwardRef,
+  cloneElement,
 } from 'react';
 import { PopoverPortal } from './PopoverPortal';
 import {
@@ -208,7 +209,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     );
 
     const renderChild = () =>
-      React.cloneElement(children as JSX.Element, {
+      cloneElement(children as JSX.Element, {
         ref: handleRef,
       });
 

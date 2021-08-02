@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import { useMemo, FC } from 'react';
 import { ArrowContainerProps } from '.';
 import { useArrowContainer } from './useArrowContainer';
 
-export const ArrowContainer: React.FC<ArrowContainerProps> = ({
+export const ArrowContainer: FC<ArrowContainerProps> = ({
   childRect,
   popoverRect,
   position,
