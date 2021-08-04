@@ -63,13 +63,16 @@ export const useArrowContainer = ({
                 left,
               };
             case 'top':
-            default:
               return {
                 borderLeft: `${arrowSize}px solid transparent`,
                 borderRight: `${arrowSize}px solid transparent`,
                 borderTop: `${arrowSize}px solid ${arrowColor}`,
                 bottom: 0,
                 left,
+              };
+            default:
+              return {
+                display: 'hidden',
               };
           }
         })(),

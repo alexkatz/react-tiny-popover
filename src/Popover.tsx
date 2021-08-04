@@ -85,11 +85,13 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     useLayoutEffect(() => {
       let shouldUpdate = true;
       const updatePopover = () => {
-        if (isOpen && shouldUpdate && childRef.current && popoverRef.current) {
-          const childRect = childRef.current?.getBoundingClientRect();
-          const popoverRect = popoverRef.current?.getBoundingClientRect();
+        if (isOpen && shouldUpdate) {
+          const childRect = childRef?.current?.getBoundingClientRect();
+          const popoverRect = popoverRef?.current?.getBoundingClientRect();
           if (
-            !rectsAreEqual(childRect, {
+            childRect != null &&
+            popoverRect != null &&
+            (!rectsAreEqual(childRect, {
               top: popoverState.childRect.top,
               left: popoverState.childRect.left,
               width: popoverState.childRect.width,
@@ -97,13 +99,13 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
               bottom: popoverState.childRect.top + popoverState.childRect.height,
               right: popoverState.childRect.left + popoverState.childRect.width,
             }) ||
-            popoverRect.width !== popoverState.popoverRect.width ||
-            popoverRect.height !== popoverState.popoverRect.height ||
-            popoverState.padding !== padding ||
-            popoverState.align !== align ||
-            positions !== prevPositions.current ||
-            contentLocation !== prevContentLocation.current ||
-            reposition !== prevReposition.current
+              popoverRect.width !== popoverState.popoverRect.width ||
+              popoverRect.height !== popoverState.popoverRect.height ||
+              popoverState.padding !== padding ||
+              popoverState.align !== align ||
+              positions !== prevPositions.current ||
+              contentLocation !== prevContentLocation.current ||
+              reposition !== prevReposition.current)
           ) {
             positionPopover();
           }

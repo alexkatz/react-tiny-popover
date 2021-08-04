@@ -7,8 +7,8 @@ export interface PopoverState {
   childRect: ClientRect;
   popoverRect: ClientRect;
   parentRect: ClientRect;
-  position: PopoverPosition | 'custom';
-  align: PopoverAlign | 'custom';
+  position?: PopoverPosition;
+  align?: PopoverAlign;
   padding: number;
   nudgedLeft: number;
   nudgedTop: number;
@@ -24,7 +24,7 @@ export type PopoverAlign = 'start' | 'center' | 'end';
 export interface UseArrowContainerProps {
   childRect: ClientRect;
   popoverRect: ClientRect;
-  position: PopoverPosition;
+  position?: PopoverPosition;
   arrowSize: number;
   arrowColor: string;
 }
@@ -54,8 +54,8 @@ export interface PopoverProps {
   isOpen: boolean;
   children: JSX.Element;
   content: ContentRenderer | JSX.Element;
-  positions?: Exclude<PopoverPosition, 'custom'>[];
-  align?: Exclude<PopoverAlign, 'custom'>;
+  positions?: PopoverPosition[];
+  align?: PopoverAlign;
   padding?: number;
   reposition?: boolean;
   ref?: React.Ref<HTMLElement>;
