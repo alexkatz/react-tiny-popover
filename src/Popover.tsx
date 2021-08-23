@@ -23,7 +23,7 @@ export { useArrowContainer } from './useArrowContainer';
 export { ArrowContainer } from './ArrowContainer';
 export { usePopover };
 
-export const Popover = forwardRef<HTMLElement, PopoverProps>(
+const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
   (
     {
       isOpen,
@@ -34,6 +34,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       padding = 0,
       reposition = true,
       containerParent = window.document.body,
+      boundaryElement = containerParent,
       containerClassName = 'react-tiny-popover-container',
       containerStyle,
       contentLocation,
@@ -73,6 +74,7 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
       childRef,
       containerClassName,
       containerParent,
+      boundaryElement,
       contentLocation,
       positions,
       align,
@@ -232,3 +234,8 @@ export const Popover = forwardRef<HTMLElement, PopoverProps>(
     );
   },
 );
+
+export const Popover = forwardRef<HTMLElement, PopoverProps>((props, ref) => {
+  if (typeof window === 'undefined') return props.children;
+  return <PopoverInternal {...props} ref={ref} />;
+});

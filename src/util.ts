@@ -57,6 +57,38 @@ export const createContainer = (
   return container;
 };
 
+export const getBoundingRectNeglectingPositionalTransform = (
+  element?: HTMLElement | null,
+): ClientRect | undefined => {
+  if (element == null) return undefined;
+
+  let el = element;
+  let top = 0;
+  let left = 0;
+
+  do {
+    top += el.offsetTop;
+    left += el.offsetLeft;
+    el = el.offsetParent as HTMLElement;
+  } while (el != null);
+
+  let scrollTop = 0;
+  let scrollLeft = 0;
+
+  el = element;
+  do {
+    scrollTop += el.scrollTop;
+    scrollLeft += el.scrollLeft;
+    el = el.parentElement;
+  } while (el != null);
+
+  top -= scrollTop;
+  left -= scrollLeft;
+
+  const { width, height } = element.getBoundingClientRect();
+  return { top, left, width, height, bottom: top + height, right: left + width };
+};
+
 export const popoverRectForPosition = (
   position: PopoverPosition,
   childRect: ClientRect,
@@ -123,8 +155,27 @@ interface GetNewPopoverRectProps {
   childRect: ClientRect;
   popoverRect: ClientRect;
   parentRect: ClientRect;
+  parentRectAdjusted: ClientRect;
   padding: number;
 }
+
+const subtractRect = (a: ClientRect, b: ClientRect): ClientRect => ({
+  width: a.width,
+  height: a.height,
+  bottom: Math.floor(a.bottom - b.bottom),
+  left: Math.floor(a.left - b.left),
+  right: Math.floor(a.right - b.right),
+  top: Math.floor(a.top - b.top),
+});
+
+const addRect = (a: ClientRect, b: ClientRect): ClientRect => ({
+  width: a.width,
+  height: a.height,
+  bottom: Math.floor(a.bottom + b.bottom),
+  left: Math.floor(a.left + b.left),
+  right: Math.floor(a.right + b.right),
+  top: Math.floor(a.top + b.top),
+});
 
 export const getNewPopoverRect = (
   {
@@ -133,12 +184,21 @@ export const getNewPopoverRect = (
     childRect,
     popoverRect,
     parentRect,
+    parentRectAdjusted,
     padding,
     reposition,
   }: GetNewPopoverRectProps,
   boundaryInset: number,
 ) => {
-  const rect = popoverRectForPosition(position, childRect, popoverRect, padding, align);
+  const offset = subtractRect(parentRectAdjusted, parentRect);
+  const rect = popoverRectForPosition(
+    position,
+    addRect(childRect, offset),
+    popoverRect,
+    padding,
+    align,
+  );
+
   const boundaryViolation =
     reposition &&
     ((position === 'top' && rect.top < parentRect.top + boundaryInset) ||

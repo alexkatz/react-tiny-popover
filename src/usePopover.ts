@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 import { PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import { getNewPopoverRect, getNudgedPopoverRect } from './util';
+import {
+  getBoundingRectNeglectingPositionalTransform,
+  getNewPopoverRect,
+  getNudgedPopoverRect,
+} from './util';
 import { useElementRef } from './useElementRef';
 
 export const usePopover = ({
@@ -23,12 +27,13 @@ export const usePopover = ({
   });
 
   const positionPopover = useCallback<PositionPopover>(
-    (
-      positionIndex: number = 0,
-      childRect: ClientRect | undefined = childRef?.current?.getBoundingClientRect(),
-      popoverRect: ClientRect = popoverRef.current.getBoundingClientRect(),
-      parentRect: ClientRect | undefined = containerParent?.getBoundingClientRect(),
-    ) => {
+    ({
+      positionIndex = 0,
+      parentRect = containerParent.getBoundingClientRect(),
+      parentRectAdjusted = getBoundingRectNeglectingPositionalTransform(containerParent),
+      childRect = childRef?.current?.getBoundingClientRect(),
+      popoverRect = popoverRef.current.getBoundingClientRect(),
+    } = {}) => {
       if (!childRect || !parentRect) {
         return;
       }
@@ -72,6 +77,7 @@ export const usePopover = ({
           childRect,
           popoverRect,
           parentRect,
+          parentRectAdjusted,
           position,
           align,
           padding,
@@ -81,7 +87,13 @@ export const usePopover = ({
       );
 
       if (boundaryViolation && reposition && !isExhausted) {
-        positionPopover(positionIndex + 1, childRect, popoverRect, parentRect);
+        positionPopover({
+          positionIndex: positionIndex + 1,
+          childRect,
+          popoverRect,
+          parentRect,
+          parentRectAdjusted,
+        });
         return;
       }
 

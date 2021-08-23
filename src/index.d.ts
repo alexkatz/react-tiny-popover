@@ -45,6 +45,7 @@ export interface UsePopoverProps {
   reposition: boolean;
   boundaryInset: number;
   containerParent?: HTMLElement;
+  boundaryElement?: HTMLElement;
   containerClassName?: string;
   contentLocation?: ContentLocationGetter | ContentLocation;
   onPositionPopover(popoverState: PopoverState): void;
@@ -63,17 +64,22 @@ export interface PopoverProps {
   containerParent?: HTMLElement;
   containerStyle?: Partial<CSSStyleDeclaration>;
   contentLocation?: ContentLocationGetter | ContentLocation;
+  boundaryElement?: HTMLElement;
   boundaryInset?: number;
   boundaryTolerance?: number;
   onClickOutside?: (e: MouseEvent) => void;
 }
 
-export type PositionPopover = (
-  positionIndex?: number,
-  childRect?: ClientRect,
-  popoverRect?: ClientRect,
-  parentRect?: ClientRect,
-) => void;
+export interface PositionPopoverProps {
+  positionIndex?: number;
+  childRect?: ClientRect;
+  popoverRect?: ClientRect;
+  parentRect?: ClientRect;
+  parentRectAdjusted?: ClientRect;
+  boundaryRect?: ClientRect;
+}
+
+export type PositionPopover = (props?: PositionPopoverProps) => void;
 
 export type UsePopoverResult = readonly [PositionPopover, React.MutableRefObject<HTMLDivElement>];
 
