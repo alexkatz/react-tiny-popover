@@ -33,8 +33,8 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
       align = Constants.DEFAULT_ALIGN,
       padding = 0,
       reposition = true,
-      containerParent = window.document.body,
-      boundaryElement = containerParent,
+      parentElement = window.document.body,
+      boundaryElement = parentElement,
       containerClassName = 'react-tiny-popover-container',
       containerStyle,
       contentLocation,
@@ -62,6 +62,7 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
       childRect: Constants.EMPTY_CLIENT_RECT,
       popoverRect: Constants.EMPTY_CLIENT_RECT,
       parentRect: Constants.EMPTY_CLIENT_RECT,
+      boundaryRect: Constants.EMPTY_CLIENT_RECT,
       boundaryInset,
     });
 
@@ -73,7 +74,7 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     const [positionPopover, popoverRef] = usePopover({
       childRef,
       containerClassName,
-      containerParent,
+      parentElement,
       boundaryElement,
       contentLocation,
       positions,
@@ -220,7 +221,7 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     const renderPopover = () => {
       if (!isOpen) return null;
       return (
-        <PopoverPortal element={popoverRef.current} container={containerParent}>
+        <PopoverPortal element={popoverRef.current} container={parentElement}>
           {typeof content === 'function' ? content(popoverState) : content}
         </PopoverPortal>
       );

@@ -155,6 +155,7 @@ interface GetNewPopoverRectProps {
   childRect: ClientRect;
   popoverRect: ClientRect;
   parentRect: ClientRect;
+  boundaryRect: ClientRect;
   parentRectAdjusted: ClientRect;
   padding: number;
 }
@@ -185,6 +186,7 @@ export const getNewPopoverRect = (
     popoverRect,
     parentRect,
     parentRectAdjusted,
+    boundaryRect,
     padding,
     reposition,
   }: GetNewPopoverRectProps,
@@ -201,10 +203,10 @@ export const getNewPopoverRect = (
 
   const boundaryViolation =
     reposition &&
-    ((position === 'top' && rect.top < parentRect.top + boundaryInset) ||
-      (position === 'left' && rect.left < parentRect.left + boundaryInset) ||
-      (position === 'right' && rect.right > parentRect.right - boundaryInset) ||
-      (position === 'bottom' && rect.bottom > parentRect.bottom - boundaryInset));
+    ((position === 'top' && rect.top < boundaryRect.top + boundaryInset) ||
+      (position === 'left' && rect.left < boundaryRect.left + boundaryInset) ||
+      (position === 'right' && rect.right > boundaryRect.right - boundaryInset) ||
+      (position === 'bottom' && rect.bottom > boundaryRect.bottom - boundaryInset));
 
   return {
     rect,
@@ -214,13 +216,13 @@ export const getNewPopoverRect = (
 
 export const getNudgedPopoverRect = (
   popoverRect: ClientRect,
-  parentRect: ClientRect,
+  boundaryRect: ClientRect,
   boundaryInset: number,
 ): ClientRect => {
-  const topBoundary = parentRect.top + boundaryInset;
-  const leftBoundary = parentRect.left + boundaryInset;
-  const rightBoundary = parentRect.right - boundaryInset;
-  const bottomBoundary = parentRect.bottom - boundaryInset;
+  const topBoundary = boundaryRect.top + boundaryInset;
+  const leftBoundary = boundaryRect.left + boundaryInset;
+  const rightBoundary = boundaryRect.right - boundaryInset;
+  const bottomBoundary = boundaryRect.bottom - boundaryInset;
 
   let top = popoverRect.top < topBoundary ? topBoundary : popoverRect.top;
   top = top + popoverRect.height > bottomBoundary ? bottomBoundary - popoverRect.height : top;

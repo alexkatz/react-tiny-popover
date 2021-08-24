@@ -7,6 +7,7 @@ export interface PopoverState {
   childRect: ClientRect;
   popoverRect: ClientRect;
   parentRect: ClientRect;
+  boundaryRect: ClientRect;
   position?: PopoverPosition;
   align?: PopoverAlign;
   padding: number;
@@ -44,7 +45,7 @@ export interface UsePopoverProps {
   padding: number;
   reposition: boolean;
   boundaryInset: number;
-  containerParent?: HTMLElement;
+  parentElement?: HTMLElement;
   boundaryElement?: HTMLElement;
   containerClassName?: string;
   contentLocation?: ContentLocationGetter | ContentLocation;
@@ -61,7 +62,7 @@ export interface PopoverProps {
   reposition?: boolean;
   ref?: React.Ref<HTMLElement>;
   containerClassName?: string;
-  containerParent?: HTMLElement;
+  parentElement?: HTMLElement;
   containerStyle?: Partial<CSSStyleDeclaration>;
   contentLocation?: ContentLocationGetter | ContentLocation;
   boundaryElement?: HTMLElement;
