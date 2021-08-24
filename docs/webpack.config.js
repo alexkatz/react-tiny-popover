@@ -14,6 +14,9 @@ const config = (env) => ({
   devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: {
+      react: path.resolve('../node_modules/react'),
+    },
   },
   devServer: {
     contentBase: path.resolve(__dirname + '/dist'),
