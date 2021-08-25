@@ -98,7 +98,7 @@ export const Demo: FC<Props> = ({ className }) => {
       <InnerContainer ref={boxContainerRef} onMouseMove={handleOnMouseMove}>
         <Popover
           isOpen={isPopoverOpen}
-          containerParent={boxContainerRef.current}
+          parentElement={boxContainerRef.current}
           containerStyle={containerStyle}
           padding={state.padding}
           align={state.align}
