@@ -238,7 +238,7 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
         window.removeEventListener('mouseup', handleMouseUp);
         window.removeEventListener('mousedown', handleMouseDown);
       };
-    }, [handleOnClickOutside, handleWindowResize]);
+    }, [handleOnClickOutside, handleWindowResize, handleMouseUp, handleMouseDown]);
 
     const handleRef = useCallback(
       (node: HTMLElement) => {
