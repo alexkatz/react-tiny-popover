@@ -53,6 +53,11 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
 
     const childRef = useRef<HTMLElement | undefined>();
 
+    const internalStateRef = useRef({
+      isClickedInsidePopover: false,
+      isPreventPopoverClosing: false,
+    });
+
     const [popoverState, setPopoverState] = useState<PopoverState>({
       align,
       nudgedLeft: 0,
@@ -174,14 +179,45 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {
         if (
-          isOpen &&
-          !popoverRef.current?.contains(e.target as Node) &&
-          !childRef.current?.contains(e.target as Node)
-        ) {
+          !isOpen ||
+          popoverRef?.current?.contains(e.target as Node) ||
+          childRef?.current?.contains(e.target as Node)
+        )
+          return;
+
+        if (internalStateRef.current.isPreventPopoverClosing) {
+          internalStateRef.current = {
+            isClickedInsidePopover: false,
+            isPreventPopoverClosing: false,
+          };
+        } else {
           onClickOutside?.(e);
         }
       },
       [isOpen, onClickOutside, popoverRef],
+    );
+
+    const handleMouseDown = useCallback(
+      (e: MouseEvent) => {
+        const isClickedInsidePopover =
+          popoverRef.current.contains(e.target as Node) ||
+          childRef.current.contains(e.target as Node);
+
+        internalStateRef.current.isClickedInsidePopover = isClickedInsidePopover;
+      },
+      [popoverRef],
+    );
+
+    const handleMouseUp = useCallback(
+      (e: MouseEvent) => {
+        const isPreventPopoverClosing =
+          !popoverRef.current.contains(e.target as Node) &&
+          !childRef.current.contains(e.target as Node) &&
+          internalStateRef.current.isClickedInsidePopover;
+
+        internalStateRef.current.isPreventPopoverClosing = isPreventPopoverClosing;
+      },
+      [popoverRef],
     );
 
     const handleWindowResize = useCallback(() => {
@@ -193,9 +229,14 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     useEffect(() => {
       window.addEventListener('click', handleOnClickOutside);
       window.addEventListener('resize', handleWindowResize);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('mousedown', handleMouseDown);
+
       return () => {
         window.removeEventListener('click', handleOnClickOutside);
         window.removeEventListener('resize', handleWindowResize);
+        window.removeEventListener('mouseup', handleMouseUp);
+        window.removeEventListener('mousedown', handleMouseDown);
       };
     }, [handleOnClickOutside, handleWindowResize]);
 
