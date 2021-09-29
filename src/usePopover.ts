@@ -1,10 +1,6 @@
 import { useCallback } from 'react';
 import { PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import {
-  getBoundingRectNeglectingPositionalTransform,
-  getNewPopoverRect,
-  getNudgedPopoverRect,
-} from './util';
+import { getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
 export const usePopover = ({
@@ -27,12 +23,21 @@ export const usePopover = ({
     left: '0px',
   });
 
+  const scoutRef = useElementRef('react-tiny-popover-scout', {
+    position: 'fixed',
+    top: '0px',
+    left: '0px',
+    width: '0px',
+    height: '0px',
+    visibility: 'hidden',
+  });
+
   const positionPopover = useCallback<PositionPopover>(
     ({
       positionIndex = 0,
       parentRect = parentElement.getBoundingClientRect(),
-      parentRectAdjusted = getBoundingRectNeglectingPositionalTransform(parentElement),
       childRect = childRef?.current?.getBoundingClientRect(),
+      scoutRect = scoutRef?.current?.getBoundingClientRect(),
       popoverRect = popoverRef.current.getBoundingClientRect(),
       boundaryRect = boundaryElement === parentElement
         ? parentRect
@@ -41,6 +46,7 @@ export const usePopover = ({
       if (!childRect || !parentRect) {
         return;
       }
+
       if (contentLocation) {
         const { top: inputTop, left: inputLeft } =
           typeof contentLocation === 'function'
@@ -59,7 +65,9 @@ export const usePopover = ({
         const left = parentRect.left + inputLeft;
         const top = parentRect.top + inputTop;
 
-        popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
+        popoverRef.current.style.transform = `translate(${left - scoutRect.left}px, ${
+          top - scoutRect.top
+        }px)`;
 
         onPositionPopover({
           childRect,
@@ -82,8 +90,6 @@ export const usePopover = ({
         {
           childRect,
           popoverRect,
-          parentRect,
-          parentRectAdjusted,
           boundaryRect,
           position,
           align,
@@ -99,7 +105,6 @@ export const usePopover = ({
           childRect,
           popoverRect,
           parentRect,
-          parentRectAdjusted,
           boundaryRect,
         });
         return;
@@ -121,7 +126,9 @@ export const usePopover = ({
         finalLeft = nudgedLeft;
       }
 
-      popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
+      popoverRef.current.style.transform = `translate(${finalLeft - scoutRect.left}px, ${
+        finalTop - scoutRect.top
+      }px)`;
 
       onPositionPopover({
         childRect,
@@ -158,5 +165,9 @@ export const usePopover = ({
     ],
   );
 
-  return [positionPopover, popoverRef];
+  return {
+    positionPopover,
+    popoverRef,
+    scoutRef,
+  };
 };

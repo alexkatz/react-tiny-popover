@@ -71,7 +71,7 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
       [],
     );
 
-    const [positionPopover, popoverRef] = usePopover({
+    const { positionPopover, popoverRef, scoutRef } = usePopover({
       childRef,
       containerClassName,
       parentElement,
@@ -221,7 +221,11 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     const renderPopover = () => {
       if (!isOpen) return null;
       return (
-        <PopoverPortal element={popoverRef.current} container={parentElement}>
+        <PopoverPortal
+          element={popoverRef.current}
+          scoutElement={scoutRef.current}
+          container={parentElement}
+        >
           {typeof content === 'function' ? content(popoverState) : content}
         </PopoverPortal>
       );

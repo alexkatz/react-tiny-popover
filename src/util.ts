@@ -154,29 +154,9 @@ interface GetNewPopoverRectProps {
   align: PopoverAlign;
   childRect: ClientRect;
   popoverRect: ClientRect;
-  parentRect: ClientRect;
   boundaryRect: ClientRect;
-  parentRectAdjusted: ClientRect;
   padding: number;
 }
-
-const subtractRect = (a: ClientRect, b: ClientRect): ClientRect => ({
-  width: a.width,
-  height: a.height,
-  bottom: Math.floor(a.bottom - b.bottom),
-  left: Math.floor(a.left - b.left),
-  right: Math.floor(a.right - b.right),
-  top: Math.floor(a.top - b.top),
-});
-
-const addRect = (a: ClientRect, b: ClientRect): ClientRect => ({
-  width: a.width,
-  height: a.height,
-  bottom: Math.floor(a.bottom + b.bottom),
-  left: Math.floor(a.left + b.left),
-  right: Math.floor(a.right + b.right),
-  top: Math.floor(a.top + b.top),
-});
 
 export const getNewPopoverRect = (
   {
@@ -184,22 +164,13 @@ export const getNewPopoverRect = (
     align,
     childRect,
     popoverRect,
-    parentRect,
-    parentRectAdjusted,
     boundaryRect,
     padding,
     reposition,
   }: GetNewPopoverRectProps,
   boundaryInset: number,
 ) => {
-  const offset = subtractRect(parentRectAdjusted, parentRect);
-  const rect = popoverRectForPosition(
-    position,
-    addRect(childRect, offset),
-    popoverRect,
-    padding,
-    align,
-  );
+  const rect = popoverRectForPosition(position, childRect, popoverRect, padding, align);
 
   const boundaryViolation =
     reposition &&

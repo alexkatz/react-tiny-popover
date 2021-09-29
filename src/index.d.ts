@@ -1,3 +1,5 @@
+import { Ref, MutableRefObject, CSSProperties, FC } from 'react';
+
 export interface ContentLocation {
   top: number;
   left: number;
@@ -60,7 +62,7 @@ export interface PopoverProps {
   align?: PopoverAlign;
   padding?: number;
   reposition?: boolean;
-  ref?: React.Ref<HTMLElement>;
+  ref?: Ref<HTMLElement>;
   containerClassName?: string;
   parentElement?: HTMLElement;
   containerStyle?: Partial<CSSStyleDeclaration>;
@@ -76,21 +78,31 @@ export interface PositionPopoverProps {
   childRect?: ClientRect;
   popoverRect?: ClientRect;
   parentRect?: ClientRect;
+  scoutRect?: ClientRect;
   parentRectAdjusted?: ClientRect;
   boundaryRect?: ClientRect;
 }
 
 export type PositionPopover = (props?: PositionPopoverProps) => void;
 
-export type UsePopoverResult = readonly [PositionPopover, React.MutableRefObject<HTMLDivElement>];
+export type PopoverRefs = {
+  popoverRef: MutableRefObject<HTMLDivElement>;
+  scoutRef: MutableRefObject<HTMLDivElement>;
+};
+
+export type UsePopoverResult = {
+  positionPopover: PositionPopover;
+  popoverRef: MutableRefObject<HTMLDivElement>;
+  scoutRef: MutableRefObject<HTMLDivElement>;
+};
 
 export interface UseArrowContainerResult {
-  arrowStyle: React.CSSProperties;
-  arrowContainerStyle: React.CSSProperties;
+  arrowStyle: CSSProperties;
+  arrowContainerStyle: CSSProperties;
 }
 
 export const usePopover: (props: UsePopoverProps) => UsePopoverResult;
 export const useArrowContainer: (props: UseArrowContainerProps) => UseArrowContainerResult;
 
-export const Popover: React.FC<PopoverProps>;
-export const ArrowContainer: React.FC<ArrowContainerProps>;
+export const Popover: FC<PopoverProps>;
+export const ArrowContainer: FC<ArrowContainerProps>;
