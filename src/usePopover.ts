@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import { getNewPopoverRect, getNudgedPopoverRect } from './util';
+import { BoundaryViolations, PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
+import { Constants, getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
 export const usePopover = ({
+  isOpen,
   childRef,
   positions,
   containerClassName,
@@ -43,7 +44,7 @@ export const usePopover = ({
         ? parentRect
         : boundaryElement.getBoundingClientRect(),
     } = {}) => {
-      if (!childRect || !parentRect) {
+      if (!childRect || !parentRect || !isOpen) {
         return;
       }
 
@@ -59,6 +60,8 @@ export const usePopover = ({
                 nudgedTop: 0,
                 nudgedLeft: 0,
                 boundaryInset,
+                violations: Constants.EMPTY_CLIENT_RECT,
+                hasViolations: false,
               })
             : contentLocation;
 
@@ -78,6 +81,8 @@ export const usePopover = ({
           nudgedTop: 0,
           nudgedLeft: 0,
           boundaryInset,
+          violations: Constants.EMPTY_CLIENT_RECT,
+          hasViolations: false,
         });
 
         return;
@@ -125,10 +130,16 @@ export const usePopover = ({
         finalTop = nudgedTop;
         finalLeft = nudgedLeft;
       }
-
       popoverRef.current.style.transform = `translate(${finalLeft - scoutRect.left}px, ${
         finalTop - scoutRect.top
       }px)`;
+
+      const potentialViolations: BoundaryViolations = {
+        top: boundaryRect.top + boundaryInset - finalTop,
+        left: boundaryRect.left + boundaryInset - finalLeft,
+        right: finalLeft + width - boundaryRect.right + boundaryInset,
+        bottom: finalTop + height - boundaryRect.bottom + boundaryInset,
+      };
 
       onPositionPopover({
         childRect,
@@ -148,6 +159,17 @@ export const usePopover = ({
         nudgedTop: nudgedTop - top,
         nudgedLeft: nudgedLeft - left,
         boundaryInset,
+        violations: {
+          top: potentialViolations.top <= 0 ? 0 : potentialViolations.top,
+          left: potentialViolations.left <= 0 ? 0 : potentialViolations.left,
+          right: potentialViolations.right <= 0 ? 0 : potentialViolations.right,
+          bottom: potentialViolations.bottom <= 0 ? 0 : potentialViolations.bottom,
+        },
+        hasViolations:
+          potentialViolations.top > 0 ||
+          potentialViolations.left > 0 ||
+          potentialViolations.right > 0 ||
+          potentialViolations.bottom > 0,
       });
     },
     [
@@ -162,6 +184,7 @@ export const usePopover = ({
       reposition,
       boundaryInset,
       onPositionPopover,
+      isOpen,
     ],
   );
 

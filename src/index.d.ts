@@ -5,6 +5,13 @@ export interface ContentLocation {
   left: number;
 }
 
+export interface BoundaryViolations {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+}
+
 export interface PopoverState {
   childRect: ClientRect;
   popoverRect: ClientRect;
@@ -16,6 +23,8 @@ export interface PopoverState {
   nudgedLeft: number;
   nudgedTop: number;
   boundaryInset: number;
+  violations: BoundaryViolations;
+  hasViolations: boolean;
 }
 
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
@@ -41,6 +50,7 @@ export interface ArrowContainerProps extends UseArrowContainerProps {
 }
 
 export interface UsePopoverProps {
+  isOpen: boolean;
   childRef: React.MutableRefObject<HTMLElement | undefined>;
   positions: PopoverPosition[];
   align: PopoverAlign;

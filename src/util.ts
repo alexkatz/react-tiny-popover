@@ -1,12 +1,7 @@
 import { PopoverPosition, PopoverState, PopoverAlign } from './index';
 
 export const Constants = {
-  POPOVER_CONTAINER_CLASS_NAME: 'react-tiny-popover-container',
   DEFAULT_ALIGN: 'center' as PopoverAlign,
-  OBSERVER_THRESHOLDS: Array(1000)
-    .fill(null)
-    .map((_, i) => i / 1000)
-    .reverse(),
   DEFAULT_POSITIONS: ['top', 'left', 'right', 'bottom'] as PopoverPosition[],
   EMPTY_CLIENT_RECT: {
     top: 0,
@@ -18,9 +13,6 @@ export const Constants = {
   } as ClientRect,
 } as const;
 
-export const arrayUnique = <T>(array: T[]): T[] =>
-  array.filter((value: any, index: number, self: T[]) => self.indexOf(value) === index);
-
 export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
   rectA === rectB ||
   (rectA?.bottom === rectB?.bottom &&
@@ -30,23 +22,6 @@ export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
     rectA?.top === rectB?.top &&
     rectA?.width === rectB?.width);
 
-export const popoverStatesAreEqual = (stateA: PopoverState, stateB: PopoverState): boolean =>
-  stateA === stateB ||
-  (stateA?.align === stateB?.align &&
-    stateA?.nudgedLeft === stateB?.nudgedLeft &&
-    stateA?.nudgedTop === stateB?.nudgedTop &&
-    stateA.padding === stateB.padding &&
-    rectsAreEqual(stateA?.popoverRect, stateB?.popoverRect) &&
-    rectsAreEqual(stateA?.childRect, stateB?.childRect) &&
-    stateA?.position === stateB?.position);
-
-export const targetPositionHasChanged = (oldRect: ClientRect, newRect: ClientRect): boolean =>
-  oldRect === undefined ||
-  oldRect.left !== newRect.left ||
-  oldRect.top !== newRect.top ||
-  oldRect.width !== newRect.width ||
-  oldRect.height !== newRect.height;
-
 export const createContainer = (
   containerStyle?: Partial<CSSStyleDeclaration>,
   containerClassName?: string,
@@ -55,38 +30,6 @@ export const createContainer = (
   if (containerClassName) container.className = containerClassName;
   Object.assign(container.style, containerStyle);
   return container;
-};
-
-export const getBoundingRectNeglectingPositionalTransform = (
-  element?: HTMLElement | null,
-): ClientRect | undefined => {
-  if (element == null) return undefined;
-
-  let el = element;
-  let top = 0;
-  let left = 0;
-
-  do {
-    top += el.offsetTop;
-    left += el.offsetLeft;
-    el = el.offsetParent as HTMLElement;
-  } while (el != null);
-
-  let scrollTop = 0;
-  let scrollLeft = 0;
-
-  el = element;
-  do {
-    scrollTop += el.scrollTop;
-    scrollLeft += el.scrollLeft;
-    el = el.parentElement;
-  } while (el != null);
-
-  top -= scrollTop;
-  left -= scrollLeft;
-
-  const { width, height } = element.getBoundingClientRect();
-  return { top, left, width, height, bottom: top + height, right: left + width };
 };
 
 export const popoverRectForPosition = (
@@ -182,7 +125,7 @@ export const getNewPopoverRect = (
   return {
     rect,
     boundaryViolation,
-  };
+  } as const;
 };
 
 export const getNudgedPopoverRect = (

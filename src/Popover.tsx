@@ -64,6 +64,8 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
       parentRect: Constants.EMPTY_CLIENT_RECT,
       boundaryRect: Constants.EMPTY_CLIENT_RECT,
       boundaryInset,
+      violations: Constants.EMPTY_CLIENT_RECT,
+      hasViolations: false,
     });
 
     const onPositionPopover = useCallback(
@@ -72,6 +74,7 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     );
 
     const { positionPopover, popoverRef, scoutRef } = usePopover({
+      isOpen,
       childRef,
       containerClassName,
       parentElement,
