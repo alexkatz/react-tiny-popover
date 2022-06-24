@@ -194,10 +194,10 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     }, [positionPopover]);
 
     useEffect(() => {
-      window.addEventListener('click', handleOnClickOutside);
+      window.addEventListener('click', handleOnClickOutside, true);
       window.addEventListener('resize', handleWindowResize);
       return () => {
-        window.removeEventListener('click', handleOnClickOutside);
+        window.removeEventListener('click', handleOnClickOutside, true);
         window.removeEventListener('resize', handleWindowResize);
       };
     }, [handleOnClickOutside, handleWindowResize]);

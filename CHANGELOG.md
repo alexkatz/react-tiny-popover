@@ -1,3 +1,9 @@
+## [7.0.1] - 2021-08-24
+
+### Fixed
+
+- Issue where popovers within a new stacking context would sometimes not render at the correct position
+
 ## [7.0.0] - 2021-08-24
 
 ### Added
