@@ -1,3 +1,19 @@
+## [7.1.0] - 2021-08-24
+
+### Added
+
+- added `violations` property to `PopoverState`
+- added `hasViolations` property to `PopoverState`
+- React 18 is now an accepted peer dependency
+
+### Changed
+
+- `onClickOutside` now uses event capturing (thanks @davidjgross)
+
+### Fixed
+
+- `usePopover` now returns immediately when popover is not open, fixing an issue where utility and positioning functions sometimes fired even when popover was not open
+
 ## [7.0.1] - 2021-08-24
 
 ### Fixed
