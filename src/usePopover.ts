@@ -130,6 +130,10 @@ export const usePopover = ({
         finalTop = nudgedTop;
         finalLeft = nudgedLeft;
       }
+
+      if (window.scrollY > 0) {
+        finalTop = rect.top;
+      }
       popoverRef.current.style.transform = `translate(${finalLeft - scoutRect.left}px, ${
         finalTop - scoutRect.top
       }px)`;
