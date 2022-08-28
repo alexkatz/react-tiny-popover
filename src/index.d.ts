@@ -80,7 +80,10 @@ export interface PopoverProps {
   boundaryElement?: HTMLElement;
   boundaryInset?: number;
   boundaryTolerance?: number;
+  intersectThreshold?: number;
+  intersectInset?: number;
   onClickOutside?: (e: MouseEvent) => void;
+  onTriggerOutside?: () => void;
 }
 
 export interface PositionPopoverProps {
