@@ -18,6 +18,7 @@ import {
 import { Constants, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
+import { useIntersectionObserver } from './useIntersectionObserver';
 
 export { useArrowContainer } from './useArrowContainer';
 export { ArrowContainer } from './ArrowContainer';
@@ -39,7 +40,10 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
       containerStyle,
       contentLocation,
       boundaryInset = 0,
+      intersectInset = 0,
+      intersectThreshold = 1,
       onClickOutside,
+      onTriggerOutside,
     },
     externalRef,
   ) => {
@@ -173,6 +177,15 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
         );
       };
     }, [containerStyle, isOpen, popoverRef]);
+
+    useIntersectionObserver(
+      boundaryElement,
+      childRef.current,
+      isOpen,
+      onTriggerOutside,
+      intersectInset,
+      intersectThreshold,
+    );
 
     const handleOnClickOutside = useCallback(
       (e: MouseEvent) => {
