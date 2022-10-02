@@ -5,10 +5,14 @@ export const useElementRef = (
   containerClassName?: string,
   containerStyle?: Partial<CSSStyleDeclaration>,
 ) => {
+  const ref = useRef<HTMLDivElement>();
+
   const element = useMemo(
     () => createContainer(containerStyle, containerClassName),
     [containerClassName, containerStyle],
   );
 
-  return useRef<HTMLDivElement>(element);
+  ref.current = element;
+
+  return ref;
 };

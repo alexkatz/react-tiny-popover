@@ -1,13 +1,19 @@
-import { useLayoutEffect, FC } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 interface PopoverPortalProps {
   container: Element;
   element: Element;
   scoutElement: Element;
+  children: React.ReactNode;
 }
 
-const PopoverPortal: FC<PopoverPortalProps> = ({ container, element, scoutElement, children }) => {
+export const PopoverPortal = ({
+  container,
+  element,
+  scoutElement,
+  children,
+}: PopoverPortalProps) => {
   useLayoutEffect(() => {
     container.appendChild(element);
     container.appendChild(scoutElement);
@@ -19,5 +25,3 @@ const PopoverPortal: FC<PopoverPortalProps> = ({ container, element, scoutElemen
 
   return createPortal(children, element);
 };
-
-export { PopoverPortal };

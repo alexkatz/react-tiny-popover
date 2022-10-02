@@ -79,8 +79,8 @@ export interface PopoverProps {
   contentLocation?: ContentLocationGetter | ContentLocation;
   boundaryElement?: HTMLElement;
   boundaryInset?: number;
-  boundaryTolerance?: number;
   onClickOutside?: (e: MouseEvent) => void;
+  clickOutsideOptions?: boolean | AddEventListenerOptions;
 }
 
 export interface PositionPopoverProps {

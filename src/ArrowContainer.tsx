@@ -1,8 +1,8 @@
-import { useMemo, FC } from 'react';
+import React, { useMemo } from 'react';
 import { ArrowContainerProps } from '.';
 import { useArrowContainer } from './useArrowContainer';
 
-export const ArrowContainer: FC<ArrowContainerProps> = ({
+export const ArrowContainer = ({
   childRect,
   popoverRect,
   position,
@@ -13,7 +13,7 @@ export const ArrowContainer: FC<ArrowContainerProps> = ({
   className,
   children,
   style: externalArrowContainerStyle,
-}) => {
+}: ArrowContainerProps) => {
   const { arrowContainerStyle, arrowStyle } = useArrowContainer({
     childRect,
     popoverRect,

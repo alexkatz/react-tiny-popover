@@ -1,4 +1,4 @@
-import {
+import React, {
   useRef,
   useLayoutEffect,
   useState,
@@ -6,6 +6,7 @@ import {
   useEffect,
   forwardRef,
   cloneElement,
+  Ref,
 } from 'react';
 import { PopoverPortal } from './PopoverPortal';
 import {
@@ -18,12 +19,11 @@ import {
 import { Constants, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
-
 export { useArrowContainer } from './useArrowContainer';
 export { ArrowContainer } from './ArrowContainer';
 export { usePopover };
 
-const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
+const PopoverInternal = forwardRef(
   (
     {
       isOpen,
@@ -40,8 +40,9 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
       contentLocation,
       boundaryInset = 0,
       onClickOutside,
-    },
-    externalRef,
+      clickOutsideOptions = false,
+    }: PopoverProps,
+    externalRef: Ref<HTMLElement>,
   ) => {
     const positions = useMemoizedArray(externalPositions);
 
@@ -194,10 +195,12 @@ const PopoverInternal = forwardRef<HTMLElement, PopoverProps>(
     }, [positionPopover]);
 
     useEffect(() => {
-      window.addEventListener('click', handleOnClickOutside, true);
+      window.addEventListener('click', handleOnClickOutside, clickOutsideOptions);
+      window.addEventListener('contextmenu', handleOnClickOutside, clickOutsideOptions);
       window.addEventListener('resize', handleWindowResize);
       return () => {
-        window.removeEventListener('click', handleOnClickOutside, true);
+        window.removeEventListener('click', handleOnClickOutside, clickOutsideOptions);
+        window.removeEventListener('contextmenu', handleOnClickOutside, clickOutsideOptions);
         window.removeEventListener('resize', handleWindowResize);
       };
     }, [handleOnClickOutside, handleWindowResize]);

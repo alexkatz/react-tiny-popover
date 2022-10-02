@@ -77,7 +77,6 @@ export const Demo: FC<Props> = ({ className }) => {
       top: 20,
     },
     containerClassName: 'react-tiny-popover-container',
-    boundaryTolerance: 0,
     arrowSize: 0,
     popoverSize: {
       width: 100,
@@ -105,7 +104,6 @@ export const Demo: FC<Props> = ({ className }) => {
           positions={state.positions}
           contentLocation={state.contentLocationEnabled ? state.contentLocation : undefined}
           boundaryInset={state.boundaryInset}
-          boundaryTolerance={state.boundaryTolerance}
           reposition={state.reposition}
           containerClassName={state.containerClassName}
           content={({ position, childRect, popoverRect, ...rest }) => (
