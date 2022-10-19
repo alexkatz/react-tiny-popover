@@ -1,3 +1,9 @@
+## [7.2.0] - 2021-08-24
+
+### Added
+
+- added `clickOutsideCapture` prop to `Popover`
+
 ## [7.1.0] - 2021-08-24
 
 ### Added
