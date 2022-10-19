@@ -1,7 +1,23 @@
 import { useCallback } from 'react';
 import { BoundaryViolations, PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import { Constants, getNewPopoverRect, getNudgedPopoverRect } from './util';
+import { EMPTY_CLIENT_RECT, getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
+
+const POPOVER_STYLE: Partial<CSSStyleDeclaration> = {
+  position: 'fixed',
+  overflow: 'visible',
+  top: '0px',
+  left: '0px',
+};
+
+const SCOUT_STYLE: Partial<CSSStyleDeclaration> = {
+  position: 'fixed',
+  top: '0px',
+  left: '0px',
+  width: '0px',
+  height: '0px',
+  visibility: 'hidden',
+};
 
 export const usePopover = ({
   isOpen,
@@ -17,21 +33,8 @@ export const usePopover = ({
   boundaryElement,
   onPositionPopover,
 }: UsePopoverProps): UsePopoverResult => {
-  const popoverRef = useElementRef(containerClassName, {
-    position: 'fixed',
-    overflow: 'visible',
-    top: '0px',
-    left: '0px',
-  });
-
-  const scoutRef = useElementRef('react-tiny-popover-scout', {
-    position: 'fixed',
-    top: '0px',
-    left: '0px',
-    width: '0px',
-    height: '0px',
-    visibility: 'hidden',
-  });
+  const popoverRef = useElementRef(containerClassName, POPOVER_STYLE);
+  const scoutRef = useElementRef('react-tiny-popover-scout', SCOUT_STYLE);
 
   const positionPopover = useCallback<PositionPopover>(
     ({
@@ -60,7 +63,7 @@ export const usePopover = ({
                 nudgedTop: 0,
                 nudgedLeft: 0,
                 boundaryInset,
-                violations: Constants.EMPTY_CLIENT_RECT,
+                violations: EMPTY_CLIENT_RECT,
                 hasViolations: false,
               })
             : contentLocation;
@@ -81,7 +84,7 @@ export const usePopover = ({
           nudgedTop: 0,
           nudgedLeft: 0,
           boundaryInset,
-          violations: Constants.EMPTY_CLIENT_RECT,
+          violations: EMPTY_CLIENT_RECT,
           hasViolations: false,
         });
 
@@ -130,6 +133,7 @@ export const usePopover = ({
         finalTop = nudgedTop;
         finalLeft = nudgedLeft;
       }
+
       popoverRef.current.style.transform = `translate(${finalLeft - scoutRect.left}px, ${
         finalTop - scoutRect.top
       }px)`;

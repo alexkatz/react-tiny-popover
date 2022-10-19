@@ -1,4 +1,4 @@
-import React, {
+import {
   useRef,
   useLayoutEffect,
   useState,
@@ -16,12 +16,14 @@ import {
   PopoverProps,
   PopoverState,
 } from '.';
-import { Constants, rectsAreEqual } from './util';
+import { EMPTY_CLIENT_RECT, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
 export { useArrowContainer } from './useArrowContainer';
 export { ArrowContainer } from './ArrowContainer';
 export { usePopover };
+
+const DEFAULT_POSITIONS: PopoverPosition[] = ['top', 'left', 'right', 'bottom'];
 
 const PopoverInternal = forwardRef(
   (
@@ -29,8 +31,8 @@ const PopoverInternal = forwardRef(
       isOpen,
       children,
       content,
-      positions: externalPositions = Constants.DEFAULT_POSITIONS,
-      align = Constants.DEFAULT_ALIGN,
+      positions: externalPositions = DEFAULT_POSITIONS,
+      align = 'center',
       padding = 0,
       reposition = true,
       parentElement = window.document.body,
@@ -40,7 +42,7 @@ const PopoverInternal = forwardRef(
       contentLocation,
       boundaryInset = 0,
       onClickOutside,
-      clickOutsideOptions = false,
+      clickOutsideCapture = false,
     }: PopoverProps,
     externalRef: Ref<HTMLElement>,
   ) => {
@@ -60,12 +62,12 @@ const PopoverInternal = forwardRef(
       nudgedTop: 0,
       position: positions[0],
       padding,
-      childRect: Constants.EMPTY_CLIENT_RECT,
-      popoverRect: Constants.EMPTY_CLIENT_RECT,
-      parentRect: Constants.EMPTY_CLIENT_RECT,
-      boundaryRect: Constants.EMPTY_CLIENT_RECT,
+      childRect: EMPTY_CLIENT_RECT,
+      popoverRect: EMPTY_CLIENT_RECT,
+      parentRect: EMPTY_CLIENT_RECT,
+      boundaryRect: EMPTY_CLIENT_RECT,
       boundaryInset,
-      violations: Constants.EMPTY_CLIENT_RECT,
+      violations: EMPTY_CLIENT_RECT,
       hasViolations: false,
     });
 
@@ -195,15 +197,15 @@ const PopoverInternal = forwardRef(
     }, [positionPopover]);
 
     useEffect(() => {
-      window.addEventListener('click', handleOnClickOutside, clickOutsideOptions);
-      window.addEventListener('contextmenu', handleOnClickOutside, clickOutsideOptions);
+      window.addEventListener('click', handleOnClickOutside, clickOutsideCapture);
+      window.addEventListener('contextmenu', handleOnClickOutside, clickOutsideCapture);
       window.addEventListener('resize', handleWindowResize);
       return () => {
-        window.removeEventListener('click', handleOnClickOutside, clickOutsideOptions);
-        window.removeEventListener('contextmenu', handleOnClickOutside, clickOutsideOptions);
+        window.removeEventListener('click', handleOnClickOutside, clickOutsideCapture);
+        window.removeEventListener('contextmenu', handleOnClickOutside, clickOutsideCapture);
         window.removeEventListener('resize', handleWindowResize);
       };
-    }, [handleOnClickOutside, handleWindowResize]);
+    }, [clickOutsideCapture, handleOnClickOutside, handleWindowResize]);
 
     const handleRef = useCallback(
       (node: HTMLElement) => {
