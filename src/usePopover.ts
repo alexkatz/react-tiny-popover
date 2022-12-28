@@ -80,6 +80,7 @@ export const usePopover = ({
           popoverRect,
           parentRect,
           boundaryRect,
+          align,
           padding,
           nudgedTop: 0,
           nudgedLeft: 0,
