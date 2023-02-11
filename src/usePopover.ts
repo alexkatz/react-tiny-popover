@@ -71,8 +71,8 @@ export const usePopover = ({
         const left = parentRect.left + inputLeft;
         const top = parentRect.top + inputTop;
 
-        popoverRef.current.style.transform = `translate(${left - scoutRect.left}px, ${
-          top - scoutRect.top
+        popoverRef.current.style.transform = `translate(${Math.round(left - scoutRect.left)}px, ${
+          Math.round(top - scoutRect.top)
         }px)`;
 
         onPositionPopover({
