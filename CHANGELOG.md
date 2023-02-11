@@ -1,3 +1,10 @@
+## [7.2.1] - 2023-02-11
+
+### Fixed
+
+- blurry popover on non-retina displays (thanks @D34THWINGS)
+- click-outside support now works across different windows (thanks @dutziworks)
+
 ## [7.2.0] - 2021-08-24
 
 ### Added
