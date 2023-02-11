@@ -68,12 +68,10 @@ export const usePopover = ({
               })
             : contentLocation;
 
-        const left = parentRect.left + inputLeft;
-        const top = parentRect.top + inputTop;
+        const left = Math.round(parentRect.left + inputLeft - scoutRect.left);
+        const top = Math.round(parentRect.top + inputTop - scoutRect.top);
 
-        popoverRef.current.style.transform = `translate(${Math.round(left - scoutRect.left)}px, ${
-          Math.round(top - scoutRect.top)
-        }px)`;
+        popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
 
         onPositionPopover({
           childRect,
@@ -134,9 +132,10 @@ export const usePopover = ({
         finalLeft = nudgedLeft;
       }
 
-      popoverRef.current.style.transform = `translate(${finalLeft - scoutRect.left}px, ${
-        finalTop - scoutRect.top
-      }px)`;
+      finalTop = Math.round(finalTop - scoutRect.top);
+      finalLeft = Math.round(finalLeft - scoutRect.left);
+
+      popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
 
       const potentialViolations: BoundaryViolations = {
         top: boundaryRect.top + boundaryInset - finalTop,
