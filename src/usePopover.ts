@@ -178,8 +178,10 @@ export const usePopover = ({
     [
       parentElement,
       childRef,
+      scoutRef,
       popoverRef,
       boundaryElement,
+      isOpen,
       contentLocation,
       positions,
       align,
@@ -187,7 +189,6 @@ export const usePopover = ({
       reposition,
       boundaryInset,
       onPositionPopover,
-      isOpen,
     ],
   );
 
