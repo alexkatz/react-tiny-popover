@@ -1,3 +1,9 @@
+## [7.2.2] - 2023-02-13
+
+### Fixed
+
+- popover positioning miscalculation issue
+
 ## [7.2.1] - 2023-02-11
 
 ### Fixed
