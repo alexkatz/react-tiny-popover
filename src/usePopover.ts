@@ -135,7 +135,7 @@ export const usePopover = ({
       finalTop = Math.round(finalTop - scoutRect.top);
       finalLeft = Math.round(finalLeft - scoutRect.left);
 
-      popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
+      popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
 
       const potentialViolations: BoundaryViolations = {
         top: boundaryRect.top + boundaryInset - finalTop,
