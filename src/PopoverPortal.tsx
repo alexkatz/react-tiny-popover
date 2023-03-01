@@ -21,7 +21,7 @@ export const PopoverPortal = ({
       container.removeChild(element);
       container.removeChild(scoutElement);
     };
-  }, [container, element]);
+  }, [container, element, scoutElement]);
 
   return createPortal(children, element);
 };
