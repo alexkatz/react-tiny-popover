@@ -1,15 +1,8 @@
 import { PopoverPosition, PopoverAlign } from './index';
 
-export const EMPTY_CLIENT_RECT: ClientRect = {
-  top: 0,
-  left: 0,
-  bottom: 0,
-  height: 0,
-  right: 0,
-  width: 0,
-};
+export const EMPTY_CLIENT_RECT: DOMRect = new DOMRect(0, 0, 0, 0);
 
-export const rectsAreEqual = (rectA: ClientRect, rectB: ClientRect) =>
+export const rectsAreEqual = (rectA: DOMRect, rectB: DOMRect) =>
   rectA === rectB ||
   (rectA?.bottom === rectB?.bottom &&
     rectA?.height === rectB?.height &&
@@ -30,11 +23,11 @@ export const createContainer = (
 
 export const popoverRectForPosition = (
   position: PopoverPosition,
-  childRect: ClientRect,
-  popoverRect: ClientRect,
+  childRect: DOMRect,
+  popoverRect: DOMRect,
   padding: number,
   align: PopoverAlign,
-): ClientRect => {
+): DOMRect => {
   const targetMidX = childRect.left + childRect.width / 2;
   const targetMidY = childRect.top + childRect.height / 2;
   const { width, height } = popoverRect;
@@ -84,16 +77,16 @@ export const popoverRectForPosition = (
       break;
   }
 
-  return { top, left, width, height, right: left + width, bottom: top + height };
+  return new DOMRect(left, top, width, height);
 };
 
 interface GetNewPopoverRectProps {
   position: PopoverPosition;
   reposition: boolean;
   align: PopoverAlign;
-  childRect: ClientRect;
-  popoverRect: ClientRect;
-  boundaryRect: ClientRect;
+  childRect: DOMRect;
+  popoverRect: DOMRect;
+  boundaryRect: DOMRect;
   padding: number;
 }
 
@@ -125,10 +118,10 @@ export const getNewPopoverRect = (
 };
 
 export const getNudgedPopoverRect = (
-  popoverRect: ClientRect,
-  boundaryRect: ClientRect,
+  popoverRect: DOMRect,
+  boundaryRect: DOMRect,
   boundaryInset: number,
-): ClientRect => {
+): DOMRect => {
   const topBoundary = boundaryRect.top + boundaryInset;
   const leftBoundary = boundaryRect.left + boundaryInset;
   const rightBoundary = boundaryRect.right - boundaryInset;
@@ -139,12 +132,5 @@ export const getNudgedPopoverRect = (
   let left = popoverRect.left < leftBoundary ? leftBoundary : popoverRect.left;
   left = left + popoverRect.width > rightBoundary ? rightBoundary - popoverRect.width : left;
 
-  return {
-    top,
-    left,
-    width: popoverRect.width,
-    height: popoverRect.height,
-    right: left + popoverRect.width,
-    bottom: top + popoverRect.height,
-  };
+  return new DOMRect(left, top, popoverRect.width, popoverRect.height);
 };

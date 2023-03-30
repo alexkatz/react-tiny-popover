@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   useRef,
   useLayoutEffect,
@@ -100,14 +101,7 @@ const PopoverInternal = forwardRef(
           if (
             childRect != null &&
             popoverRect != null &&
-            (!rectsAreEqual(childRect, {
-              top: popoverState.childRect.top,
-              left: popoverState.childRect.left,
-              width: popoverState.childRect.width,
-              height: popoverState.childRect.height,
-              bottom: popoverState.childRect.top + popoverState.childRect.height,
-              right: popoverState.childRect.left + popoverState.childRect.width,
-            }) ||
+            (!rectsAreEqual(childRect, popoverState.childRect) ||
               popoverRect.width !== popoverState.popoverRect.width ||
               popoverRect.height !== popoverState.popoverRect.height ||
               popoverState.padding !== padding ||

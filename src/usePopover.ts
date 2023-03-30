@@ -146,14 +146,7 @@ export const usePopover = ({
 
       onPositionPopover({
         childRect,
-        popoverRect: {
-          top: finalTop,
-          left: finalLeft,
-          width,
-          height,
-          right: finalLeft + width,
-          bottom: finalTop + height,
-        },
+        popoverRect: new DOMRect(finalLeft, finalTop, width, height),
         parentRect,
         boundaryRect,
         position,

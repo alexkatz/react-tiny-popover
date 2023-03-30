@@ -23,7 +23,7 @@ export const useBoxBehavior = (boxContainerRef: MutableRefObject<HTMLElement>) =
   const handleOnMouseMove = ({ clientX, clientY }: React.MouseEvent) => {
     if (!boxOffsetInfo) return;
 
-    const { parentLeft, parentTop, mouseLeft, mouseTop, width, height } = boxOffsetInfo;
+    const { parentLeft, parentTop, mouseLeft, mouseTop } = boxOffsetInfo;
 
     if (!boxOffsetInfo.isDragging) {
       setBoxOffsetInfo({

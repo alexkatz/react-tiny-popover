@@ -13,10 +13,10 @@ export interface BoundaryViolations {
 }
 
 export interface PopoverState {
-  childRect: ClientRect;
-  popoverRect: ClientRect;
-  parentRect: ClientRect;
-  boundaryRect: ClientRect;
+  childRect: DOMRect;
+  popoverRect: DOMRect;
+  parentRect: DOMRect;
+  boundaryRect: DOMRect;
   position?: PopoverPosition;
   align?: PopoverAlign;
   padding: number;
@@ -34,8 +34,8 @@ export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
 export type PopoverAlign = 'start' | 'center' | 'end';
 
 export interface UseArrowContainerProps {
-  childRect: ClientRect;
-  popoverRect: ClientRect;
+  childRect: DOMRect;
+  popoverRect: DOMRect;
   position?: PopoverPosition;
   arrowSize: number;
   arrowColor: string;
@@ -85,12 +85,12 @@ export interface PopoverProps {
 
 export interface PositionPopoverProps {
   positionIndex?: number;
-  childRect?: ClientRect;
-  popoverRect?: ClientRect;
-  parentRect?: ClientRect;
-  scoutRect?: ClientRect;
-  parentRectAdjusted?: ClientRect;
-  boundaryRect?: ClientRect;
+  childRect?: DOMRect;
+  popoverRect?: DOMRect;
+  parentRect?: DOMRect;
+  scoutRect?: DOMRect;
+  parentRectAdjusted?: DOMRect;
+  boundaryRect?: DOMRect;
 }
 
 export type PositionPopover = (props?: PositionPopoverProps) => void;
