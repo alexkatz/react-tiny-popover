@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Demo as _Demo } from './Demo';
 
 const Container = styled.main`

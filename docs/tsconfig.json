@@ -1,13 +1,21 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
+    "baseUrl": ".src",
     "sourceMap": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "module": "commonjs",
-    "target": "es5",
-    "lib": ["es5", "es6", "dom"],
-    "jsx": "react"
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
+    "paths": {
+      "@dist/*": ["../../dist/*"],
+    }
+
   },
-  "include": ["src"]
+  "include": ["src"],
+  "
 }

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 
 const Container = styled.label`
   display: flex;
