@@ -16,7 +16,7 @@ import {
   PopoverProps,
   PopoverState,
 } from '.';
-import { EMPTY_CLIENT_RECT, rectsAreEqual } from './util';
+import { EMPTY_RECT, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
 export { useArrowContainer } from './useArrowContainer';
@@ -62,12 +62,12 @@ const PopoverInternal = forwardRef(
       nudgedTop: 0,
       position: positions[0],
       padding,
-      childRect: EMPTY_CLIENT_RECT,
-      popoverRect: EMPTY_CLIENT_RECT,
-      parentRect: EMPTY_CLIENT_RECT,
-      boundaryRect: EMPTY_CLIENT_RECT,
+      childRect: EMPTY_RECT,
+      popoverRect: EMPTY_RECT,
+      parentRect: EMPTY_RECT,
+      boundaryRect: EMPTY_RECT,
       boundaryInset,
-      violations: EMPTY_CLIENT_RECT,
+      violations: EMPTY_RECT,
       hasViolations: false,
     });
 
@@ -100,14 +100,7 @@ const PopoverInternal = forwardRef(
           if (
             childRect != null &&
             popoverRect != null &&
-            (!rectsAreEqual(childRect, {
-              top: popoverState.childRect.top,
-              left: popoverState.childRect.left,
-              width: popoverState.childRect.width,
-              height: popoverState.childRect.height,
-              bottom: popoverState.childRect.top + popoverState.childRect.height,
-              right: popoverState.childRect.left + popoverState.childRect.width,
-            }) ||
+            (!rectsAreEqual(childRect, popoverState.childRect) ||
               popoverRect.width !== popoverState.popoverRect.width ||
               popoverRect.height !== popoverState.popoverRect.height ||
               popoverState.padding !== padding ||
@@ -150,10 +143,7 @@ const PopoverInternal = forwardRef(
       padding,
       popoverRef,
       popoverState.align,
-      popoverState.childRect.height,
-      popoverState.childRect.left,
-      popoverState.childRect.top,
-      popoverState.childRect.width,
+      popoverState.childRect,
       popoverState.padding,
       popoverState.popoverRect.height,
       popoverState.popoverRect.width,
@@ -222,10 +212,7 @@ const PopoverInternal = forwardRef(
       [externalRef],
     );
 
-    const renderChild = () =>
-      cloneElement(children as JSX.Element, {
-        ref: handleRef,
-      });
+    const renderChild = () => cloneElement(children, { ref: handleRef });
 
     const renderPopover = () => {
       if (!isOpen) return null;

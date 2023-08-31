@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { BoundaryViolations, PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
-import { EMPTY_CLIENT_RECT, getNewPopoverRect, getNudgedPopoverRect } from './util';
+import { EMPTY_RECT, getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
 const POPOVER_STYLE: Partial<CSSStyleDeclaration> = {
@@ -63,7 +63,7 @@ export const usePopover = ({
                 nudgedTop: 0,
                 nudgedLeft: 0,
                 boundaryInset,
-                violations: EMPTY_CLIENT_RECT,
+                violations: EMPTY_RECT,
                 hasViolations: false,
               })
             : contentLocation;
@@ -82,7 +82,7 @@ export const usePopover = ({
           nudgedTop: 0,
           nudgedLeft: 0,
           boundaryInset,
-          violations: EMPTY_CLIENT_RECT,
+          violations: EMPTY_RECT,
           hasViolations: false,
         });
 
@@ -146,14 +146,7 @@ export const usePopover = ({
 
       onPositionPopover({
         childRect,
-        popoverRect: {
-          top: finalTop,
-          left: finalLeft,
-          width,
-          height,
-          right: finalLeft + width,
-          bottom: finalTop + height,
-        },
+        popoverRect: new DOMRect(finalLeft, finalTop, width, height),
         parentRect,
         boundaryRect,
         position,
