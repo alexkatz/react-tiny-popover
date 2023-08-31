@@ -79,6 +79,7 @@ export const usePopover = ({
           parentRect,
           boundaryRect,
           padding,
+          align,
           nudgedTop: 0,
           nudgedLeft: 0,
           boundaryInset,
