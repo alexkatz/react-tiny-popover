@@ -1,5 +1,5 @@
-import { Key, Reducer } from 'react';
-import { ContentLocation, PopoverProps } from 'react-tiny-popover';
+import { Reducer } from 'react';
+import { ContentLocation, PopoverProps } from '@dist/index';
 
 export interface PopoverSize {
   width: number;

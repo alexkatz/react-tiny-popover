@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import React, { CSSProperties, FC } from 'react';
-import { PopoverState } from 'react-tiny-popover';
+import { CSSProperties, FC } from 'react';
+import { PopoverState } from '@dist/index';
 
 const Container = styled.div`
   display: flex;

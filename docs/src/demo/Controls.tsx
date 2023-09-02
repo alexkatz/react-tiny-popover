@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import React, { Dispatch, FC, memo, useState } from 'react';
-import { PopoverPosition } from 'react-tiny-popover';
+import { Dispatch, FC, memo, useState } from 'react';
+import { PopoverPosition } from '@dist/index';
 import { ControlsField } from './ControlsField';
 import { ControlsState, Action } from './shared';
 

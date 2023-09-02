@@ -1,9 +1,9 @@
-import React, { FC, useMemo, useReducer, useRef } from 'react';
+import { FC, useMemo, useReducer, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Box as _Box } from './Box';
 import { useBoxBehavior } from './useBoxPositioning';
 import { css } from '@emotion/core';
-import { Popover, ArrowContainer } from 'react-tiny-popover';
+import { Popover, ArrowContainer } from '@dist/index';
 import { Controls as _Controls } from './Controls';
 import { reducer } from './shared';
 import { PopoverContent as _PopoverContent } from './PopoverContent';
