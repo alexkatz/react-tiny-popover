@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { CSSProperties, useMemo } from 'react';
 import { UseArrowContainerProps } from '.';
 
 export const useArrowContainer = ({
@@ -12,7 +12,7 @@ export const useArrowContainer = ({
     () =>
       ({
         padding: arrowSize,
-      } as React.CSSProperties),
+      }) as CSSProperties,
     [arrowSize],
   );
 
@@ -20,7 +20,7 @@ export const useArrowContainer = ({
     () =>
       ({
         position: 'absolute',
-        ...((): React.CSSProperties => {
+        ...((): CSSProperties => {
           const arrowWidth = arrowSize * 2;
           let top = childRect.top - popoverRect.top + childRect.height / 2 - arrowWidth / 2;
           let left = childRect.left - popoverRect.left + childRect.width / 2 - arrowWidth / 2;
@@ -76,7 +76,7 @@ export const useArrowContainer = ({
               };
           }
         })(),
-      } as React.CSSProperties),
+      }) as CSSProperties,
     [
       arrowColor,
       arrowSize,

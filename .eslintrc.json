@@ -4,7 +4,7 @@
     "project": "./tsconfig.json"
   },
   "plugins": ["react-hooks", "prettier"],
-  "extends": ["react-app", "airbnb-typescript", "plugin:prettier/recommended"],
+  "extends": ["react-app", "plugin:prettier/recommended"],
   "rules": {
     "object-curly-spacing": ["warn", "always"],
     "@typescript-eslint/indent": 0,

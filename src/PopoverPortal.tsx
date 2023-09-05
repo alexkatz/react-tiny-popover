@@ -1,12 +1,12 @@
 import React, { useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-interface PopoverPortalProps {
+type PopoverPortalProps = {
   container: Element;
   element: Element;
   scoutElement: Element;
   children: React.ReactNode;
-}
+};
 
 export const PopoverPortal = ({
   container,

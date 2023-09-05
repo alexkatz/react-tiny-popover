@@ -37,7 +37,7 @@ const PopoverInternal = forwardRef(
       reposition = true,
       parentElement = window.document.body,
       boundaryElement = parentElement,
-      containerClassName = 'react-tiny-popover-container',
+      containerClassName,
       containerStyle,
       contentLocation,
       boundaryInset = 0,

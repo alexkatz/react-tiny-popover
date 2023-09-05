@@ -33,8 +33,12 @@ export const usePopover = ({
   boundaryElement,
   onPositionPopover,
 }: UsePopoverProps): UsePopoverResult => {
-  const popoverRef = useElementRef(containerClassName, POPOVER_STYLE);
-  const scoutRef = useElementRef('react-tiny-popover-scout', SCOUT_STYLE);
+  const scoutRef = useElementRef({ id: 'react-tiny-popover-scout', containerStyle: SCOUT_STYLE });
+  const popoverRef = useElementRef({
+    id: 'react-tiny-popover-container',
+    containerClassName,
+    containerStyle: POPOVER_STYLE,
+  });
 
   const positionPopover = useCallback<PositionPopover>(
     ({
@@ -68,14 +72,14 @@ export const usePopover = ({
               })
             : contentLocation;
 
-        const left = Math.round(parentRect.left + inputLeft - scoutRect.left);
-        const top = Math.round(parentRect.top + inputTop - scoutRect.top);
+        const finalLeft = Math.round(parentRect.left + inputLeft - scoutRect.left);
+        const finalTop = Math.round(parentRect.top + inputTop - scoutRect.top);
 
-        popoverRef.current.style.transform = `translate(${left}px, ${top}px)`;
+        popoverRef.current.style.transform = `translate(${finalLeft}px, ${finalTop}px)`;
 
         onPositionPopover({
           childRect,
-          popoverRect,
+          popoverRect: new DOMRect(finalLeft, finalTop, popoverRect.width, popoverRect.height),
           parentRect,
           boundaryRect,
           padding,
