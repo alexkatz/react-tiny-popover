@@ -1,18 +1,13 @@
 import { Ref, MutableRefObject, CSSProperties, FC } from 'react';
 
-export interface ContentLocation {
-  top: number;
-  left: number;
-}
-
-export interface BoundaryViolations {
+export type BoundaryViolations = {
   top: number;
   left: number;
   right: number;
   bottom: number;
-}
+};
 
-export interface PopoverState {
+export type PopoverState = {
   childRect: DOMRect;
   popoverRect: DOMRect;
   parentRect: DOMRect;
@@ -20,70 +15,74 @@ export interface PopoverState {
   position?: PopoverPosition;
   align?: PopoverAlign;
   padding: number;
+  transform?: PositionTransformValue;
   nudgedLeft: number;
   nudgedTop: number;
   boundaryInset: number;
   violations: BoundaryViolations;
   hasViolations: boolean;
-}
+};
 
 export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
-export type ContentLocationGetter = (popoverState: PopoverState) => ContentLocation;
+
+export type PositionTransformValue = {
+  top?: number;
+  left?: number;
+};
+
+export type PositionTransform =
+  | PositionTransformValue
+  | ((popoverState: PopoverState) => PositionTransformValue);
 
 export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
 export type PopoverAlign = 'start' | 'center' | 'end';
 
-export interface UseArrowContainerProps {
+export type UseArrowContainerProps = {
   childRect: DOMRect;
   popoverRect: DOMRect;
   position?: PopoverPosition;
   arrowSize: number;
   arrowColor: string;
-}
+};
 
-export interface ArrowContainerProps extends UseArrowContainerProps {
+export type ArrowContainerProps = UseArrowContainerProps & {
   children: JSX.Element;
   className?: string;
   style?: React.CSSProperties;
   arrowStyle?: React.CSSProperties;
   arrowClassName?: string;
-}
+};
 
-export interface UsePopoverProps {
+export type BasePopoverProps = {
   isOpen: boolean;
-  childRef: React.MutableRefObject<HTMLElement | undefined>;
-  positions: PopoverPosition[];
   align: PopoverAlign;
   padding: number;
-  reposition: boolean;
-  boundaryInset: number;
-  parentElement?: HTMLElement;
-  boundaryElement?: HTMLElement;
-  containerClassName?: string;
-  contentLocation?: ContentLocationGetter | ContentLocation;
-  onPositionPopover(popoverState: PopoverState): void;
-}
-
-export interface PopoverProps {
-  isOpen: boolean;
-  children: JSX.Element;
-  content: ContentRenderer | JSX.Element;
-  positions?: PopoverPosition[];
-  align?: PopoverAlign;
-  padding?: number;
   reposition?: boolean;
-  ref?: Ref<HTMLElement>;
-  containerClassName?: string;
   parentElement?: HTMLElement;
-  containerStyle?: Partial<CSSStyleDeclaration>;
-  contentLocation?: ContentLocationGetter | ContentLocation;
   boundaryElement?: HTMLElement;
   boundaryInset?: number;
+  containerClassName?: string;
+  transform?: PositionTransform;
+  transformMode?: 'relative' | 'absolute';
+};
+
+export type UsePopoverProps = BasePopoverProps & {
+  childRef: React.MutableRefObject<HTMLElement | undefined>;
+  positions: PopoverPosition[];
+  onPositionPopover(popoverState: PopoverState): void;
+};
+
+export type PopoverProps = BasePopoverProps & {
+  children: JSX.Element;
+  positions: PopoverPosition[] | PopoverPosition;
+  content: ContentRenderer | JSX.Element;
+  ref?: Ref<HTMLElement>;
+  containerStyle?: Partial<CSSStyleDeclaration>;
   onClickOutside?: (e: MouseEvent) => void;
   clickOutsideCapture?: boolean;
-}
+};
 
-export interface PositionPopoverProps {
+export type PositionPopoverProps = {
   positionIndex?: number;
   childRect?: DOMRect;
   popoverRect?: DOMRect;
@@ -91,7 +90,7 @@ export interface PositionPopoverProps {
   scoutRect?: DOMRect;
   parentRectAdjusted?: DOMRect;
   boundaryRect?: DOMRect;
-}
+};
 
 export type PositionPopover = (props?: PositionPopoverProps) => void;
 
@@ -106,10 +105,10 @@ export type UsePopoverResult = {
   scoutRef: MutableRefObject<HTMLDivElement>;
 };
 
-export interface UseArrowContainerResult {
+export type UseArrowContainerResult = {
   arrowStyle: CSSProperties;
   arrowContainerStyle: CSSProperties;
-}
+};
 
 export const usePopover: (props: UsePopoverProps) => UsePopoverResult;
 export const useArrowContainer: (props: UseArrowContainerProps) => UseArrowContainerResult;

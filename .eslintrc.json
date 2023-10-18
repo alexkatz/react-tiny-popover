@@ -3,7 +3,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["react-hooks", "prettier"],
+  "plugins": ["prettier"],
   "extends": ["react-app", "plugin:prettier/recommended"],
   "rules": {
     "object-curly-spacing": ["warn", "always"],
