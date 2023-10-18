@@ -1,3 +1,15 @@
+## [8.0] - 2023-10-18
+
+## Changed
+
+- `contentLocation` prop has been renamed to `positionTransform`, behaves exactly the same
+- `positions` prop now accepts a single string in addition to an array of prioritized strings
+- Migrated from deprecated `ClientRect` to `DOMRect` (thanks @jafin)
+
+## Added
+
+- A new `transformMode` prop now accepts string values of `"absolute"` or `"relative"`. `"absolute"` mode is its default, and causes behavior identical to `contentLocation`. The `"relative"` value, however, will cause the provided `top` and `left` values of the transform to merely be summed to the existing `nudgeTop` and `nudgeLeft` values, behaving as a relative positioning system.
+
 ## [7.2.2] - 2023-02-13
 
 ### Fixed

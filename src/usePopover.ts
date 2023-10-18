@@ -1,5 +1,11 @@
 import { useCallback } from 'react';
-import { BoundaryViolations, PositionPopover, UsePopoverProps, UsePopoverResult } from '.';
+import {
+  BoundaryViolations,
+  PopoverState,
+  PositionPopover,
+  UsePopoverProps,
+  UsePopoverResult,
+} from '.';
 import { EMPTY_RECT, getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
@@ -25,7 +31,8 @@ export const usePopover = ({
   positions,
   containerClassName,
   parentElement,
-  contentLocation,
+  transform,
+  transformMode,
   align,
   padding,
   reposition,
@@ -55,22 +62,23 @@ export const usePopover = ({
         return;
       }
 
-      if (contentLocation) {
+      if (transform && transformMode === 'absolute') {
         const { top: inputTop, left: inputLeft } =
-          typeof contentLocation === 'function'
-            ? contentLocation({
+          typeof transform === 'function'
+            ? transform({
                 childRect,
                 popoverRect,
                 parentRect,
                 boundaryRect,
                 padding,
+                align,
                 nudgedTop: 0,
                 nudgedLeft: 0,
                 boundaryInset,
                 violations: EMPTY_RECT,
                 hasViolations: false,
               })
-            : contentLocation;
+            : transform;
 
         const finalLeft = Math.round(parentRect.left + inputLeft - scoutRect.left);
         const finalTop = Math.round(parentRect.top + inputTop - scoutRect.top);
@@ -84,6 +92,7 @@ export const usePopover = ({
           boundaryRect,
           padding,
           align,
+          transform: { top: inputTop, left: inputLeft },
           nudgedTop: 0,
           nudgedLeft: 0,
           boundaryInset,
@@ -149,7 +158,7 @@ export const usePopover = ({
         bottom: finalTop + height - boundaryRect.bottom + boundaryInset,
       };
 
-      onPositionPopover({
+      const popoverState: PopoverState = {
         childRect,
         popoverRect: new DOMRect(finalLeft, finalTop, width, height),
         parentRect,
@@ -171,7 +180,23 @@ export const usePopover = ({
           potentialViolations.left > 0 ||
           potentialViolations.right > 0 ||
           potentialViolations.bottom > 0,
-      });
+      };
+
+      if (transform) {
+        onPositionPopover(popoverState);
+        const { top: transformTop, left: transformLeft } =
+          typeof transform === 'function' ? transform(popoverState) : transform;
+
+        popoverRef.current.style.transform = `translate(${Math.round(
+          finalLeft + (transformLeft ?? 0),
+        )}px, ${Math.round(finalTop + (transformTop ?? 0))}px)`;
+
+        popoverState.nudgedLeft += transformLeft ?? 0;
+        popoverState.nudgedTop += transformTop ?? 0;
+        popoverState.transform = { top: transformTop, left: transformLeft };
+      }
+
+      onPositionPopover(popoverState);
     },
     [
       parentElement,
@@ -180,7 +205,8 @@ export const usePopover = ({
       popoverRef,
       boundaryElement,
       isOpen,
-      contentLocation,
+      transform,
+      transformMode,
       positions,
       align,
       padding,
@@ -190,9 +216,5 @@ export const usePopover = ({
     ],
   );
 
-  return {
-    positionPopover,
-    popoverRef,
-    scoutRef,
-  };
+  return { positionPopover, popoverRef, scoutRef } as const;
 };

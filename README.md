@@ -3,6 +3,7 @@
   - [Demo](#demo)
   - [Examples](#examples)
   - [Hooks](#hooks)
+  - [Migrating to version 8](#migrating-to-version-8)
   - [Migrating from versions 3 and 4](#migrating-from-versions-3-and-4)
   - [API](#api)
     - [Popover](#popover)
@@ -194,7 +195,7 @@ const [positionPopover, popoverRef] = usePopover({
   childRef,
   containerClassName,
   parentElement,
-  contentLocation,
+  transform,
   positions,
   align,
   padding,
@@ -210,7 +211,50 @@ const [positionPopover, popoverRef] = usePopover({
 
 After attaching `popoverRef` and `childRef` to the DOM, you can fire `positionPopover` at any time to update your popover's position.
 
-Admittedly, this is a bit more advanced, but play around and see what you can come up with! Feel free to examine the internal Popover component to see how the hook is used there.
+This is a bit more advanced, but play around and see what you can come up with! Feel free to examine the internal Popover component to see how the hook is used there.
+
+## Migrating to version 8
+
+`react-tiny-popover` 8.0 removes the `contentLocation` prop and replaces it with a slightly more capable `transform` prop. By default, the `transform` prop behaves exactly as `contentLocation` did.
+
+```JSX
+<Popover
+  isOpen={isPopoverOpen}
+  contentLocation={{ top: 20, left: 20 }} {/* no longer used */}
+  content={<div>Hi! I'm popover content.</div>}
+>
+  {/* ... */}
+</Popover>;
+```
+
+Becomes:
+
+```JSX
+<Popover
+  isOpen={isPopoverOpen}
+  transform={{ top: 20, left: 20 }} { /* <-- you'll need to rename this prop, but that's all */}
+  content={<div>Hi! I'm popover content.</div>}
+>
+  {/* ... */}
+</Popover>;
+```
+
+Now, you have access to an additional handy prop, `transformMode`:
+
+```JSX
+<Popover
+  isOpen={isPopoverOpen}
+  transform={{ top: 20, left: 20 }}
+  transformMode='relative'{ /* <-- whoa cool */}
+  content={<div>Hi! I'm popover content.</div>}
+>
+  {/* ... */}
+</Popover>;
+```
+
+The above popover will now render 20 pixels down and left of where it originally would have appeared without the transform, rather than at a fixed/absolute position.
+
+The other `transformMode` value, `"absolute"` is the default value when `transformMode` is omitted. This produces the same behavior as `contentLocation` did.
 
 ## Migrating from versions 3 and 4
 
@@ -260,7 +304,7 @@ Check out [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.
 ### Popover
 
 | <b>Property<b>      | Type                                                                                              | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|---------------------|---------------------------------------------------------------------------------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | ------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | children            | `JSX.Element`                                                                                     | ✔️       | The component you place here will render directly to the DOM. Totally headless. If you provide a custom component, it must use [ref forwarding](https://reactjs.org/docs/forwarding-refs.html).                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | isOpen              | `boolean`                                                                                         | ✔️       | When this boolean is set to true, the popover is visible and tracks the target. When the boolean is false, the popover content is neither visible nor present on the DOM.                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | content             | `JSX.Element` or `(popoverState: PopoverState) => JSX.Element`                                    | ✔️       | Here, you'll provide the content that will appear as the popover. If you're providing a function, see `PopoverState` below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -271,7 +315,8 @@ Check out [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.
 | ref                 | `React.Ref`                                                                                       |          | Since `Popover` relies on ref forwarding to access its child, it's not simple to obtain a second reference to that child. This property acts as a "pass through" for you to obtain a ref to the child you've provided `Popover`. The value of the ref you provide here will be `Popover`'s child.                                                                                                                                                                                                                                                                                                                                                   |
 | onClickOutside      | `(e: MouseEvent) => void`                                                                         |          | If `react-tiny-popover` detects a click event outside of the target and outside of the popover, you may handle this event here.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | clickOutsideCapture | `boolean `                                                                                        |          | This boolean represents the `useCapture` option passed along as the third argument to the internal `window.addEventListener` used by `onClickOutside`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| contentLocation     | `{ top: number; left: number}` or `(popoverState: PopoverState) => { top: number, left: number }` |          | If you'd like to hook directly into the positioning process, you may do so here! `top` and `left` positions provided or returned here will completely override the popover content's (`popoverRect`) location. (The arguments to the function, if you choose to provide one, are the same as the content renderer function above).                                                                                                                                                                                                                                                                                                                  |
+| transform           | `{ top: number; left: number}` or `(popoverState: PopoverState) => { top: number, left: number }` |          | If you'd like to hook directly into the positioning process, you may do so here! `top` and `left` positions provided or returned here will override the popover content's (`popoverRect`) location in a fashion specified by the `transformMode` prop.                                                                                                                                                                                                                                                                                                                                                                                              |
+| transformMode       | `"absolute"` or `"relative"`                                                                      |          | A value of `"absolute"` will popsition the popover at precisely the `top` and `left` values provided by `transform`, relative to the `parentElement`. A value of `"relative"` will "nudge" the popover from where it would appear pre-transform by the `top` and `left` values provided in `transform`.                                                                                                                                                                                                                                                                                                                                             |
 | parentElement       | `HTMLElement`                                                                                     |          | Provide an HTML element ref here to have your popover content appended to that element rather than `document.body`. This is useful if you'd like your popover to sit at a particular place within the DOM. Supplying a `parentElement` ref will not in most cases directly affect the positioning of the popover.                                                                                                                                                                                                                                                                                                                                   |
 | boundaryInset       | `number`                                                                                          |          | This number specifies the inset around your `parentElement`'s border that boundary violations are determined at. Defaults to 0. Can be negative.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | boundaryElement     | `HTMLElement`                                                                                     |          | If provided (and `reposition` is enabled), your popover will adhere to the boundaries of this element as determined by `Element.getBoundingDOMRect()`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -281,25 +326,26 @@ Check out [React's ref forwarding API](https://reactjs.org/docs/forwarding-refs.
 ### PopoverState
 
 | <b>Property<b> | Type                                                            | Description                                                                                                                                                                                                                                                                                                                              |
-|----------------|-----------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | isPositioned   | `boolean`                                                       | After the popover has positioned its contents, this field is true. Prior, it is false.                                                                                                                                                                                                                                                   |
 | childRect      | `DOMRect`                                                       | The current rect of the popover's child (i.e., the source from which the popover renders).                                                                                                                                                                                                                                               |
 | popoverRect    | `DOMRect`                                                       | The current rect of the popover's contents.                                                                                                                                                                                                                                                                                              |
 | parentRect     | `DOMRect`                                                       | The current rect of the popover child's parent.                                                                                                                                                                                                                                                                                          |
-| position       | `'left'` \| `'right'` \| `'top'` \| `'bottom'` \| `undefined`   | The current position of the popover in relation to the child. `undefined` implies the user has set an explicit `contentLocation`.                                                                                                                                                                                                        |
+| position       | `'left'` \| `'right'` \| `'top'` \| `'bottom'` \| `undefined`   | The current position of the popover in relation to the child. `undefined` implies the user has set an absolute transform.                                                                                                                                                                                                                |
 | align          | `'start'` \| `'center'` \| `'end'` \| `undefined`               | The cross-axis alignment of the popover's contents. `undefined` implies the user has set an explicit `contentLocation`.                                                                                                                                                                                                                  |
 | padding        | `number`                                                        | The distance between the popover's child and contents. If set to zero, the two are touching.                                                                                                                                                                                                                                             |
 | nudgedLeft     | `number`                                                        | If the popover's contents encounter a boundary violation that does not warrant a reposition, the contents are instead "nudged" by the appropriate top and left values to keep the contents within the boundary. This is the left value.                                                                                                  |
 | nudgedTop      | `number`                                                        | If the popover's contents encounter a boundary violation that does not warrant a reposition, the contents are instead "nudged" by the appropriate top and left values to keep the contents within the boundary. This is the top value.                                                                                                   |
 | boundaryInset  | `number`                                                        | The popover's contents will encounter boundary violations prior to the actual `parentElement`'s boundaries by this number in pixels. Can be negative.                                                                                                                                                                                    |
 | boundaryRect   | `DOMRect`                                                       | The current rect of the popover's boundaries.                                                                                                                                                                                                                                                                                            |
+| transform      | `{ top?: number; left?: number; }` \| undefined                 | The values you provided to the `transform` prop, if they exist.                                                                                                                                                                                                                                                                          |
 | violations     | `{ top: number; left: number; bottom: number; right: number; }` | An object containing boundary violations. Expect a value of `0` if no boundary violation exists at that bound (i.e., your popover is entirely within that bound), and expect positive values representing pixels beyond that bound if a violation exists (i.e., your popover exceeds the `top` bound by ten pixels, `top` will be `10`). |
 | hasViolations  | `boolean`                                                       | `true` if violations exist at any boundary, `false` otherwise.                                                                                                                                                                                                                                                                           |
 
 ### ArrowContainer
 
 | <b>Property<b> | Type          | Required | Description                                                                                                                                                                                                                   |
-|----------------|---------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------- | ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | position       | `string`      | ✔️       | The `ArrowContainer` needs to know its own position in relation to the target, so it can point in the correct direction!                                                                                                      |
 | children       | `JSX.Element` | ✔️       | You'll provide the `ArrowContainer` with a JSX.Element child to render as your popover content.                                                                                                                               |
 | targetRect     | `object`      | ✔️       | The `ArrowContainer` must know its target's bounding rect in order to position its arrow properly. This object is of type `{ width: number, height: number, top: number, left: number, right: number, bottom: number }`.      |

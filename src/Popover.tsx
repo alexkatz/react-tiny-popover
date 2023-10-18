@@ -9,13 +9,7 @@ import {
   Ref,
 } from 'react';
 import { PopoverPortal } from './PopoverPortal';
-import {
-  ContentLocation,
-  ContentLocationGetter,
-  PopoverPosition,
-  PopoverProps,
-  PopoverState,
-} from '.';
+import { PopoverPosition, PopoverProps, PopoverState } from '.';
 import { EMPTY_RECT, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
@@ -39,19 +33,21 @@ const PopoverInternal = forwardRef(
       boundaryElement = parentElement,
       containerClassName,
       containerStyle,
-      contentLocation,
+      transform,
+      transformMode = 'absolute',
       boundaryInset = 0,
       onClickOutside,
       clickOutsideCapture = false,
     }: PopoverProps,
     externalRef: Ref<HTMLElement>,
   ) => {
-    const positions = useMemoizedArray(externalPositions);
+    const positions = useMemoizedArray(
+      Array.isArray(externalPositions) ? externalPositions : [externalPositions],
+    );
 
     // TODO: factor prevs out into a custom prevs hook
     const prevIsOpen = useRef(false);
     const prevPositions = useRef<PopoverPosition[] | undefined>();
-    const prevContentLocation = useRef<ContentLocation | ContentLocationGetter | undefined>();
     const prevReposition = useRef(reposition);
 
     const childRef = useRef<HTMLElement | undefined>();
@@ -82,7 +78,8 @@ const PopoverInternal = forwardRef(
       containerClassName,
       parentElement,
       boundaryElement,
-      contentLocation,
+      transform,
+      transformMode,
       positions,
       align,
       padding,
@@ -106,7 +103,6 @@ const PopoverInternal = forwardRef(
               popoverState.padding !== padding ||
               popoverState.align !== align ||
               positions !== prevPositions.current ||
-              contentLocation !== prevContentLocation.current ||
               reposition !== prevReposition.current)
           ) {
             positionPopover();
@@ -115,9 +111,6 @@ const PopoverInternal = forwardRef(
           // TODO: factor prev checks out into the custom prevs hook
           if (positions !== prevPositions.current) {
             prevPositions.current = positions;
-          }
-          if (contentLocation !== prevContentLocation.current) {
-            prevContentLocation.current = contentLocation;
           }
           if (reposition !== prevReposition.current) {
             prevReposition.current = reposition;
@@ -138,7 +131,6 @@ const PopoverInternal = forwardRef(
       };
     }, [
       align,
-      contentLocation,
       isOpen,
       padding,
       popoverRef,
