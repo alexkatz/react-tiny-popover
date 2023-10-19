@@ -1,8 +1,31 @@
-import { PopoverPosition, PopoverAlign } from './index';
+import { PopoverPosition, PopoverAlign, Rect } from './index';
 
-export const EMPTY_RECT = new DOMRect(0, 0, 0, 0);
+export const EMPTY_RECT: Rect = {
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: 0,
+  height: 0,
+};
 
-export const rectsAreEqual = (rectA: DOMRect, rectB: DOMRect) =>
+export type CreateRectProps = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
+export const createRect = ({ top, left, width, height }: CreateRectProps) => ({
+  top,
+  left,
+  width,
+  height,
+  right: left + width,
+  bottom: top + height,
+});
+
+export const rectsAreEqual = (rectA: Rect, rectB: Rect) =>
   rectA === rectB ||
   (rectA?.bottom === rectB?.bottom &&
     rectA?.height === rectB?.height &&
@@ -31,11 +54,11 @@ export const createContainer = ({
 
 export const popoverRectForPosition = (
   position: PopoverPosition,
-  childRect: DOMRect,
-  popoverRect: DOMRect,
+  childRect: Rect,
+  popoverRect: Rect,
   padding: number,
   align: PopoverAlign,
-): DOMRect => {
+): Rect => {
   const targetMidX = childRect.left + childRect.width / 2;
   const targetMidY = childRect.top + childRect.height / 2;
   const { width, height } = popoverRect;
@@ -85,16 +108,16 @@ export const popoverRectForPosition = (
       break;
   }
 
-  return new DOMRect(left, top, width, height);
+  return createRect({ left, top, width, height });
 };
 
 interface GetNewPopoverRectProps {
   position: PopoverPosition;
   reposition: boolean;
   align: PopoverAlign;
-  childRect: DOMRect;
-  popoverRect: DOMRect;
-  boundaryRect: DOMRect;
+  childRect: Rect;
+  popoverRect: Rect;
+  boundaryRect: Rect;
   padding: number;
 }
 
@@ -126,10 +149,10 @@ export const getNewPopoverRect = (
 };
 
 export const getNudgedPopoverRect = (
-  popoverRect: DOMRect,
-  boundaryRect: DOMRect,
+  popoverRect: Rect,
+  boundaryRect: Rect,
   boundaryInset: number,
-): DOMRect => {
+): Rect => {
   const topBoundary = boundaryRect.top + boundaryInset;
   const leftBoundary = boundaryRect.left + boundaryInset;
   const rightBoundary = boundaryRect.right - boundaryInset;
@@ -140,5 +163,5 @@ export const getNudgedPopoverRect = (
   let left = popoverRect.left < leftBoundary ? leftBoundary : popoverRect.left;
   left = left + popoverRect.width > rightBoundary ? rightBoundary - popoverRect.width : left;
 
-  return new DOMRect(left, top, popoverRect.width, popoverRect.height);
+  return createRect({ ...popoverRect, top, left });
 };

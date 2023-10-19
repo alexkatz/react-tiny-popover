@@ -1,5 +1,14 @@
 import { Ref, MutableRefObject, CSSProperties, FC } from 'react';
 
+export type Rect = {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
+
 export type BoundaryViolations = {
   top: number;
   left: number;
@@ -8,10 +17,10 @@ export type BoundaryViolations = {
 };
 
 export type PopoverState = {
-  childRect: DOMRect;
-  popoverRect: DOMRect;
-  parentRect: DOMRect;
-  boundaryRect: DOMRect;
+  childRect: Rect;
+  popoverRect: Rect;
+  parentRect: Rect;
+  boundaryRect: Rect;
   position?: PopoverPosition;
   align?: PopoverAlign;
   padding: number;
@@ -38,8 +47,8 @@ export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
 export type PopoverAlign = 'start' | 'center' | 'end';
 
 export type UseArrowContainerProps = {
-  childRect: DOMRect;
-  popoverRect: DOMRect;
+  childRect: Rect;
+  popoverRect: Rect;
   position?: PopoverPosition;
   arrowSize: number;
   arrowColor: string;
@@ -84,12 +93,12 @@ export type PopoverProps = BasePopoverProps & {
 
 export type PositionPopoverProps = {
   positionIndex?: number;
-  childRect?: DOMRect;
-  popoverRect?: DOMRect;
-  parentRect?: DOMRect;
-  scoutRect?: DOMRect;
-  parentRectAdjusted?: DOMRect;
-  boundaryRect?: DOMRect;
+  childRect?: Rect;
+  popoverRect?: Rect;
+  parentRect?: Rect;
+  scoutRect?: Rect;
+  parentRectAdjusted?: Rect;
+  boundaryRect?: Rect;
 };
 
 export type PositionPopover = (props?: PositionPopoverProps) => void;

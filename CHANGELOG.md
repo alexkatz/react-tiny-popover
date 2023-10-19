@@ -1,4 +1,10 @@
-## [8.0] - 2023-10-18
+## [8.0.1] - 2023-10-19
+
+## Changed
+
+- Rolled back `DOMRect` changes as it interferes with SSR, replaced with custom `Rect` interface that mirrors the same API
+
+## [8.0.0] - 2023-10-18
 
 ## Changed
 

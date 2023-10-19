@@ -6,7 +6,7 @@ import {
   UsePopoverProps,
   UsePopoverResult,
 } from '.';
-import { EMPTY_RECT, getNewPopoverRect, getNudgedPopoverRect } from './util';
+import { EMPTY_RECT, createRect, getNewPopoverRect, getNudgedPopoverRect } from './util';
 import { useElementRef } from './useElementRef';
 
 const POPOVER_STYLE: Partial<CSSStyleDeclaration> = {
@@ -87,7 +87,12 @@ export const usePopover = ({
 
         onPositionPopover({
           childRect,
-          popoverRect: new DOMRect(finalLeft, finalTop, popoverRect.width, popoverRect.height),
+          popoverRect: createRect({
+            left: finalLeft,
+            top: finalTop,
+            width: popoverRect.width,
+            height: popoverRect.height,
+          }),
           parentRect,
           boundaryRect,
           padding,
@@ -160,7 +165,7 @@ export const usePopover = ({
 
       const popoverState: PopoverState = {
         childRect,
-        popoverRect: new DOMRect(finalLeft, finalTop, width, height),
+        popoverRect: createRect({ left: finalLeft, top: finalTop, width, height }),
         parentRect,
         boundaryRect,
         position,
