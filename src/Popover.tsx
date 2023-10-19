@@ -45,8 +45,6 @@ const PopoverInternal = forwardRef(
       Array.isArray(externalPositions) ? externalPositions : [externalPositions],
     );
 
-    console.log('HI FROM POPOVER');
-
     // TODO: factor prevs out into a custom prevs hook
     const prevIsOpen = useRef(false);
     const prevPositions = useRef<PopoverPosition[] | undefined>();
@@ -107,7 +105,6 @@ const PopoverInternal = forwardRef(
               positions !== prevPositions.current ||
               reposition !== prevReposition.current)
           ) {
-            console.log('POSITIONING POPOVER');
             positionPopover();
           }
 
