@@ -64,8 +64,8 @@ export type ArrowContainerProps = UseArrowContainerProps & {
 
 export type BasePopoverProps = {
   isOpen: boolean;
-  align: PopoverAlign;
-  padding: number;
+  align?: PopoverAlign;
+  padding?: number;
   reposition?: boolean;
   parentElement?: HTMLElement;
   boundaryElement?: HTMLElement;
