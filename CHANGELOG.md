@@ -1,3 +1,9 @@
+## [8.0.3] - 2023-10-19
+
+### Fixed
+
+- `align` and `padding` no longer erroneously required as props
+
 ## [8.0.2] - 2023-10-19
 
 ### Fixed
