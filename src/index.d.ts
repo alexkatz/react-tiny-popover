@@ -83,7 +83,7 @@ export type UsePopoverProps = BasePopoverProps & {
 
 export type PopoverProps = BasePopoverProps & {
   children: JSX.Element;
-  positions: PopoverPosition[] | PopoverPosition;
+  positions?: PopoverPosition[] | PopoverPosition;
   content: ContentRenderer | JSX.Element;
   ref?: Ref<HTMLElement>;
   containerStyle?: Partial<CSSStyleDeclaration>;
