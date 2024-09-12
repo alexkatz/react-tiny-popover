@@ -3,6 +3,7 @@
   - [Demo](#demo)
   - [Examples](#examples)
   - [Hooks](#hooks)
+  - [Small breaking change in 8.1](#small-breaking-change-in-8.1)
   - [Migrating to 8.0](#migrating-to-8.0)
   - [Migrating to 5.0](#migrating-to-5.0)
   - [API](#api)
@@ -206,6 +207,12 @@ const [positionPopover, popoverRef] = usePopover({
 After attaching `popoverRef` and `childRef` to the DOM, you can fire `positionPopover` at any time to update your popover's position.
 
 This is a bit more advanced, but play around and see what you can come up with! Feel free to examine the internal Popover component to see how the hook is used there.
+
+## Small Breaking Change in 8.1
+
+Prior to 8.1, the two DOM elements generated via React Portal by `react-tiny-popover` were given the ids `react-tiny-popover-container` and `react-tiny-popover-scout`. In 8.1 and above, both `react-tiny-popover-container` and `react-tiny-popover-scout` are now assigned as class names. This solves the issue of multiple DOM elements sharing the same id if you have more than one popover open at once.
+
+If you select for `react-tiny-popover-container` or `react-tiny-popover-scout` by id in your code, you'll have to select via class name instead.
 
 ## Migrating to 8.0
 
