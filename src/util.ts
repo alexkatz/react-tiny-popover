@@ -37,16 +37,10 @@ export const rectsAreEqual = (rectA: Rect, rectB: Rect) =>
 export type CreateContainerProps = {
   containerStyle?: Partial<CSSStyleDeclaration>;
   containerClassName?: string;
-  id?: string;
 };
 
-export const createContainer = ({
-  containerStyle,
-  containerClassName,
-  id,
-}: CreateContainerProps) => {
+export const createContainer = ({ containerStyle, containerClassName }: CreateContainerProps) => {
   const container = window.document.createElement('div');
-  container.id = id;
   if (containerClassName) container.className = containerClassName;
   Object.assign(container.style, containerStyle);
   return container;

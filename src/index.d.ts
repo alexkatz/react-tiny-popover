@@ -1,5 +1,3 @@
-import { Ref, MutableRefObject, CSSProperties, FC } from 'react';
-
 export type Rect = {
   top: number;
   left: number;
@@ -85,7 +83,7 @@ export type PopoverProps = BasePopoverProps & {
   children: JSX.Element;
   positions?: PopoverPosition[] | PopoverPosition;
   content: ContentRenderer | JSX.Element;
-  ref?: Ref<HTMLElement>;
+  ref?: React.Ref<HTMLElement>;
   containerStyle?: Partial<CSSStyleDeclaration>;
   onClickOutside?: (e: MouseEvent) => void;
   clickOutsideCapture?: boolean;
@@ -104,23 +102,23 @@ export type PositionPopoverProps = {
 export type PositionPopover = (props?: PositionPopoverProps) => void;
 
 export type PopoverRefs = {
-  popoverRef: MutableRefObject<HTMLDivElement>;
-  scoutRef: MutableRefObject<HTMLDivElement>;
+  popoverRef: React.MutableRefObject<HTMLDivElement>;
+  scoutRef: React.MutableRefObject<HTMLDivElement>;
 };
 
 export type UsePopoverResult = {
   positionPopover: PositionPopover;
-  popoverRef: MutableRefObject<HTMLDivElement>;
-  scoutRef: MutableRefObject<HTMLDivElement>;
+  popoverRef: React.MutableRefObject<HTMLDivElement>;
+  scoutRef: React.MutableRefObject<HTMLDivElement>;
 };
 
 export type UseArrowContainerResult = {
-  arrowStyle: CSSProperties;
-  arrowContainerStyle: CSSProperties;
+  arrowStyle: React.CSSProperties;
+  arrowContainerStyle: React.CSSProperties;
 };
 
 export const usePopover: (props: UsePopoverProps) => UsePopoverResult;
 export const useArrowContainer: (props: UseArrowContainerProps) => UseArrowContainerResult;
 
-export const Popover: FC<PopoverProps>;
-export const ArrowContainer: FC<ArrowContainerProps>;
+export const Popover: (props: PopoverProps) => React.ReactNode;
+export const ArrowContainer: (props: ArrowContainerProps) => React.ReactNode;

@@ -40,10 +40,16 @@ export const usePopover = ({
   boundaryElement,
   onPositionPopover,
 }: UsePopoverProps): UsePopoverResult => {
-  const scoutRef = useElementRef({ id: 'react-tiny-popover-scout', containerStyle: SCOUT_STYLE });
+  const scoutRef = useElementRef({
+    containerClassName: 'react-tiny-popover-scout',
+    containerStyle: SCOUT_STYLE,
+  });
+
   const popoverRef = useElementRef({
-    id: 'react-tiny-popover-container',
-    containerClassName,
+    containerClassName:
+      containerClassName != null
+        ? `react-tiny-popover-container ${containerClassName}`
+        : 'react-tiny-popover-container',
     containerStyle: POPOVER_STYLE,
   });
 

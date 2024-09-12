@@ -1,13 +1,20 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useState, useLayoutEffect } from 'react';
 import { CreateContainerProps, createContainer } from './util';
 
-export const useElementRef = ({ containerClassName, containerStyle, id }: CreateContainerProps) => {
+export const useElementRef = ({ containerClassName, containerStyle }: CreateContainerProps) => {
   const ref = useRef<HTMLDivElement>();
 
-  const element = useMemo(
-    () => createContainer({ containerStyle, containerClassName, id }),
-    [containerClassName, containerStyle, id],
+  const [element] = useState(() =>
+    createContainer({ containerStyle, containerClassName: containerClassName }),
   );
+
+  useLayoutEffect(() => {
+    element.className = containerClassName;
+  }, [containerClassName, element]);
+
+  useLayoutEffect(() => {
+    Object.assign(element.style, containerStyle);
+  }, [containerStyle, element]);
 
   ref.current = element;
 
