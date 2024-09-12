@@ -1,3 +1,9 @@
+## [8.1.0] - 2024-9-12
+
+### Changed
+
+- `contentLocation` prop has been renamed to `positionTransform`, behaves exactly the same
+
 ## [8.0.3] - 2023-10-19
 
 ### Fixed
