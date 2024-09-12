@@ -2,7 +2,12 @@
 
 ### Changed
 
-- `contentLocation` prop has been renamed to `positionTransform`, behaves exactly the same
+- Prior to this change, the portal DOM elements generated when a popover appears
+  were given the id `react-tiny-popover-container` and `react-tiny-popover-scout`
+- From now on, both `react-tiny-popover-container` and `react-tiny-popover-scout` are
+  now assigned as class names rather than ids. The absence of this functionality
+  has been an oversight, since multiple popovers can be present in the DOM
+  simultaneously. This resulted in more than one element having the same id.
 
 ## [8.0.3] - 2023-10-19
 
