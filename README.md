@@ -11,7 +11,8 @@
     - [ArrowContainer](#arrowcontainer)
 
 # react-tiny-popover
-![](https://github.com/alexkatz/react-tiny-popover/blob/main/react-tiny-popover-short-demo.gif?raw=true)
+
+![demo gif](https://github.com/alexkatz/react-tiny-popover/blob/main/react-tiny-popover-short-demo.gif?raw=true)
 
 ## [Click here for a full demo](https://alexkatz.github.io/react-tiny-popover-demo/) :+1:
 
