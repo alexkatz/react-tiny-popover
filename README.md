@@ -1,6 +1,8 @@
+![](https://github.com/react-tiny-popover/react-tiny-popover-short-demo.gif)
+
 - [react-tiny-popover](#react-tiny-popover)
   - [Install](#install)
-  - [Demo](#demo)
+  - [Full Demo](#full-demo)
   - [Examples](#examples)
   - [Hooks](#hooks)
   - [Small breaking change in 8.1](#small-breaking-change-in-81)
@@ -29,9 +31,7 @@ Since `react-tiny-popover` tries to be as non-invasive as possible, it will simp
 npm i react-tiny-popover --save
 ```
 
-## [Demo](https://alexkatz.github.io/react-tiny-popover/)
-
-:+1:
+## [Full Demo](https://alexkatz.github.io/react-tiny-popover-demo/) :+1:
 
 ## Examples
 
