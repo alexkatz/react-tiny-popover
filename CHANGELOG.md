@@ -1,3 +1,7 @@
+## [8.1.2] - 2024-9-13
+
+### Fixed npm deployment issue
+
 ## [8.1.1] - 2024-9-13
 
 ### Fixed

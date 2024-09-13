@@ -1,6 +1,6 @@
 {
   "name": "react-tiny-popover",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "description": "A simple and highly customizable popover react higher order component with no other dependencies!",
   "keywords": [
     "react",
@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "author": "Alex Katz",
-  "main": "src/Popover.tsx",
+  "main": "dist/Popover.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p . && pnpm run copy-types",
