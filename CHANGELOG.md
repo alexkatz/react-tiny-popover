@@ -1,3 +1,19 @@
+## [8.1.1] - 2024-9-13
+
+### Fixed
+
+- Popover now re-renders properly on the following prop changes
+  - `reposition`
+  - `positions`
+  - `boundaryElement`
+  - `boundaryInset`
+  - `transform`
+  - `transformMode`
+  - `childRect` changes
+  - `popoverRect` changes
+  - `padding`
+  - `align`
+
 ## [8.1.0] - 2024-9-12
 
 ### Changed
