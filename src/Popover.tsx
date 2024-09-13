@@ -13,6 +13,7 @@ import { PopoverPosition, PopoverProps, PopoverState } from '.';
 import { EMPTY_RECT, rectsAreEqual } from './util';
 import { usePopover } from './usePopover';
 import { useMemoizedArray } from './useMemoizedArray';
+import { useHandlePrevValues } from './useHandlePrevValues';
 export { useArrowContainer } from './useArrowContainer';
 export { ArrowContainer } from './ArrowContainer';
 export { usePopover };
@@ -45,10 +46,14 @@ const PopoverInternal = forwardRef(
       Array.isArray(externalPositions) ? externalPositions : [externalPositions],
     );
 
-    // TODO: factor prevs out into a custom prevs hook
-    const prevIsOpen = useRef(false);
-    const prevPositions = useRef<PopoverPosition[] | undefined>();
-    const prevReposition = useRef(reposition);
+    const { prev, updatePrevValues } = useHandlePrevValues({
+      positions,
+      reposition,
+      transformMode,
+      transform,
+      boundaryElement,
+      boundaryInset,
+    });
 
     const childRef = useRef<HTMLElement | undefined>();
 
@@ -102,26 +107,22 @@ const PopoverInternal = forwardRef(
               popoverRect.height !== popoverState.popoverRect.height ||
               popoverState.padding !== padding ||
               popoverState.align !== align ||
-              positions !== prevPositions.current ||
-              reposition !== prevReposition.current)
+              positions !== prev.positions ||
+              reposition !== prev.reposition ||
+              transformMode !== prev.transformMode ||
+              transform !== prev.transform ||
+              boundaryElement !== prev.boundaryElement ||
+              boundaryInset !== prev.boundaryInset)
           ) {
             positionPopover();
           }
 
-          // TODO: factor prev checks out into the custom prevs hook
-          if (positions !== prevPositions.current) {
-            prevPositions.current = positions;
-          }
-          if (reposition !== prevReposition.current) {
-            prevReposition.current = reposition;
-          }
+          updatePrevValues();
 
           if (shouldUpdate) {
             window.requestAnimationFrame(updatePopover);
           }
         }
-
-        prevIsOpen.current = isOpen;
       };
 
       window.requestAnimationFrame(updatePopover);
@@ -131,6 +132,8 @@ const PopoverInternal = forwardRef(
       };
     }, [
       align,
+      boundaryElement,
+      boundaryInset,
       isOpen,
       padding,
       popoverRef,
@@ -141,7 +144,16 @@ const PopoverInternal = forwardRef(
       popoverState.popoverRect.width,
       positionPopover,
       positions,
+      prev.boundaryElement,
+      prev.boundaryInset,
+      prev.positions,
+      prev.reposition,
+      prev.transform,
+      prev.transformMode,
       reposition,
+      transform,
+      transformMode,
+      updatePrevValues,
     ]);
 
     useEffect(() => {
@@ -183,6 +195,7 @@ const PopoverInternal = forwardRef(
       body.addEventListener('click', handleOnClickOutside, clickOutsideCapture);
       body.addEventListener('contextmenu', handleOnClickOutside, clickOutsideCapture);
       body.addEventListener('resize', handleWindowResize);
+
       return () => {
         body.removeEventListener('click', handleOnClickOutside, clickOutsideCapture);
         body.removeEventListener('contextmenu', handleOnClickOutside, clickOutsideCapture);

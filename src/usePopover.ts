@@ -47,7 +47,9 @@ export const usePopover = ({
 
   const popoverRef = useElementRef({
     containerClassName:
-      containerClassName != null
+      containerClassName != null &&
+      containerClassName.length > 0 &&
+      containerClassName !== 'react-tiny-popover-container'
         ? `react-tiny-popover-container ${containerClassName}`
         : 'react-tiny-popover-container',
     containerStyle: POPOVER_STYLE,
