@@ -1,20 +1,19 @@
-- [react-tiny-popover](#react-tiny-popover)
-  - [Install](#install)
-  - [Examples](#examples)
-  - [Hooks](#hooks)
-  - [Small breaking change in 8.1](#small-breaking-change-in-81)
-  - [Migrating to 8.0](#migrating-to-80)
-  - [Migrating to 5.0](#migrating-to-50)
-  - [API](#api)
-    - [Popover](#popover)
-    - [PopoverState](#popoverstate)
-    - [ArrowContainer](#arrowcontainer)
-
 # react-tiny-popover
 
 ![demo gif](https://github.com/alexkatz/react-tiny-popover/blob/main/react-tiny-popover-short-demo.gif?raw=true)
 
 ## [Click here for a full demo](https://alexkatz.github.io/react-tiny-popover-demo/) :+1:
+
+- [Install](#install)
+- [Examples](#examples)
+- [Hooks](#hooks)
+- [Small breaking change in 8.1](#small-breaking-change-in-81)
+- [Migrating to 8.0](#migrating-to-80)
+- [Migrating to 5.0](#migrating-to-50)
+- [API](#api)
+  - [Popover](#popover)
+  - [PopoverState](#popoverstate)
+  - [ArrowContainer](#arrowcontainer)
 
 A lightweight, highly customizable, non-intrusive, and Typescript friendly popover react HOC with no other dependencies!
 
