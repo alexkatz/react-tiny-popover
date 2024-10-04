@@ -94,42 +94,28 @@ const PopoverInternal = forwardRef(
     });
 
     useLayoutEffect(() => {
-      let shouldUpdate = true;
-      const updatePopover = () => {
-        if (isOpen && shouldUpdate) {
-          const childRect = childRef?.current?.getBoundingClientRect();
-          const popoverRect = popoverRef?.current?.getBoundingClientRect();
-          if (
-            childRect != null &&
-            popoverRect != null &&
-            (!rectsAreEqual(childRect, popoverState.childRect) ||
-              popoverRect.width !== popoverState.popoverRect.width ||
-              popoverRect.height !== popoverState.popoverRect.height ||
-              popoverState.padding !== padding ||
-              popoverState.align !== align ||
-              positions !== prev.positions ||
-              reposition !== prev.reposition ||
-              transformMode !== prev.transformMode ||
-              transform !== prev.transform ||
-              boundaryElement !== prev.boundaryElement ||
-              boundaryInset !== prev.boundaryInset)
-          ) {
-            positionPopover();
-          }
-
+      if (isOpen) {
+        const childRect = childRef.current?.getBoundingClientRect();
+        const popoverRect = popoverRef.current?.getBoundingClientRect();
+        if (
+          childRect &&
+          popoverRect &&
+          (!rectsAreEqual(childRect, popoverState.childRect) ||
+            popoverRect.width !== popoverState.popoverRect.width ||
+            popoverRect.height !== popoverState.popoverRect.height ||
+            popoverState.padding !== padding ||
+            popoverState.align !== align ||
+            positions !== prev.positions ||
+            reposition !== prev.reposition ||
+            transformMode !== prev.transformMode ||
+            transform !== prev.transform ||
+            boundaryElement !== prev.boundaryElement ||
+            boundaryInset !== prev.boundaryInset)
+        ) {
+          positionPopover();
           updatePrevValues();
-
-          if (shouldUpdate) {
-            window.requestAnimationFrame(updatePopover);
-          }
         }
-      };
-
-      window.requestAnimationFrame(updatePopover);
-
-      return () => {
-        shouldUpdate = false;
-      };
+      }
     }, [
       align,
       boundaryElement,
