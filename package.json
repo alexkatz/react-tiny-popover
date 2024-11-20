@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "author": "Alex Katz",
-  "main": "dist/Popover.js",
+  "main": "src/Popover.tsx",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p . && pnpm run copy-types",
@@ -30,22 +30,18 @@
     "watch": "tsc-watch -p . --onSuccess 'pnpm run copy-types'"
   },
   "devDependencies": {
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "eslint": "^8.48.0",
-    "eslint-config-prettier": "^9.0.0",
+    "@eslint/js": "^9.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-flowtype": "^8.0.3",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^3.0.3",
-    "tsc-watch": "^6.0.4",
-    "typescript": "5.2.2"
+    "eslint-plugin-react": "^7.36.1",
+    "globals": "^15.12.0",
+    "prettier": "^3.3.3",
+    "tsc-watch": "^6.2.1",
+    "typescript": "5.6.3",
+    "typescript-eslint": "^8.5.0"
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
