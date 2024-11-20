@@ -1,3 +1,12 @@
+# CHANGELOG
+
+## [8.1.3] - 2024-9-13
+
+### Fixed
+
+- Popover now immediately positions on open before requesting browser animation
+  frame for subsequent updates (thanks @cozmo)
+
 ## [8.1.2] - 2024-9-13
 
 ### Fixed npm deployment issue
