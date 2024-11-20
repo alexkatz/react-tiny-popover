@@ -120,5 +120,5 @@ export type UseArrowContainerResult = {
 export const usePopover: (props: UsePopoverProps) => UsePopoverResult;
 export const useArrowContainer: (props: UseArrowContainerProps) => UseArrowContainerResult;
 
-export const Popover: (props: PopoverProps) => React.ReactNode;
-export const ArrowContainer: (props: ArrowContainerProps) => React.ReactNode;
+export const Popover: (props: PopoverProps) => JSX.Element | null;
+export const ArrowContainer: (props: ArrowContainerProps) => JSX.Element | null;
