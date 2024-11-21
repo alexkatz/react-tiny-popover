@@ -1,6 +1,12 @@
 # CHANGELOG
 
-## [8.1.3] - 2024-9-13
+## [8.1.4] - 2024-11-20
+
+### Fixed
+
+- Resolved type declaration issue that caused ts errors when rendering Popover component on certain versions of React
+
+## [8.1.3] - 2024-11-20
 
 ### Fixed
 
