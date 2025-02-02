@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [8.1.6] - 2025-2-2
+
+### Fixed
+
+- Resolved newly introduced module declaration issue from previous release
+
 ## [8.1.5] - 2025-2-2
 
 ### Fixed
