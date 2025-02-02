@@ -186,21 +186,24 @@ const PopoverInternal = forwardRef(
     );
 
     const handleWindowResize = useCallback(() => {
-      if (childRef.current) {
+      if (childRef.current && isOpen) {
         window.requestAnimationFrame(() => positionPopover());
       }
-    }, [positionPopover]);
+    }, [positionPopover, isOpen]);
 
     useEffect(() => {
       const body = parentElement.ownerDocument.body;
+
       body.addEventListener('click', handleOnClickOutside, clickOutsideCapture);
       body.addEventListener('contextmenu', handleOnClickOutside, clickOutsideCapture);
-      body.addEventListener('resize', handleWindowResize);
+
+      window.addEventListener('resize', handleWindowResize);
 
       return () => {
         body.removeEventListener('click', handleOnClickOutside, clickOutsideCapture);
         body.removeEventListener('contextmenu', handleOnClickOutside, clickOutsideCapture);
-        body.removeEventListener('resize', handleWindowResize);
+
+        window.removeEventListener('resize', handleWindowResize);
       };
     }, [clickOutsideCapture, handleOnClickOutside, handleWindowResize, parentElement]);
 
