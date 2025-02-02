@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [8.1.5] - 2025-2-2
+
+### Fixed
+
+- Resolved an issue where popover position sometimes did not occur on window resize
+
 ## [8.1.4] - 2024-11-20
 
 ### Fixed
