@@ -55,7 +55,7 @@ const PopoverInternal = forwardRef(
       boundaryInset,
     });
 
-    const childRef = useRef<HTMLElement | undefined>();
+    const childRef = useRef<HTMLElement | undefined>(undefined);
 
     const [popoverState, setPopoverState] = useState<PopoverState>({
       align,

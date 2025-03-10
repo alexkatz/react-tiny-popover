@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 export type Rect = {
   top: number;
   left: number;
