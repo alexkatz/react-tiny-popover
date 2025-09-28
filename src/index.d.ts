@@ -30,7 +30,7 @@ export type PopoverState = {
   hasViolations: boolean;
 };
 
-export type ContentRenderer = (popoverState: PopoverState) => JSX.Element;
+export type ContentRenderer = (popoverState: PopoverState) => React.JSX.Element;
 
 export type PositionTransformValue = {
   top?: number;
@@ -53,7 +53,7 @@ export type UseArrowContainerProps = {
 };
 
 export type ArrowContainerProps = UseArrowContainerProps & {
-  children: JSX.Element;
+  children: React.JSX.Element;
   className?: string;
   style?: React.CSSProperties;
   arrowStyle?: React.CSSProperties;
@@ -80,9 +80,9 @@ export type UsePopoverProps = BasePopoverProps & {
 };
 
 export type PopoverProps = BasePopoverProps & {
-  children: JSX.Element;
+  children: React.JSX.Element;
   positions?: PopoverPosition[] | PopoverPosition;
-  content: ContentRenderer | JSX.Element;
+  content: ContentRenderer | React.JSX.Element;
   ref?: React.Ref<HTMLElement>;
   containerStyle?: Partial<CSSStyleDeclaration>;
   onClickOutside?: (e: MouseEvent) => void;
@@ -120,5 +120,5 @@ export type UseArrowContainerResult = {
 export const usePopover: (props: UsePopoverProps) => UsePopoverResult;
 export const useArrowContainer: (props: UseArrowContainerProps) => UseArrowContainerResult;
 
-export const Popover: (props: PopoverProps) => JSX.Element | null;
-export const ArrowContainer: (props: ArrowContainerProps) => JSX.Element | null;
+export const Popover: (props: PopoverProps) => React.JSX.Element | null;
+export const ArrowContainer: (props: ArrowContainerProps) => React.JSX.Element | null;

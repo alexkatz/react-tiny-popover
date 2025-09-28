@@ -55,7 +55,7 @@ const PopoverInternal = forwardRef(
       boundaryInset,
     });
 
-    const childRef = useRef<HTMLElement | undefined>();
+    const childRef = useRef<HTMLElement | null>(null);
 
     const [popoverState, setPopoverState] = useState<PopoverState>({
       align,
@@ -166,7 +166,7 @@ const PopoverInternal = forwardRef(
         Object.keys(containerStyle ?? {}).forEach(
           (key) =>
             delete popoverElement.style[
-              key as keyof Omit<typeof containerStyle, 'length' | 'parentRule'>
+            key as keyof Omit<typeof containerStyle, 'length' | 'parentRule'>
             ],
         );
       };

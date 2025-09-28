@@ -48,8 +48,8 @@ export const usePopover = ({
   const popoverRef = useElementRef({
     containerClassName:
       containerClassName != null &&
-      containerClassName.length > 0 &&
-      containerClassName !== 'react-tiny-popover-container'
+        containerClassName.length > 0 &&
+        containerClassName !== 'react-tiny-popover-container'
         ? `react-tiny-popover-container ${containerClassName}`
         : 'react-tiny-popover-container',
     containerStyle: POPOVER_STYLE,
@@ -59,8 +59,8 @@ export const usePopover = ({
     ({
       positionIndex = 0,
       parentRect = parentElement.getBoundingClientRect(),
-      childRect = childRef?.current?.getBoundingClientRect(),
-      scoutRect = scoutRef?.current?.getBoundingClientRect(),
+      childRect = childRef?.current.getBoundingClientRect(),
+      scoutRect = scoutRef?.current.getBoundingClientRect(),
       popoverRect = popoverRef.current.getBoundingClientRect(),
       boundaryRect = boundaryElement === parentElement
         ? parentRect
@@ -74,18 +74,18 @@ export const usePopover = ({
         const { top: inputTop, left: inputLeft } =
           typeof transform === 'function'
             ? transform({
-                childRect,
-                popoverRect,
-                parentRect,
-                boundaryRect,
-                padding,
-                align,
-                nudgedTop: 0,
-                nudgedLeft: 0,
-                boundaryInset,
-                violations: EMPTY_RECT,
-                hasViolations: false,
-              })
+              childRect,
+              popoverRect,
+              parentRect,
+              boundaryRect,
+              padding,
+              align,
+              nudgedTop: 0,
+              nudgedLeft: 0,
+              boundaryInset,
+              violations: EMPTY_RECT,
+              hasViolations: false,
+            })
             : transform;
 
         const finalLeft = Math.round(parentRect.left + inputLeft - scoutRect.left);
