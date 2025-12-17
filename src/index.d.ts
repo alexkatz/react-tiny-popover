@@ -42,7 +42,11 @@ export type PositionTransform =
   | ((popoverState: PopoverState) => PositionTransformValue);
 
 export type PopoverPosition = 'left' | 'right' | 'top' | 'bottom';
-export type PopoverAlign = 'start' | 'center' | 'end';
+export type PopoverAlignValue = 'start' | 'center' | 'end';
+
+export type PopoverAlign =
+  | PopoverAlignValue
+  | ((popoverPosition: PopoverPosition) => PopoverAlignValue);
 
 export type UseArrowContainerProps = {
   childRect: Rect;
