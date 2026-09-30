@@ -19,6 +19,7 @@ export { ArrowContainer } from './ArrowContainer';
 export { usePopover };
 
 const DEFAULT_POSITIONS: PopoverPosition[] = ['top', 'left', 'right', 'bottom'];
+const POPOVER_SIZE_TOLERANCE = 0.01;
 
 const PopoverInternal = forwardRef(
   (
@@ -104,8 +105,13 @@ const PopoverInternal = forwardRef(
             childRect != null &&
             popoverRect != null &&
             (!rectsAreEqual(childRect, popoverState.childRect) ||
-              popoverRect.width !== popoverState.popoverRect.width ||
-              popoverRect.height !== popoverState.popoverRect.height ||
+              // At some zoom levels, moving a tooltip can change its reported height
+              // from 47.687496px to 47.687504px without changing its actual size.
+              // Ignore differences of at most 0.01px so the tooltip does not keep moving.
+              Math.abs(popoverRect.width - popoverState.popoverRect.width) >
+                POPOVER_SIZE_TOLERANCE ||
+              Math.abs(popoverRect.height - popoverState.popoverRect.height) >
+                POPOVER_SIZE_TOLERANCE ||
               popoverState.padding !== padding ||
               popoverState.align !== align ||
               positions !== prev.positions ||
